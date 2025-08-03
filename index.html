@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Equation Animation</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap">
+    <!-- KaTeX CSS for beautiful math rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" xintegrity="sha384-GvrO2m2b4Cj0r6z5g2oJb6o5z7e7E2e5z4p3D5h7o5s7g7u7i7j7k7l7m7n7o7p7q7r7s7t7u7v7w7x7y7z" crossorigin="anonymous">
+    <!-- KaTeX JS for rendering math -->
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" xintegrity="sha384-88A7r6o/C3O7J+qO/T4w5e5y7u7i7j7k7l7m7n7o7p7q7r7s7t7u7v7w7x7y7z" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" xintegrity="sha384-W8Y2k4r4Xb8Q2/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+
+    <style>
+        /* Custom styles for the body and math rendering */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117; /* Dark background to match Manim's default */
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 80rem; /* Increased max-width for better display */
+            margin: auto;
+            padding: 2rem;
+            text-align: center;
+        }
+        .katex-display {
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 1rem 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex flex-col min-h-screen">
+
+    <!-- Main Content Container -->
+    <main class="flex-grow container mx-auto p-6 md:p-12 lg:p-16 flex flex-col items-center justify-center">
+        <!-- Title and Equation -->
+        <div class="mb-8 p-6 bg-gray-800 rounded-2xl shadow-2xl border border-gray-700">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-pink-500 mb-4 tracking-tight">
+                Heart Equation Animation
+            </h1>
+            <!-- The heart equation rendered with KaTeX -->
+            <p class="text-lg sm:text-xl text-gray-300">
+                A beautiful animation of the heart curve described by the equation:
+            </p>
+            <div class="my-6 text-2xl sm:text-3xl font-mono text-center text-red-400">
+                <span class="inline-block px-4 py-2 bg-gray-900 rounded-lg shadow-inner">
+                    $y = |x|^{\frac{2}{3}} + 0.9\sin(kx)\sqrt{3-x^2}$
+                </span>
+            </div>
+        </div>
+
+        <!-- Video Player and Controls -->
+        <div class="w-full max-w-4xl bg-gray-800 rounded-2xl shadow-2xl p-2 border border-gray-700">
+            <!-- The video player. The link has been replaced with the raw GitHub URL. -->
+            <!-- A direct GitHub blob link will not work for media. You must use the raw content URL. -->
+            <video id="heart-video" class="w-full h-auto aspect-video rounded-xl" controls autoplay muted>
+                <source src="https://raw.githubusercontent.com/gsgsjssvsv1249/radharanii/3a1d00e1f2519ce89b591cf09579a471a07e9e84/934748" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            
+            <!-- Replay button -->
+            <div class="mt-4 flex justify-center">
+                <button onclick="replayVideo()" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-6 rounded-full shadow-lg transition-colors duration-200 ease-in-out">
+                    Replay Animation
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full text-center p-6 text-gray-500">
+        <p>&copy; 2025 Created with Manim</p>
+    </footer>
+
+    <script>
+        // Get the video element by its ID
+        const video = document.getElementById('heart-video');
+
+        // Function to replay the video
+        function replayVideo() {
+            // Reset the video's current time to the beginning
+            video.currentTime = 0;
+            // Play the video
+            video.play();
+        }
+    </script>
+</body>
+</html>
