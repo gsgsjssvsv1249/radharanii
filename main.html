@@ -4,17 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sandeep's Heart</title>
-
-    <!-- Redirection Script: This script runs before the page renders -->
-    <script>
-        // Check if the page is 'main.html' and redirect to 'index.html'
-        // This handles refreshes, manual navigation, or direct links to this page.
-        // The condition ensures it only runs on the main.html file itself.
-        if (window.location.pathname.endsWith('main.html')) {
-            window.location.replace('index.html');
-        }
-    </script>
-
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter and Allura -->
@@ -79,24 +68,19 @@
             }
         }
         
-        /* New container box for the animation and buttons */
-        .animation-box-container {
-            border: 2px solid transparent;
-            /* Make background fully transparent to show Three.js animation */
-            background-image: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0)), var(--button-gradient, linear-gradient(to right, #ec4899, #f43f5e));
-            background-origin: border-box;
-            background-clip: padding-box, border-box;
-            transition: background-image 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
-            box-shadow: 0 0 10px var(--glow-color-1, #ec4899), 0 0 20px var(--glow-color-1, #ec4899), 0 0 40px var(--glow-color-2, #f43f5e);
-        }
-
         /* Heart Video styles with a new glowing border */
         .heart-video {
-            width: 400px; /* Adjust size as needed */
+            width: 250px; /* Adjust size as needed */
             height: auto;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
             border-radius: 1rem;
-            box-shadow: none; /* Removed the internal box shadow */
+            box-shadow: 0 0 10px var(--glow-color-1, #ec4899), 0 0 20px var(--glow-color-2, #f43f5e);
             transition: box-shadow 0.5s ease-in-out;
+            border: 2px solid transparent;
+            background-image: linear-gradient(to right, #1f2937, #1f2937), var(--button-gradient, linear-gradient(to right, #ec4899, #f43f5e));
+            background-origin: border-box;
+            background-clip: content-box, border-box;
         }
 
         /* SVG Heart styles */
@@ -213,24 +197,26 @@
         <p class="text-lg sm:text-xl text-gray-300 mb-8 max-w-2xl">
             Welcome to the main section of Sandeep's Heart. This is where your beautiful content will live.
         </p>
+
+        <!-- Video Heart Animation with placeholder link -->
+        <video class="heart-video" autoplay loop muted playsinline>
+            <!-- IMPORTANT: The provided URL is a GitHub page, not a raw video file. -->
+            <!-- To fix this, you must get the "raw" URL of your video from GitHub. -->
+            <!-- Example: https://raw.githubusercontent.com/user/repo/branch/video.mp4 -->
+            <!-- The current path: https://github.com/gsgsjssvsv1249/radharanii/blob/main/heart.mp4 is incorrect. -->
+            <!-- Please replace the 'src' attribute below with your correct raw video URL. -->
+            <source src="" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
         
-        <!-- New container box for the animation and buttons -->
-        <div class="animation-box-container w-full max-w-md p-8 bg-gray-900/50 backdrop-blur-sm rounded-2xl shadow-2xl border-2 border-transparent button-group flex flex-col items-center justify-center space-y-6">
-            <!-- Video Heart Animation with a direct link to the raw video file on GitHub -->
-            <video class="heart-video" autoplay loop muted playsinline>
-                <source src="https://raw.githubusercontent.com/gsgsjssvsv1249/radharanii/main/heart.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            
-            <!-- Button group for color change and share functionality -->
-            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full button-group">
-                <button id="change-color-btn" class="color-button flex-1 text-white font-bold py-3 px-8 rounded-full shadow-lg">
-                    Change Color
-                </button>
-                <button id="share-btn" class="color-button flex-1 text-white font-bold py-3 px-8 rounded-full shadow-lg">
-                    Share
-                </button>
-            </div>
+        <!-- Button group for color change and share functionality -->
+        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8 button-group">
+            <button id="change-color-btn" class="color-button text-white font-bold py-3 px-8 rounded-full shadow-lg">
+                Change Color
+            </button>
+            <button id="share-btn" class="color-button text-white font-bold py-3 px-8 rounded-full shadow-lg">
+                Share
+            </button>
         </div>
     </main>
     
@@ -294,50 +280,44 @@
         }
         
         // Event listener for the "Change Color" button
-        colorBtn.addEventListener('click', () => {
-            currentPaletteIndex = (currentPaletteIndex + 1) % palettes.length;
-            applyPalette(currentPaletteIndex);
-        });
+        if (colorBtn) {
+            colorBtn.addEventListener('click', () => {
+                currentPaletteIndex = (currentPaletteIndex + 1) % palettes.length;
+                applyPalette(currentPaletteIndex);
+            });
+        }
 
         // Event listener for the "Share" button
-        shareBtn.addEventListener('click', () => {
-            const url = window.location.href;
-            
-            // Check if navigator.clipboard API is supported
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(url).then(() => {
-                    messageBox.textContent = 'URL copied to clipboard!';
-                    messageBox.style.opacity = '1';
-                    setTimeout(() => {
-                        messageBox.style.opacity = '0';
-                    }, 3000);
-                }).catch(err => {
-                    messageBox.textContent = 'Failed to copy URL.';
-                    messageBox.style.opacity = '1';
-                    setTimeout(() => {
-                        messageBox.style.opacity = '0';
-                    }, 3000);
-                });
-            } else {
-                // Fallback for older browsers
-                const textarea = document.createElement('textarea');
-                textarea.value = url;
-                document.body.appendChild(textarea);
-                textarea.select();
-                try {
-                    document.execCommand('copy');
-                    messageBox.textContent = 'URL copied to clipboard!';
-                } catch (err) {
-                    messageBox.textContent = 'Failed to copy URL.';
+        if (shareBtn) {
+            shareBtn.addEventListener('click', () => {
+                const url = window.location.href;
+                
+                // Check if execCommand is supported
+                if (document.execCommand) {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = url;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    try {
+                        document.execCommand('copy');
+                        messageBox.textContent = 'URL copied to clipboard!';
+                    } catch (err) {
+                        messageBox.textContent = 'Failed to copy URL.';
+                    }
+                    document.body.removeChild(textarea);
+                } else {
+                    messageBox.textContent = 'Your browser does not use copying to clipboard.';
                 }
-                document.body.removeChild(textarea);
 
+                // Show the message box
                 messageBox.style.opacity = '1';
+                
+                // Hide the message box after 3 seconds
                 setTimeout(() => {
                     messageBox.style.opacity = '0';
                 }, 3000);
-            }
-        });
+            });
+        }
         
         // --- 3D Starfield Background Script with Three.js ---
         let scene, camera, renderer, starGeo, stars;
@@ -445,6 +425,9 @@
             initThreeJS();
             animate();
             setInterval(createShootingStar, 5000);
+            
+            // Initial call to apply the color palette
+            applyPalette(currentPaletteIndex);
         };
     </script>
 </body>
