@@ -10,10 +10,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Allura&display=swap">
     <!-- Three.js CDN for 3D graphics -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- Tone.js CDN for audio generation and analysis -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
-    <!-- Lucide React for icons -->
-    <script src="https://cdn.jsdelivr.net/npm/lucide-react@0.364.0/dist/umd/lucide-react.js"></script>
 
     <style>
         /* Custom styles for the body, background, and animations */
@@ -60,8 +56,19 @@
         /* Apply the new Allura font to the main title */
         .main-title {
             font-family: 'Allura', cursive;
+            animation: text-glow 4s ease-in-out infinite;
         }
-        
+
+        /* Keyframes for the title glow animation */
+        @keyframes text-glow {
+            0%, 100% {
+                text-shadow: 0 0 5px var(--glow-color-1, #ec4899), 0 0 10px var(--glow-color-1, #ec4899), 0 0 15px var(--glow-color-1, #ec4899);
+            }
+            50% {
+                text-shadow: 0 0 10px var(--glow-color-2, #f43f5e), 0 0 20px var(--glow-color-2, #f43f5e), 0 0 30px var(--glow-color-2, #f43f5e);
+            }
+        }
+
         /* Styles for the fading message */
         .fading-message {
             opacity: 0;
@@ -74,6 +81,23 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* Styles for the color change button */
+        .color-button {
+            border: 2px solid transparent;
+            background-image: linear-gradient(#1f2937, #1f2937), var(--button-gradient, linear-gradient(to right, #ec4899, #f43f5e));
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            transition: transform 0.2s, box-shadow 0.2s, background-image 0.5s;
+        }
+        .color-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.5);
+        }
+        .color-button:active {
+            transform: scale(0.95);
+        }
+
     </style>
 </head>
 <body class="bg-black text-white flex flex-col min-h-screen">
@@ -102,6 +126,12 @@
                 </video>
             </div>
             
+            <!-- Color Palette Button -->
+            <div class="mt-6">
+                <button id="color-change-button" class="color-button text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out">
+                    Change Colors
+                </button>
+            </div>
         </section>
     </main>
 
@@ -114,6 +144,39 @@
 
     <script>
         // --- Core Application Logic ---
+        // A variable to track the current color palette index
+        let currentPaletteIndex = 0;
+        // An array of color palettes for the title glow and button
+        const colorPalettes = [
+            { primary: '#ec4899', secondary: '#f43f5e', button: 'linear-gradient(to right, #ec4899, #f43f5e)' }, // Pink/Red
+            { primary: '#8b5cf6', secondary: '#6366f1', button: 'linear-gradient(to right, #8b5cf6, #6366f1)' }, // Purple/Indigo
+            { primary: '#2dd4bf', secondary: '#06b6d4', button: 'linear-gradient(to right, #2dd4bf, #06b6d4)' }, // Teal/Cyan
+            { primary: '#fbbf24', secondary: '#f59e0b', button: 'linear-gradient(to right, #fbbf24, #f59e0b)' }, // Yellow/Amber
+        ];
+
+        // Function to update the color palette
+        function updateColorPalette() {
+            const root = document.documentElement;
+            const titleElement = document.getElementById('main-title');
+            const buttonElement = document.getElementById('color-change-button');
+            const currentPalette = colorPalettes[currentPaletteIndex];
+
+            // Update CSS variables for the glow effect
+            root.style.setProperty('--glow-color-1', currentPalette.primary);
+            root.style.setProperty('--glow-color-2', currentPalette.secondary);
+            
+            // Update the button gradient
+            buttonElement.style.setProperty('--button-gradient', currentPalette.button);
+
+            // Update the text gradient of the title
+            titleElement.style.backgroundImage = `linear-gradient(to right, ${currentPalette.primary}, ${currentPalette.secondary})`;
+
+            // Cycle to the next palette
+            currentPaletteIndex = (currentPaletteIndex + 1) % colorPalettes.length;
+        }
+        
+        // Add event listener to the color change button
+        document.getElementById('color-change-button').addEventListener('click', updateColorPalette);
         
         // Function to handle dynamic messages
         const messages = [
@@ -139,7 +202,6 @@
         // --- 3D Starfield Background Script with Three.js ---
         let scene, camera, renderer, starGeo, stars;
         let mouseX = 0, mouseY = 0;
-        let ambientSynth, analyser;
 
         // Function to create and initialize the 3D scene
         function initThreeJS() {
@@ -200,33 +262,6 @@
             mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
         }
 
-        // --- Audio and Visualizer Setup ---
-        function initAudio() {
-            // Create a simple synth
-            ambientSynth = new Tone.Synth({
-                oscillator: { type: "sine" },
-                envelope: {
-                    attack: 2,
-                    decay: 1,
-                    sustain: 1,
-                    release: 2
-                }
-            }).toDestination();
-            ambientSynth.volume.value = -20;
-
-            // Create an analyser to get frequency data
-            analyser = new Tone.Analyser('fft', 32);
-            ambientSynth.connect(analyser);
-
-            // Create a looping note
-            const loop = new Tone.Loop(time => {
-                ambientSynth.triggerAttackRelease("C2", "2n", time);
-            }, "4n").start(0);
-
-            // Start the audio context
-            Tone.start();
-        }
-
         // --- Animation Loop ---
         function animate() {
             requestAnimationFrame(animate);
@@ -253,14 +288,6 @@
             const scrollY = window.scrollY;
             mainContent.style.transform = `translateY(${scrollY * 0.5}px)`;
 
-            // Audio visualizer effect (pulse main content)
-            if (analyser) {
-                const fft = analyser.getValue();
-                const bassLevel = fft[0] * 100;
-                const scale = 1 + (bassLevel / 250);
-                mainContent.style.transform += ` scale(${scale})`;
-            }
-
             renderer.render(scene, camera);
         }
 
@@ -269,8 +296,8 @@
             // Initialize 3D scene and animation
             initThreeJS();
             animate();
-            // Initialize and start audio
-            initAudio();
+            // Initial color palette update
+            updateColorPalette();
         };
     </script>
 </body>
