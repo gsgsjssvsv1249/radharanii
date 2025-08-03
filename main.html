@@ -90,6 +90,45 @@
             transform: scale(0.95);
         }
 
+        /* Button group for consistent styling */
+        .button-group button {
+            border: 2px solid transparent;
+            background-image: linear-gradient(#1f2937, #1f2937), linear-gradient(to right, #ec4899, #f43f5e);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            transition: transform 0.2s, box-shadow 0.2s, background-image 0.5s;
+        }
+
+        .button-group button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.5);
+        }
+        .button-group button:active {
+            transform: scale(0.95);
+        }
+        
+        /* Message box for copy confirmation */
+        #message-box {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(45, 212, 191, 0.9);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            box-shadow: 0 4px 15px rgba(45, 212, 191, 0.4);
+            transition: opacity 0.5s ease-in-out;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        #message-box.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
     </style>
 </head>
 <body class="bg-black text-white flex flex-col min-h-screen">
@@ -113,10 +152,26 @@
                 </video>
             </div>
             
-            <!-- Color Palette Button -->
-            <div class="mt-6 flex justify-center">
+            <!-- Button Group for controls -->
+            <div class="mt-6 flex flex-wrap justify-center gap-4 button-group">
                 <button id="color-change-button" class="color-button text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out">
                     Change Colors
+                </button>
+                <button id="audio-toggle-button" class="py-3 px-4 rounded-full shadow-lg transition-all duration-300 ease-in-out">
+                    <!-- SVG for speaker icon (on/off) -->
+                    <svg id="speaker-on" class="h-6 w-6 text-white inline-block" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M9.383 3.033A1 1 0 0110 3v14a1 1 0 01-1.617.767L4.185 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.185l4.185-4.767zM15.707 10a1 1 0 01-1.414 0l-1.414-1.414a1 1 0 011.414-1.414L15.707 7.172a3.001 3.001 0 000-4.243 1 1 0 011.414 1.414A1.001 1.001 0 0116.414 4.88L15.707 6a2.001 2.001 0 00-2.828 0L12 6.828a1 1 0 01-1.414 0L9.172 6.828a1 1 0 010-1.414zM16.414 15a1 1 0 010 1.414l-1.414 1.414a1 1 0 01-1.414-1.414L14.414 15a2.001 2.001 0 002.828 0L17.828 15a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    <svg id="speaker-off" class="h-6 w-6 text-white hidden" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M9.383 3.033A1 1 0 0110 3v14a1 1 0 01-1.617.767L4.185 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.185l4.185-4.767zM16.414 14.243a1 1 0 00-1.414-1.414L13.586 14a1 1 0 001.414 1.414l1.414-1.414zM16.414 7.757l-1.414 1.414a1 1 0 00-1.414-1.414L14 6.343a1 1 0 10-1.414 1.414L12.586 7a1 1 0 001.414 1.414L15 7.757a2 2 0 00-2.828 0l-.707.707a1 1 0 000 1.414l.707.707a1 1 0 001.414 0l.707-.707a1 1 0 001.414 0l.707.707a1 1 0 001.414 0l.707-.707a2 2 0 000-2.828z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+                <button id="share-button" class="py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out flex items-center justify-center space-x-2">
+                    <!-- SVG for share icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.885 12.984 9 12.599 9 12c0-.599-.115-.984-.316-1.342m-7.05 4.342a3 3 0 110-6m7.05 6a3 3 0 110-6m7.05 3.342a3 3 0 110-6M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span>Share</span>
                 </button>
             </div>
         </section>
@@ -128,6 +183,18 @@
             Built by <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">@HackerXBhai</a>. The source code is available on <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">Telegram</a>.
         </p>
     </footer>
+
+    <!-- Message box for copy confirmation -->
+    <div id="message-box" class="text-white bg-teal-500 rounded-full px-6 py-3 shadow-lg transition-opacity duration-500">
+        Link copied to clipboard!
+    </div>
+
+    <!-- Audio element for background music -->
+    <audio id="bg-audio" loop>
+        <!-- Replace this URL with your desired audio file -->
+        <source src="https://raw.githubusercontent.com/gsgsjssvsv1249/radharanii/3a1d00e1f2519ce89b591cf09579a471a07e9e84/audio" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
 
     <script>
         // --- Core Application Logic ---
@@ -145,15 +212,20 @@
         function updateColorPalette() {
             const root = document.documentElement;
             const titleElement = document.getElementById('main-title');
-            const buttonElement = document.getElementById('color-change-button');
+            const colorButton = document.getElementById('color-change-button');
+            const audioButton = document.getElementById('audio-toggle-button');
+            const shareButton = document.getElementById('share-button');
+
             const currentPalette = colorPalettes[currentPaletteIndex];
 
             // Update CSS variables for the glow effect
             root.style.setProperty('--glow-color-1', currentPalette.primary);
             root.style.setProperty('--glow-color-2', currentPalette.secondary);
             
-            // Update the button gradient
-            buttonElement.style.setProperty('--button-gradient', currentPalette.button);
+            // Update the button gradient for all interactive buttons
+            colorButton.style.setProperty('--button-gradient', currentPalette.button);
+            audioButton.style.setProperty('--button-gradient', currentPalette.button);
+            shareButton.style.setProperty('--button-gradient', currentPalette.button);
 
             // Update the text gradient of the title
             titleElement.style.backgroundImage = `linear-gradient(to right, ${currentPalette.primary}, ${currentPalette.secondary})`;
@@ -164,6 +236,56 @@
         
         // Add event listener to the color change button
         document.getElementById('color-change-button').addEventListener('click', updateColorPalette);
+
+        // --- Audio Controls Logic ---
+        const audio = document.getElementById('bg-audio');
+        const audioToggleButton = document.getElementById('audio-toggle-button');
+        const speakerOnIcon = document.getElementById('speaker-on');
+        const speakerOffIcon = document.getElementById('speaker-off');
+        let isAudioPlaying = false;
+
+        audioToggleButton.addEventListener('click', () => {
+            if (isAudioPlaying) {
+                audio.pause();
+                speakerOnIcon.classList.add('hidden');
+                speakerOffIcon.classList.remove('hidden');
+            } else {
+                audio.play();
+                speakerOnIcon.classList.remove('hidden');
+                speakerOffIcon.classList.add('hidden');
+            }
+            isAudioPlaying = !isAudioPlaying;
+        });
+
+        // --- Share Button Logic ---
+        const shareButton = document.getElementById('share-button');
+        const messageBox = document.getElementById('message-box');
+
+        shareButton.addEventListener('click', async () => {
+            try {
+                // Use the new Clipboard API if available
+                if (navigator.clipboard) {
+                    await navigator.clipboard.writeText(window.location.href);
+                } else {
+                    // Fallback for older browsers
+                    const tempInput = document.createElement('input');
+                    tempInput.value = window.location.href;
+                    document.body.appendChild(tempInput);
+                    tempInput.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(tempInput);
+                }
+
+                // Show confirmation message
+                messageBox.classList.add('show');
+                setTimeout(() => {
+                    messageBox.classList.remove('show');
+                }, 3000); // Hide after 3 seconds
+
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+            }
+        });
         
         // --- 3D Starfield Background Script with Three.js ---
         let scene, camera, renderer, starGeo, stars;
