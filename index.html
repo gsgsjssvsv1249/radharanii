@@ -52,15 +52,6 @@
             font-family: 'Allura', cursive;
         }
 
-        /* Custom styles for the replay button */
-        .replay-button {
-            background-image: linear-gradient(to right, #ec4899, #f43f5e);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .replay-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.5);
-        }
     </style>
 </head>
 <body class="bg-black text-white flex flex-col min-h-screen">
@@ -78,7 +69,7 @@
 
             <!-- Video Player -->
             <div class="w-full mx-auto">
-                <video id="heart-video" class="w-full h-auto aspect-video rounded-2xl shadow-xl border border-gray-600" controls autoplay muted loop>
+                <video id="heart-video" class="w-full h-auto aspect-video rounded-2xl shadow-xl border border-gray-600" autoplay muted loop>
                     <source src="https://raw.githubusercontent.com/gsgsjssvsv1249/radharanii/3a1d00e1f2519ce89b591cf09579a471a07e9e84/934748" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
