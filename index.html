@@ -114,7 +114,7 @@
     </footer>
 
     <script>
-        // --- Dynamic Particle Background Script ---
+        // --- Static Particle Background Script ---
         const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -127,19 +127,7 @@
                 this.x = x || Math.random() * canvas.width;
                 this.y = y || Math.random() * canvas.height;
                 this.radius = Math.random() * 2 + 1;
-                this.vx = (Math.random() - 0.5) * 0.5; // Slower velocity
-                this.vy = (Math.random() - 0.5) * 0.5; // Slower velocity
                 this.color = `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.5})`;
-            }
-
-            // Update particle position
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-
-                // Wrap around edges
-                if (this.x < 0 || this.x > canvas.width) this.x = (this.x < 0) ? canvas.width : 0;
-                if (this.y < 0 || this.y > canvas.height) this.y = (this.y < 0) ? canvas.height : 0;
             }
 
             // Draw particle
@@ -159,10 +147,20 @@
             for (let i = 0; i < numParticles; i++) {
                 particles.push(new Particle());
             }
+            drawStaticPattern();
         }
 
-        // Connect particles with lines
-        function connectParticles() {
+        // Connect particles with lines and draw them
+        function drawStaticPattern() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw all particles
+            particles.forEach(p => p.draw());
+
+            // Draw connecting lines
             ctx.lineWidth = 0.5;
             for (let i = 0; i < numParticles; i++) {
                 for (let j = i + 1; j < numParticles; j++) {
@@ -181,28 +179,12 @@
             }
         }
 
-        // Animation loop
-        function animate() {
-            requestAnimationFrame(animate);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Background
-            ctx.fillStyle = '#000000';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Update and draw particles
-            particles.forEach(p => p.update());
-            connectParticles();
-            particles.forEach(p => p.draw());
-        }
-
         // Handle window resize
         window.addEventListener('resize', init);
         
-        // Start animation on window load
+        // Initial setup
         window.onload = function() {
             init();
-            animate();
         };
     </script>
 </body>
