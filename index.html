@@ -59,7 +59,7 @@
     </style>
 </head>
 <body class="bg-black text-white flex flex-col min-h-screen">
-    <!-- Canvas for the animated background -->
+    <!-- Canvas for the static graph paper background -->
     <canvas id="bgCanvas"></canvas>
 
     <!-- Main Content Container -->
@@ -126,46 +126,50 @@
             video.play();
         }
 
-        // --- Canvas Animation Script ---
+        // --- Canvas Graph Paper Script ---
         const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
-        
-        // Function to set canvas size
-        function setCanvasSize() {
+        const gridSize = 50; // The size of each grid square in pixels
+
+        // Function to set canvas size and draw the grid
+        function setCanvasSizeAndDrawGrid() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            drawStaticLines();
+            drawGrid();
         }
 
-        // Function to draw a set of static lines
-        function drawStaticLines() {
-            // Clear the entire canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Function to draw the static grid lines
+        function drawGrid() {
+            // Clear the canvas to a black background
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
             
             // Set line properties
-            ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)'; // Subtle white lines
             ctx.lineWidth = 1;
 
-            // Draw a number of random, straight lines
-            const numberOfLines = 80;
-            for (let i = 0; i < numberOfLines; i++) {
-                const x1 = Math.random() * canvas.width;
-                const y1 = Math.random() * canvas.height;
-                const x2 = Math.random() * canvas.width;
-                const y2 = Math.random() * canvas.height;
-
+            // Draw vertical lines
+            for (let x = 0; x < canvas.width; x += gridSize) {
                 ctx.beginPath();
-                ctx.moveTo(x1, y1);
-                ctx.lineTo(x2, y2);
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+
+            // Draw horizontal lines
+            for (let y = 0; y < canvas.height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
                 ctx.stroke();
             }
         }
 
-        // Handle window resizing to redraw the lines
-        window.addEventListener('resize', setCanvasSize);
+        // Redraw the grid when the window is resized
+        window.addEventListener('resize', setCanvasSizeAndDrawGrid);
         
         // Initial setup
-        setCanvasSize();
+        setCanvasSizeAndDrawGrid();
     </script>
 </body>
 </html>
