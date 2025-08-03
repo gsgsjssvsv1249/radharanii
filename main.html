@@ -4,8 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sandeep's Heart</title>
+
+    <!-- Redirection Script: This script runs before the page renders -->
+    <script>
+        // Check if the page is 'main.html' and redirect to 'index.html'
+        // This handles refreshes, manual navigation, or direct links to this page.
+        // The condition ensures it only runs on the main.html file itself.
+        if (window.location.pathname.endsWith('main.html')) {
+            window.location.replace('index.html');
+        }
+    </script>
+
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter and Allura -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Allura&display=swap">
+    <!-- Three.js CDN for 3D graphics -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <style>
@@ -68,10 +82,12 @@
         /* New container box for the animation and buttons */
         .animation-box-container {
             border: 2px solid transparent;
-            background-image: linear-gradient(rgba(17, 24, 39, 0.5), rgba(17, 24, 39, 0.5)), var(--button-gradient, linear-gradient(to right, #ec4899, #f43f5e));
+            /* Make background fully transparent to show Three.js animation */
+            background-image: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0)), var(--button-gradient, linear-gradient(to right, #ec4899, #f43f5e));
             background-origin: border-box;
             background-clip: padding-box, border-box;
-            transition: background-image 0.5s ease-in-out;
+            transition: background-image 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+            box-shadow: 0 0 10px var(--glow-color-1, #ec4899), 0 0 20px var(--glow-color-1, #ec4899), 0 0 40px var(--glow-color-2, #f43f5e);
         }
 
         /* Heart Video styles with a new glowing border */
@@ -79,7 +95,7 @@
             width: 400px; /* Adjust size as needed */
             height: auto;
             border-radius: 1rem;
-            box-shadow: 0 0 10px var(--glow-color-1, #ec4899), 0 0 20px var(--glow-color-2, #f43f5e);
+            box-shadow: none; /* Removed the internal box shadow */
             transition: box-shadow 0.5s ease-in-out;
         }
 
@@ -176,9 +192,11 @@
 </head>
 <body class="bg-black text-white">
 
+    <!-- The 3D canvas container -->
     <div id="threeCanvas"></div>
 
     <main id="main-content" class="content-container mx-auto flex-grow flex flex-col items-center justify-center">
+        <!-- SVG Heart Logo with a gradient fill -->
         <svg class="svg-heart" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <defs>
                 <linearGradient id="pink-red-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -196,12 +214,15 @@
             Welcome to the main section of Sandeep's Heart. This is where your beautiful content will live.
         </p>
         
+        <!-- New container box for the animation and buttons -->
         <div class="animation-box-container w-full max-w-md p-8 bg-gray-900/50 backdrop-blur-sm rounded-2xl shadow-2xl border-2 border-transparent button-group flex flex-col items-center justify-center space-y-6">
+            <!-- Video Heart Animation with a direct link to the raw video file on GitHub -->
             <video class="heart-video" autoplay loop muted playsinline>
                 <source src="https://raw.githubusercontent.com/gsgsjssvsv1249/radharanii/main/heart.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             
+            <!-- Button group for color change and share functionality -->
             <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full button-group">
                 <button id="change-color-btn" class="color-button flex-1 text-white font-bold py-3 px-8 rounded-full shadow-lg">
                     Change Color
@@ -213,10 +234,12 @@
         </div>
     </main>
     
+    <!-- Message box for share confirmation -->
     <div id="message-box" role="status">
         URL copied to clipboard!
     </div>
 
+    <!-- Footer, same as index.html -->
     <footer class="w-full text-center p-6 text-gray-500 z-10 relative">
         <p class="text-sm">
             Built by <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">@HackerXBhai</a>. The source code is available on <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">Telegram</a>.
