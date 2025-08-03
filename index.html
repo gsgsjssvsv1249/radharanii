@@ -172,9 +172,6 @@
         
         // Add an event listener to the "Dive In" button
         diveInButton.addEventListener('click', () => {
-            // Set a flag in session storage to indicate a valid entry
-            sessionStorage.setItem('fromIndex', 'true');
-            
             // Redirect the user to the main page
             window.location.href = 'main.html';
         });
