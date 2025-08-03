@@ -156,7 +156,7 @@
         </p>
         <!-- The "Dive In" button with the updated text -->
         <button id="dive-in-button" class="action-button text-white font-bold py-4 px-12 rounded-full shadow-lg">
-            Dive In
+            Dive Into Sandeep's Heart
         </button>
     </main>
 
@@ -168,10 +168,12 @@
 
     <script>
         // --- Core Landing Page Logic ---
-        const diveInButton = document.getElementById('dive-in-button');
         
+        const diveInButton = document.getElementById('dive-in-button');
         // Add an event listener to the "Dive In" button
+                if (diveInButton) {
         diveInButton.addEventListener('click', () => {
+                            sessionStorage.setItem('fromIndex', 'true');
             // Redirect the user to the main page
             window.location.href = 'main.html';
         });
