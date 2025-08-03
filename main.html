@@ -68,11 +68,19 @@
             }
         }
         
-        /* Heart Video styles */
+        /* Heart Video styles with a new glowing border */
         .heart-video {
-            width: 200px; /* Adjust size as needed */
+            width: 250px; /* Adjust size as needed */
             height: auto;
-            margin: 2rem auto;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 0 10px var(--glow-color-1, #ec4899), 0 0 20px var(--glow-color-2, #f43f5e);
+            transition: box-shadow 0.5s ease-in-out;
+            border: 2px solid transparent;
+            background-image: linear-gradient(to right, #1f2937, #1f2937), var(--button-gradient, linear-gradient(to right, #ec4899, #f43f5e));
+            background-origin: border-box;
+            background-clip: content-box, border-box;
         }
 
         /* SVG Heart styles */
@@ -190,10 +198,10 @@
             Welcome to the main section of Sandeep's Heart. This is where your beautiful content will live.
         </p>
 
-        <!-- Video Heart Animation -->
+        <!-- Video Heart Animation with placeholder link -->
         <video class="heart-video" autoplay loop muted playsinline>
             <!-- **PASTE YOUR DIRECT GITHUB VIDEO LINK HERE** -->
-            <source src="https://github.com/gsgsjssvsv1249/radharanii/blob/main/934748" type="video/mp4">
+            <source src="https://github.com/gsgsjssvsv1249/radharanii/blob/main/93474">
             Your browser does not support the video tag.
         </video>
         
