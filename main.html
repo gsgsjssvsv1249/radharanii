@@ -35,6 +35,16 @@
             height: 100%;
             z-index: -1;
         }
+        
+        /* The new heart canvas will sit on top of the background, but behind the main content */
+        #heartCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
 
         /* Main content container for parallax effect and centering */
         #main-content {
@@ -208,6 +218,9 @@
     <!-- The 3D canvas container -->
     <div id="threeCanvas"></div>
 
+    <!-- The new canvas for the glowing heart -->
+    <canvas id="heartCanvas"></canvas>
+
     <!-- Main Content Container for centering -->
     <main id="main-content" class="flex-grow flex flex-col items-center justify-center p-4">
 
@@ -303,9 +316,11 @@
                 window.location.href = 'index.html';
             }
 
-            // Initialize 3D starfield and colors on load
+            // Initialize 3D starfield, heart animation, and colors on load
             initThreeJS();
             animate();
+            setupHeartCanvas(); // Call the function to set up the heart canvas
+            animateHeart(); // Start the heart animation loop
             updateColorPalette();
         };
 
@@ -314,10 +329,10 @@
         let currentPaletteIndex = 0;
         // An array of color palettes for the title glow and button
         const colorPalettes = [
-            { primary: '#ec4899', secondary: '#f43f5e', button: 'linear-gradient(to right, #ec4899, #f43f5e)' }, // Pink/Red
-            { primary: '#8b5cf6', secondary: '#6366f1', button: 'linear-gradient(to right, #8b5cf6, #6366f1)' }, // Purple/Indigo
-            { primary: '#2dd4bf', secondary: '#06b6d4', button: 'linear-gradient(to right, #2dd4bf, #06b6d4)' }, // Teal/Cyan
-            { primary: '#fbbf24', secondary: '#f59e0b', button: 'linear-gradient(to right, #fbbf24, #f59e0b)' }, // Yellow/Amber
+            { primary: '#ec4899', secondary: '#f43f5e', button: 'linear-gradient(to right, #ec4899, #f43f5e)', heart: '#ec4899' }, // Pink/Red
+            { primary: '#8b5cf6', secondary: '#6366f1', button: 'linear-gradient(to right, #8b5cf6, #6366f1)', heart: '#8b5cf6' }, // Purple/Indigo
+            { primary: '#2dd4bf', secondary: '#06b6d4', button: 'linear-gradient(to right, #2dd4bf, #06b6d4)', heart: '#2dd4bf' }, // Teal/Cyan
+            { primary: '#fbbf24', secondary: '#f59e0b', button: 'linear-gradient(to right, #fbbf24, #f59e0b)', heart: '#fbbf24' }, // Yellow/Amber
         ];
 
         // Function to update the color palette
@@ -339,6 +354,9 @@
 
             // Update the text gradient of the title
             titleElement.style.backgroundImage = `linear-gradient(to right, ${currentPalette.primary}, ${currentPalette.secondary})`;
+
+            // Update the heart color variable
+            heartColor = currentPalette.heart;
 
             // Cycle to the next palette
             currentPaletteIndex = (currentPaletteIndex + 1) % colorPalettes.length;
@@ -423,6 +441,7 @@
 
         // Function to create and initialize the 3D scene
         function initThreeJS() {
+            // Set up scene, camera, and renderer
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
             camera.position.z = 1;
@@ -434,19 +453,22 @@
             renderer.domElement.style.top = '0';
             renderer.domElement.style.left = '0';
             renderer.domElement.style.zIndex = '-1';
+            // Append the renderer's canvas to the body to ensure it's always the background
             document.body.appendChild(renderer.domElement);
 
+            // Create geometry for the stars
             starGeo = new THREE.BufferGeometry();
             const starCount = 5000;
             const positions = [];
             const velocities = [];
             for (let i = 0; i < starCount; i++) {
                 positions.push((Math.random() - 0.5) * 600, (Math.random() - 0.5) * 600, (Math.random() - 0.5) * 600);
-                velocities.push(0, 0, Math.random() * 0.2 + 0.1);
+                velocities.push(0, 0, Math.random() * 0.2 + 0.1); // Move stars forward
             }
             starGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
             starGeo.setAttribute('velocity', new THREE.Float32BufferAttribute(velocities, 3));
 
+            // Create material for the stars (glowing effect)
             const starMaterial = new THREE.PointsMaterial({
                 color: 0xaaaaaa,
                 size: 0.7,
@@ -454,9 +476,11 @@
                 opacity: 0.8
             });
 
+            // Create the stars object
             stars = new THREE.Points(starGeo, starMaterial);
             scene.add(stars);
 
+            // Add event listeners for mouse interaction
             document.addEventListener('mousemove', onMouseMove, false);
             window.addEventListener('resize', onWindowResize, false);
         }
@@ -477,6 +501,8 @@
         // --- Animation Loop ---
         function animate() {
             requestAnimationFrame(animate);
+
+            // Update star positions to create movement
             const positions = starGeo.attributes.position.array;
             const velocities = starGeo.attributes.velocity.array;
             for (let i = 0; i < positions.length; i += 3) {
@@ -487,10 +513,80 @@
                 }
             }
             starGeo.attributes.position.needsUpdate = true;
+
+            // Animate camera based on mouse position
             camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
             camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
             camera.lookAt(scene.position);
+
             renderer.render(scene, camera);
+        }
+
+        // --- Heart Canvas Animation Logic ---
+        let heartCanvas, heartCtx;
+        let heartColor = '#ec4899'; // Initial heart color
+        let t = 0; // Time variable for animation
+
+        // Function to set up the heart canvas
+        function setupHeartCanvas() {
+            heartCanvas = document.getElementById('heartCanvas');
+            heartCtx = heartCanvas.getContext('2d');
+            resizeHeartCanvas();
+            window.addEventListener('resize', resizeHeartCanvas);
+        }
+
+        // Function to resize the heart canvas
+        function resizeHeartCanvas() {
+            heartCanvas.width = window.innerWidth;
+            heartCanvas.height = window.innerHeight;
+        }
+
+        // Function to draw the heart shape using a parametric equation
+        function drawHeart(ctx, time) {
+            // Clear the canvas
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+            // Center the heart
+            const centerX = ctx.canvas.width / 2;
+            const centerY = ctx.canvas.height / 2;
+
+            // Scale the heart size based on screen width
+            const scale = Math.min(ctx.canvas.width, ctx.canvas.height) / 8;
+
+            // Set up the line style
+            ctx.strokeStyle = heartColor;
+            ctx.lineWidth = 3;
+            ctx.shadowColor = heartColor;
+            ctx.shadowBlur = 20;
+
+            // Begin drawing the heart path
+            ctx.beginPath();
+            for (let i = 0; i <= 2 * Math.PI; i += 0.01) {
+                // Heart equation
+                let x = 16 * Math.pow(Math.sin(i), 3);
+                let y = 13 * Math.cos(i) - 5 * Math.cos(2 * i) - 2 * Math.cos(3 * i) - Math.cos(4 * i);
+
+                // Add a gentle pulsating animation
+                const pulse = 1 + 0.05 * Math.sin(time * 0.01);
+                x *= scale * pulse;
+                y *= scale * pulse;
+
+                // Move to the center of the canvas
+                if (i === 0) {
+                    ctx.moveTo(centerX + x, centerY - y);
+                } else {
+                    ctx.lineTo(centerX + x, centerY - y);
+                }
+            }
+            ctx.closePath();
+            ctx.stroke();
+        }
+
+        // Main animation loop for the heart
+        function animateHeart() {
+            t++;
+            drawHeart(heartCtx, t);
+            requestAnimationFrame(animateHeart);
         }
     </script>
 </body>
