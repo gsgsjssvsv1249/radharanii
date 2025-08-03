@@ -8,17 +8,75 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter and Allura -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Allura&display=swap">
+    <!-- Three.js CDN for 3D graphics -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
     <style>
-        /* Custom styles for the body and animations */
+        /* Custom styles for the body, background, and animations */
         body {
             font-family: 'Inter', sans-serif;
             background-color: #000000;
             color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             min-height: 100vh;
+            position: relative;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
             text-align: center;
         }
 
-        /* SVG Heart styles and pulse animation */
+        /* The 3D canvas will be positioned behind all content */
+        #threeCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Main content container for parallax effect and centering */
+        #main-content {
+            will-change: transform;
+            transition: transform 0.1s ease-out;
+            width: 100%;
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1; /* Allow content to grow and push the footer down */
+        }
+        
+        .container {
+            max-width: 80rem;
+            margin: auto;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Apply the new Allura font and glowing effect to the main title */
+        .main-title {
+            font-family: 'Allura', cursive;
+            animation: text-glow 4s ease-in-out infinite;
+            text-align: center; /* Ensure the text itself is centered */
+        }
+
+        /* Keyframes for the title glow animation */
+        @keyframes text-glow {
+            0%, 100% {
+                text-shadow: 0 0 5px #ec4899, 0 0 10px #ec4899, 0 0 15px #ec4899;
+            }
+            50% {
+                text-shadow: 0 0 10px #f43f5e, 0 0 20px #f43f5e, 0 0 30px #f43f5e;
+            }
+        }
+        
+        /* Heart SVG styles and pulse animation */
         .heart-icon {
             width: 100px;
             height: 100px;
@@ -36,26 +94,42 @@
                 filter: drop-shadow(0 0 20px #ec4899);
             }
         }
-        
-        /* Main title styling */
-        .main-title {
-            font-family: 'Allura', cursive;
-            animation: text-glow 4s ease-in-out infinite;
-        }
 
-        @keyframes text-glow {
-            0%, 100% {
-                text-shadow: 0 0 8px #ec4899, 0 0 16px #ec4899, 0 0 24px #ec4899;
+        /* Styles for shooting stars */
+        .shooting-star {
+            position: absolute;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0));
+            border-radius: 50%;
+            height: 2px;
+            pointer-events: none;
+            opacity: 0;
+            animation: star-fall linear infinite;
+        }
+        @keyframes star-fall {
+            0% {
+                opacity: 0;
+                transform: rotate(-45deg) translateX(0);
             }
-            50% {
-                text-shadow: 0 0 12px #f43f5e, 0 0 24px #f43f5e, 0 0 36px #f43f5e;
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: rotate(-45deg) translateX(400px);
             }
         }
+        
     </style>
 </head>
-<body class="bg-black text-white flex flex-col min-h-screen">
+<body class="bg-black text-white">
 
-    <main class="container mx-auto p-8 flex-grow flex flex-col items-center justify-center">
+    <!-- The 3D canvas container -->
+    <div id="threeCanvas"></div>
+
+    <main id="main-content" class="content-container mx-auto flex-grow flex flex-col items-center justify-center">
         <!-- SVG Heart Icon -->
         <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
@@ -83,11 +157,120 @@
     </main>
 
     <!-- Footer, same as index.html -->
-    <footer class="w-full text-center p-6 text-gray-500">
+    <footer class="w-full text-center p-6 text-gray-500 z-10 relative">
         <p class="text-sm">
             Built by <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">@HackerXBhai</a>. The source code is available on <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">Telegram</a>.
         </p>
     </footer>
 
+    <script>
+        // --- 3D Starfield Background Script with Three.js ---
+        let scene, camera, renderer, starGeo, stars;
+        let mouseX = 0, mouseY = 0;
+
+        // Function to create and initialize the 3D scene
+        function initThreeJS() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
+            camera.position.z = 1;
+            camera.rotation.x = Math.PI / 2;
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.domElement.style.position = 'fixed';
+            renderer.domElement.style.top = '0';
+            renderer.domElement.style.left = '0';
+            renderer.domElement.style.zIndex = '-1';
+            document.body.appendChild(renderer.domElement);
+
+            starGeo = new THREE.BufferGeometry();
+            const starCount = 5000;
+            const positions = [];
+            const velocities = [];
+            for (let i = 0; i < starCount; i++) {
+                positions.push((Math.random() - 0.5) * 600, (Math.random() - 0.5) * 600, (Math.random() - 0.5) * 600);
+                velocities.push(0, 0, Math.random() * 0.2 + 0.1);
+            }
+            starGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            starGeo.setAttribute('velocity', new THREE.Float32BufferAttribute(velocities, 3));
+
+            const starMaterial = new THREE.PointsMaterial({
+                color: 0xaaaaaa,
+                size: 0.7,
+                transparent: true,
+                opacity: 0.8
+            });
+
+            stars = new THREE.Points(starGeo, starMaterial);
+            scene.add(stars);
+
+            document.addEventListener('mousemove', onMouseMove, false);
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        // Function to handle window resizing
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // Function to handle mouse movement for camera and parallax control
+        function onMouseMove(event) {
+            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        }
+
+        // Function to create a shooting star
+        function createShootingStar() {
+            const star = document.createElement('div');
+            star.classList.add('shooting-star');
+            star.style.width = `${Math.random() * 50 + 50}px`;
+            star.style.top = `${Math.random() * window.innerHeight}px`;
+            star.style.left = `${Math.random() * window.innerWidth}px`;
+            star.style.animationDuration = `${Math.random() * 2 + 1}s`;
+            star.style.animationDelay = `${Math.random() * 2}s`;
+            document.body.appendChild(star);
+            
+            // Remove the star after its animation completes
+            setTimeout(() => {
+                star.remove();
+            }, (Math.random() * 2 + 1) * 1000 + (Math.random() * 2) * 1000);
+        }
+
+        // --- Animation Loop ---
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const positions = starGeo.attributes.position.array;
+            const velocities = starGeo.attributes.velocity.array;
+            for (let i = 0; i < positions.length; i += 3) {
+                positions[i + 2] += velocities[i + 2];
+                if (positions[i + 2] > camera.position.z) {
+                    positions[i + 2] = -600;
+                    velocities[i + 2] = Math.random() * 0.2 + 0.1;
+                }
+            }
+            starGeo.attributes.position.needsUpdate = true;
+
+            camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
+            camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
+            camera.lookAt(scene.position);
+
+            const mainContent = document.getElementById('main-content');
+            const parallaxX = mouseX * 20;
+            const parallaxY = mouseY * 20;
+            mainContent.style.transform = `translate(${parallaxX}px, ${parallaxY}px)`;
+
+            renderer.render(scene, camera);
+        }
+
+        // Start the application on window load
+        window.onload = function() {
+            initThreeJS();
+            animate();
+            setInterval(createShootingStar, 5000);
+        };
+    </script>
 </body>
 </html>
