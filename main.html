@@ -441,6 +441,7 @@
 
         // Function to create and initialize the 3D scene
         function initThreeJS() {
+            console.log('3D starfield initialization started.');
             // Set up scene, camera, and renderer
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
@@ -483,6 +484,7 @@
             // Add event listeners for mouse interaction
             document.addEventListener('mousemove', onMouseMove, false);
             window.addEventListener('resize', onWindowResize, false);
+            console.log('3D starfield initialized successfully.');
         }
 
         // Function to handle window resizing
@@ -529,16 +531,24 @@
 
         // Function to set up the heart canvas
         function setupHeartCanvas() {
+            console.log('Heart canvas setup started.');
             heartCanvas = document.getElementById('heartCanvas');
+            // Make sure the canvas element exists before trying to get its context
+            if (!heartCanvas) {
+                console.error('Error: Could not find heartCanvas element.');
+                return;
+            }
             heartCtx = heartCanvas.getContext('2d');
             resizeHeartCanvas();
             window.addEventListener('resize', resizeHeartCanvas);
+            console.log('Heart canvas setup complete.');
         }
 
         // Function to resize the heart canvas
         function resizeHeartCanvas() {
             heartCanvas.width = window.innerWidth;
             heartCanvas.height = window.innerHeight;
+            console.log(`Resized heart canvas to: ${heartCanvas.width}x${heartCanvas.height}`);
         }
 
         // Function to draw the heart shape using a parametric equation
@@ -585,7 +595,10 @@
         // Main animation loop for the heart
         function animateHeart() {
             t++;
-            drawHeart(heartCtx, t);
+            // Check if the heart context is available before drawing
+            if (heartCtx) {
+                drawHeart(heartCtx, t);
+            }
             requestAnimationFrame(animateHeart);
         }
     </script>
