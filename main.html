@@ -48,31 +48,23 @@
             align-items: center;
             justify-content: center;
             flex-grow: 1; /* Allow content to grow and push the footer down */
-        }
-        
-        .container {
-            max-width: 80rem;
-            margin: auto;
             padding: 2rem;
-            text-align: center;
-            position: relative;
-            z-index: 1;
         }
         
         /* Apply the new Allura font and glowing effect to the main title */
         .main-title {
             font-family: 'Allura', cursive;
             animation: text-glow 4s ease-in-out infinite;
-            text-align: center; /* Ensure the text itself is centered */
+            text-align: center;
         }
 
-        /* Keyframes for the title glow animation */
+        /* Keyframes for the title glow animation, using CSS variables for dynamic colors */
         @keyframes text-glow {
             0%, 100% {
-                text-shadow: 0 0 5px #ec4899, 0 0 10px #ec4899, 0 0 15px #ec4899;
+                text-shadow: 0 0 5px var(--glow-color-1, #ec4899), 0 0 10px var(--glow-color-1, #ec4899), 0 0 15px var(--glow-color-1, #ec4899);
             }
             50% {
-                text-shadow: 0 0 10px #f43f5e, 0 0 20px #f43f5e, 0 0 30px #f43f5e;
+                text-shadow: 0 0 10px var(--glow-color-2, #f43f5e), 0 0 20px var(--glow-color-2, #f43f5e), 0 0 30px var(--glow-color-2, #f43f5e);
             }
         }
         
@@ -81,17 +73,17 @@
             width: 100px;
             height: 100px;
             margin: 0 auto 1.5rem;
-            fill: #ec4899;
+            fill: var(--glow-color-1, #ec4899); /* Use CSS variable for color */
             animation: pulse-heart 2s infinite;
         }
         @keyframes pulse-heart {
             0%, 100% {
                 transform: scale(1);
-                filter: drop-shadow(0 0 10px #f43f5e);
+                filter: drop-shadow(0 0 10px var(--glow-color-2, #f43f5e));
             }
             50% {
                 transform: scale(1.1);
-                filter: drop-shadow(0 0 20px #ec4899);
+                filter: drop-shadow(0 0 20px var(--glow-color-1, #ec4899));
             }
         }
 
@@ -121,7 +113,40 @@
                 transform: rotate(-45deg) translateX(400px);
             }
         }
-        
+
+        /* Button group for consistent styling */
+        .button-group button {
+            border: 2px solid transparent;
+            background-image: linear-gradient(#1f2937, #1f2937), var(--button-gradient, linear-gradient(to right, #ec4899, #f43f5e));
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            transition: transform 0.2s, box-shadow 0.2s, background-image 0.5s;
+        }
+
+        .button-group button:hover {
+            transform: scale(1.05);
+            box-shadow: 4px 4px 15px rgba(236, 72, 153, 0.5);
+        }
+        .button-group button:active {
+            transform: scale(0.95);
+        }
+
+        /* Message box for copy confirmation */
+        #message-box {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(45, 212, 191, 0.9);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            box-shadow: 0 4px 15px rgba(45, 212, 191, 0.4);
+            transition: opacity 0.5s ease-in-out;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body class="bg-black text-white">
@@ -142,6 +167,16 @@
             Welcome to the main section of Sandeep's Heart. This is where your beautiful content will live.
         </p>
         
+        <!-- Button group for color change and share functionality -->
+        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8 button-group">
+            <button id="change-color-btn" class="color-button text-white font-bold py-3 px-8 rounded-full shadow-lg">
+                Change Color
+            </button>
+            <button id="share-btn" class="color-button text-white font-bold py-3 px-8 rounded-full shadow-lg">
+                Share
+            </button>
+        </div>
+
         <!-- Placeholder content for the main page -->
         <div class="text-left w-full max-w-xl mx-auto p-4 bg-gray-800 rounded-lg shadow-xl">
             <h2 class="text-2xl font-bold mb-2">My Journey</h2>
@@ -155,6 +190,11 @@
             </ul>
         </div>
     </main>
+    
+    <!-- Message box for share confirmation -->
+    <div id="message-box" role="status">
+        URL copied to clipboard!
+    </div>
 
     <!-- Footer, same as index.html -->
     <footer class="w-full text-center p-6 text-gray-500 z-10 relative">
@@ -164,6 +204,80 @@
     </footer>
 
     <script>
+        // --- Core Page Logic ---
+        const colorBtn = document.getElementById('change-color-btn');
+        const shareBtn = document.getElementById('share-btn');
+        const messageBox = document.getElementById('message-box');
+        
+        // Define color palettes
+        const palettes = [
+            {
+                glow1: '#ec4899', // Pink
+                glow2: '#f43f5e', // Red
+                gradient: 'linear-gradient(to right, #ec4899, #f43f5e)'
+            },
+            {
+                glow1: '#3b82f6', // Blue
+                glow2: '#a855f7', // Purple
+                gradient: 'linear-gradient(to right, #3b82f6, #a855f7)'
+            },
+            {
+                glow1: '#10b981', // Emerald
+                glow2: '#22d3ee', // Cyan
+                gradient: 'linear-gradient(to right, #10b981, #22d3ee)'
+            }
+        ];
+        let currentPaletteIndex = 0;
+
+        // Function to apply the current color palette
+        function applyPalette(index) {
+            const root = document.documentElement;
+            const current = palettes[index];
+            root.style.setProperty('--glow-color-1', current.glow1);
+            root.style.setProperty('--glow-color-2', current.glow2);
+            root.style.setProperty('--button-gradient', current.gradient);
+            
+            // Re-apply the text-glow gradient to the title
+            const mainTitle = document.querySelector('.main-title');
+            mainTitle.style.backgroundImage = `linear-gradient(to right, ${current.glow1}, ${current.glow2})`;
+        }
+        
+        // Event listener for the "Change Color" button
+        colorBtn.addEventListener('click', () => {
+            currentPaletteIndex = (currentPaletteIndex + 1) % palettes.length;
+            applyPalette(currentPaletteIndex);
+        });
+
+        // Event listener for the "Share" button
+        shareBtn.addEventListener('click', () => {
+            const url = window.location.href;
+            
+            // Check if execCommand is supported
+            if (document.execCommand) {
+                const textarea = document.createElement('textarea');
+                textarea.value = url;
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    messageBox.textContent = 'URL copied to clipboard!';
+                } catch (err) {
+                    messageBox.textContent = 'Failed to copy URL.';
+                }
+                document.body.removeChild(textarea);
+            } else {
+                messageBox.textContent = 'Your browser does not support copying to clipboard.';
+            }
+
+            // Show the message box
+            messageBox.style.opacity = '1';
+            
+            // Hide the message box after 3 seconds
+            setTimeout(() => {
+                messageBox.style.opacity = '0';
+            }, 3000);
+        });
+        
         // --- 3D Starfield Background Script with Three.js ---
         let scene, camera, renderer, starGeo, stars;
         let mouseX = 0, mouseY = 0;
