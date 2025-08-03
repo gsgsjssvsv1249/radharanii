@@ -68,11 +68,11 @@
             transform: scale(0.95);
         }
 
-        /* --- Seamless Glowing Heart Animation --- */
+        /* --- Smaller Seamless Glowing Heart Animation --- */
         .heart {
             position: relative;
-            width: 150px;
-            height: 150px;
+            width: 100px;
+            height: 100px;
             transform: rotate(-45deg);
             background: #f43f5e;
             box-shadow: 0 0 20px #f43f5e, 0 0 40px #ec4899, 0 0 60px #f43f5e;
@@ -86,8 +86,8 @@
         .heart::after {
             content: '';
             position: absolute;
-            width: 150px;
-            height: 150px;
+            width: 100px;
+            height: 100px;
             background: #f43f5e;
             /* Make the pseudo-elements seamless with the main heart div */
             border-radius: 50%;
@@ -95,11 +95,11 @@
         }
         
         .heart::before {
-            top: -75px;
+            top: -50px; /* Adjusted from -75px to -50px */
             left: 0;
         }
         .heart::after {
-            left: 75px;
+            left: 50px; /* Adjusted from 75px to 50px */
             top: 0;
         }
 
