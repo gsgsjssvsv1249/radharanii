@@ -167,17 +167,19 @@
     </footer>
 
     <script>
-        // --- Core Landing Page Logic ---
-        
-        const diveInButton = document.getElementById('dive-in-button');
-        // Add an event listener to the "Dive In" button
-                if (diveInButton) {
-        diveInButton.addEventListener('click', () => {
-                            sessionStorage.setItem('fromIndex', 'true');
-            // Redirect the user to the main page
+    // Get the button element by its ID.
+    const diveinbutton = document.getElementById('dive-in-button');
+
+    // Add a click event listener to the button.
+    if (diveinbutton) {
+        diveinbutton.addEventListener('click', () => {
+            // Set a flag in sessionStorage to indicate the user is coming from the index page.
+            sessionStorage.setItem('fromIndex', 'true');
+
+            // Redirect the user to the main page.
             window.location.href = 'main.html';
         });
-
+    }
         // --- 3D Starfield Background Script with Three.js ---
         let scene, camera, renderer, starGeo, stars;
         let mouseX = 0, mouseY = 0;
