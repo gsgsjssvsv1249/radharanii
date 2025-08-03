@@ -50,12 +50,36 @@
         /* Apply the new Allura font to the main title */
         .main-title {
             font-family: 'Allura', cursive;
+            animation: text-glow 4s ease-in-out infinite;
+        }
+
+        /* Keyframes for the title glow animation */
+        @keyframes text-glow {
+            0%, 100% {
+                text-shadow: 0 0 5px #ec4899, 0 0 10px #ec4899, 0 0 15px #ec4899;
+            }
+            50% {
+                text-shadow: 0 0 10px #f43f5e, 0 0 20px #f43f5e, 0 0 30px #f43f5e;
+            }
+        }
+
+        /* Styles for the fading message */
+        .fading-message {
+            opacity: 0;
+            animation: fade-in 3s ease-in-out forwards;
+            animation-delay: 2s; /* Delay the animation to show after title loads */
+        }
+
+        /* Keyframes for the fade-in animation */
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
     </style>
 </head>
 <body class="bg-black text-white flex flex-col min-h-screen">
-    <!-- Canvas for the static graph paper background -->
+    <!-- Canvas for the dynamic particle background -->
     <canvas id="bgCanvas"></canvas>
 
     <!-- Main Content Container -->
@@ -63,9 +87,14 @@
 
         <!-- Hero Section: Title and Video -->
         <section class="mb-12 p-8 bg-gray-800 rounded-3xl shadow-2xl border border-gray-700 backdrop-blur-sm bg-opacity-70 transform transition-transform duration-500 hover:scale-[1.01] hover:shadow-pink-500/30">
-            <h1 class="main-title text-4xl sm:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500 mb-4 tracking-tight leading-tight">
+            <h1 class="main-title text-4xl sm:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500 mb-2 tracking-tight leading-tight">
                 Sandeep's Heart
             </h1>
+
+            <!-- Fading message -->
+            <p class="fading-message text-lg sm:text-xl text-gray-300 mb-6">
+                A gift from me to you.
+            </p>
 
             <!-- Video Player -->
             <div class="w-full mx-auto">
@@ -85,50 +114,96 @@
     </footer>
 
     <script>
-        // --- Canvas Graph Paper Script ---
+        // --- Dynamic Particle Background Script ---
         const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
-        const gridSize = 50; // The size of each grid square in pixels
+        let particles = [];
+        const numParticles = 100;
+        const maxDist = 150; // Maximum distance to connect particles
 
-        // Function to set canvas size and draw the grid
-        function setCanvasSizeAndDrawGrid() {
+        // Particle class definition
+        class Particle {
+            constructor(x, y) {
+                this.x = x || Math.random() * canvas.width;
+                this.y = y || Math.random() * canvas.height;
+                this.radius = Math.random() * 2 + 1;
+                this.vx = (Math.random() - 0.5) * 0.5; // Slower velocity
+                this.vy = (Math.random() - 0.5) * 0.5; // Slower velocity
+                this.color = `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.5})`;
+            }
+
+            // Update particle position
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Wrap around edges
+                if (this.x < 0 || this.x > canvas.width) this.x = (this.x < 0) ? canvas.width : 0;
+                if (this.y < 0 || this.y > canvas.height) this.y = (this.y < 0) ? canvas.height : 0;
+            }
+
+            // Draw particle
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        // Initialize particles
+        function init() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            drawGrid();
+            particles = [];
+            for (let i = 0; i < numParticles; i++) {
+                particles.push(new Particle());
+            }
         }
 
-        // Function to draw the static grid lines
-        function drawGrid() {
-            // Clear the canvas to a black background
+        // Connect particles with lines
+        function connectParticles() {
+            ctx.lineWidth = 0.5;
+            for (let i = 0; i < numParticles; i++) {
+                for (let j = i + 1; j < numParticles; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < maxDist) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${1 - dist / maxDist})`;
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Background
             ctx.fillStyle = '#000000';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Set line properties
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)'; // Subtle white lines
-            ctx.lineWidth = 1;
 
-            // Draw vertical lines
-            for (let x = 0; x < canvas.width; x += gridSize) {
-                ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, canvas.height);
-                ctx.stroke();
-            }
-
-            // Draw horizontal lines
-            for (let y = 0; y < canvas.height; y += gridSize) {
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(canvas.width, y);
-                ctx.stroke();
-            }
+            // Update and draw particles
+            particles.forEach(p => p.update());
+            connectParticles();
+            particles.forEach(p => p.draw());
         }
 
-        // Redraw the grid when the window is resized
-        window.addEventListener('resize', setCanvasSizeAndDrawGrid);
+        // Handle window resize
+        window.addEventListener('resize', init);
         
-        // Initial setup
-        setCanvasSizeAndDrawGrid();
+        // Start animation on window load
+        window.onload = function() {
+            init();
+            animate();
+        };
     </script>
 </body>
 </html>
