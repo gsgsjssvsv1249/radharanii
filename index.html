@@ -18,23 +18,24 @@
         /* Custom styles for the body, background, and animations */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0d1117; /* Dark background */
+            background-color: #000000; /* Solid black background */
             color: #ffffff;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            /* Subtly animated gradient background */
-            background-image: linear-gradient(to bottom right, #0d1117, #151a21, #0d1117);
-            background-size: 400% 400%;
-            animation: gradientAnimation 15s ease infinite;
+            position: relative;
         }
 
-        @keyframes gradientAnimation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* Styles for the new canvas background */
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Place the canvas behind the main content */
         }
 
         .container {
@@ -42,12 +43,11 @@
             margin: auto;
             padding: 2rem;
             text-align: center;
+            position: relative;
+            z-index: 1; /* Ensure content is on top of the canvas */
         }
-        .katex-display {
-            overflow-x: auto;
-            overflow-y: hidden;
-            padding: 1rem 0;
-        }
+
+        /* Custom styles for the replay button */
         .replay-button {
             background-image: linear-gradient(to right, #ec4899, #f43f5e);
             transition: transform 0.2s, box-shadow 0.2s;
@@ -58,7 +58,9 @@
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white flex flex-col min-h-screen">
+<body class="bg-black text-white flex flex-col min-h-screen">
+    <!-- Canvas for the animated background -->
+    <canvas id="bgCanvas"></canvas>
 
     <!-- Main Content Container -->
     <main class="flex-grow container mx-auto p-6 md:p-12 lg:p-16 flex flex-col items-center justify-center">
@@ -123,6 +125,89 @@
             // Play the video
             video.play();
         }
+
+        // --- Canvas Animation Script ---
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let lines = [];
+
+        // Function to set canvas size
+        function setCanvasSize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        // Handle window resizing
+        window.addEventListener('resize', setCanvasSize);
+        setCanvasSize();
+
+        // Line class to create and manage each line
+        class Line {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.vx = (Math.random() - 0.5) * 0.5; // Random horizontal velocity
+                this.vy = (Math.random() - 0.5) * 0.5; // Random vertical velocity
+                this.opacity = 1;
+                this.length = 30 + Math.random() * 50; // Random length
+                this.life = 1000 + Math.random() * 2000; // Life of the line in frames
+            }
+
+            // Method to draw the line
+            draw() {
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(this.x + this.vx * this.length, this.y + this.vy * this.length);
+                ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+
+            // Method to update the line's state
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.opacity -= 0.005; // Fade out over time
+                this.life--;
+            }
+        }
+
+        // Animation loop
+        function animate() {
+            // Clear the canvas with a transparent black color to create a fading trail effect
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw and update each line
+            lines.forEach((line, index) => {
+                line.update();
+                line.draw();
+
+                // Remove lines that have faded out or reached the end of their life
+                if (line.opacity <= 0 || line.life <= 0) {
+                    lines.splice(index, 1);
+                }
+            });
+
+            // Create new lines randomly
+            if (Math.random() < 0.05) {
+                lines.push(new Line(Math.random() * canvas.width, Math.random() * canvas.height));
+            }
+            
+            requestAnimationFrame(animate);
+        }
+
+        // Start the animation
+        animate();
+
+        // Add a listener to create a new line on mouse click or touch
+        canvas.addEventListener('click', (event) => {
+            lines.push(new Line(event.clientX, event.clientY));
+        });
+
+        canvas.addEventListener('touchstart', (event) => {
+            lines.push(new Line(event.touches[0].clientX, event.touches[0].clientY));
+        });
     </script>
 </body>
 </html>
