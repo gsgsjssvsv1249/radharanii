@@ -8,586 +8,86 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter and Allura -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Allura&display=swap">
-    <!-- Three.js CDN for 3D graphics -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
     <style>
-        /* Custom styles for the body, background, and animations */
+        /* Custom styles for the body and animations */
         body {
             font-family: 'Inter', sans-serif;
             background-color: #000000;
             color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
-            position: relative;
-            overflow-x: hidden; /* Prevent horizontal scrolling */
-        }
-
-        /* The 3D canvas will be positioned behind all content */
-        #threeCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-        
-        /* The new heart canvas will sit on top of the background, but behind the main content */
-        #heartCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-        }
-
-        /* Main content container for parallax effect and centering */
-        #main-content {
-            will-change: transform;
-            transition: transform 0.1s ease-out;
-            width: 100%;
-            max-width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .container {
-            max-width: 80rem;
-            margin: auto;
-            padding: 2rem;
             text-align: center;
-            position: relative;
-            z-index: 1;
+        }
+
+        /* SVG Heart styles and pulse animation */
+        .heart-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1.5rem;
+            fill: #ec4899;
+            animation: pulse-heart 2s infinite;
+        }
+        @keyframes pulse-heart {
+            0%, 100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 10px #f43f5e);
+            }
+            50% {
+                transform: scale(1.1);
+                filter: drop-shadow(0 0 20px #ec4899);
+            }
         }
         
-        /* Apply the new Allura font to the main title */
+        /* Main title styling */
         .main-title {
             font-family: 'Allura', cursive;
             animation: text-glow 4s ease-in-out infinite;
-            text-align: center; /* Ensure the text itself is centered */
         }
 
-        /* Keyframes for the title glow animation */
         @keyframes text-glow {
             0%, 100% {
-                text-shadow: 0 0 5px var(--glow-color-1, #ec4899), 0 0 10px var(--glow-color-1, #ec4899), 0 0 15px var(--glow-color-1, #ec4899);
+                text-shadow: 0 0 8px #ec4899, 0 0 16px #ec4899, 0 0 24px #ec4899;
             }
             50% {
-                text-shadow: 0 0 10px var(--glow-color-2, #f43f5e), 0 0 20px var(--glow-color-2, #f43f5e), 0 0 30px var(--glow-color-2, #f43f5e);
+                text-shadow: 0 0 12px #f43f5e, 0 0 24px #f43f5e, 0 0 36px #f43f5e;
             }
         }
-        
-        /* Styles for the color change button */
-        .color-button {
-            border: 2px solid transparent;
-            background-image: linear-gradient(#1f2937, #1f2937), var(--button-gradient, linear-gradient(to right, #ec4899, #f43f5e));
-            background-origin: border-box;
-            background-clip: padding-box, border-box;
-            transition: transform 0.2s, box-shadow 0.2s, background-image 0.5s;
-        }
-        .color-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.5);
-        }
-        .color-button:active {
-            transform: scale(0.95);
-        }
-
-        /* Button group for consistent styling */
-        .button-group button {
-            border: 2px solid transparent;
-            background-image: linear-gradient(#1f2937, #1f2937), linear-gradient(to right, #ec4899, #f43f5e);
-            background-origin: border-box;
-            background-clip: padding-box, border-box;
-            transition: transform 0.2s, box-shadow 0.2s, background-image 0.5s;
-        }
-
-        .button-group button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.5);
-        }
-        .button-group button:active {
-            transform: scale(0.95);
-        }
-        
-        /* Message box for copy confirmation */
-        #message-box {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(45, 212, 191, 0.9);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 9999px;
-            box-shadow: 0 4px 15px rgba(45, 212, 191, 0.4);
-            transition: opacity 0.5s ease-in-out;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 1000;
-        }
-
-        #message-box.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        /* --- New styles for the custom share modal --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-            z-index: 2000;
-        }
-
-        .modal-overlay.open {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            background-color: #1f2937;
-            padding: 2rem;
-            border-radius: 1.5rem;
-            max-width: 90%;
-            width: 28rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            transform: scale(0.9);
-            transition: transform 0.3s ease-in-out;
-            position: relative;
-        }
-        
-        .modal-overlay.open .modal-content {
-            transform: scale(1);
-        }
-
-        .share-link-container {
-            display: flex;
-            align-items: center;
-            background-color: #374151;
-            border-radius: 0.75rem;
-            padding: 0.5rem;
-        }
-        .share-link-input {
-            flex-grow: 1;
-            background: transparent;
-            border: none;
-            color: #d1d5db;
-            outline: none;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            padding-right: 0.5rem;
-        }
-        .copy-button {
-            background-color: #4b5563;
-            color: #d1d5db;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            transition: background-color 0.2s;
-        }
-        .copy-button:hover {
-            background-color: #6b7280;
-        }
-        .social-button {
-            transition: transform 0.2s, opacity 0.2s;
-        }
-        .social-button:hover {
-            transform: scale(1.1);
-        }
-        
     </style>
 </head>
 <body class="bg-black text-white flex flex-col min-h-screen">
-    <!-- The 3D canvas container -->
-    <div id="threeCanvas"></div>
 
-    <!-- The new canvas for the glowing heart -->
-    <canvas id="heartCanvas"></canvas>
+    <main class="container mx-auto p-8 flex-grow flex flex-col items-center justify-center">
+        <!-- SVG Heart Icon -->
+        <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
 
-    <!-- Main Content Container for centering -->
-    <main id="main-content" class="flex-grow flex flex-col items-center justify-center p-4">
-
-        <!-- Hero Section: Title and Video -->
-        <section class="w-full max-w-5xl p-6 bg-gray-800 rounded-3xl shadow-2xl border border-gray-700 backdrop-blur-sm bg-opacity-70 transform transition-transform duration-500 hover:scale-[1.01] hover:shadow-pink-500/30 text-center">
-            <h1 id="main-title" class="main-title text-5xl sm:text-6xl lg:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500 mb-2 tracking-tight leading-tight">
-                Sandeep's Heart
-            </h1>
-            
-            <!-- Video Player (now in a smaller container) -->
-            <div class="w-full mx-auto mt-6 max-w-3xl">
-                <video id="heart-video" class="w-full h-auto aspect-video rounded-2xl shadow-xl border border-gray-600" autoplay muted loop>
-                    <source src="https://raw.githubusercontent.com/gsgsjssvsv1249/radharanii/3a1d00e1f2519ce89b591cf09579a471a07e9e84/934748" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
-            
-            <!-- Button Group for controls -->
-            <div class="mt-6 flex flex-wrap justify-center gap-4 button-group">
-                <button id="color-change-button" class="color-button text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out">
-                    Change Colors
-                </button>
-                <button id="share-button" class="color-button text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out">
-                    Share
-                </button>
-            </div>
-        </section>
+        <h1 class="main-title text-5xl sm:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500 mb-4 tracking-tight leading-tight">
+            Main Page Content
+        </h1>
+        <p class="text-lg sm:text-xl text-gray-300 mb-8 max-w-2xl">
+            Welcome to the main section of Sandeep's Heart. This is where your beautiful content will live.
+        </p>
+        
+        <!-- Placeholder content for the main page -->
+        <div class="text-left w-full max-w-xl mx-auto p-4 bg-gray-800 rounded-lg shadow-xl">
+            <h2 class="text-2xl font-bold mb-2">My Journey</h2>
+            <p class="text-gray-400 mb-4">
+                This is a place to share my thoughts, projects, and experiences. I hope you enjoy your stay.
+            </p>
+            <ul class="list-disc list-inside text-gray-400">
+                <li>Project A: Building an AI chatbot.</li>
+                <li>Project B: Creating a new website.</li>
+                <li>Project C: Exploring the stars with Three.js.</li>
+            </ul>
+        </div>
     </main>
 
-    <!-- Footer -->
+    <!-- Footer, same as index.html -->
     <footer class="w-full text-center p-6 text-gray-500">
         <p class="text-sm">
             Built by <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">@HackerXBhai</a>. The source code is available on <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">Telegram</a>.
         </p>
     </footer>
 
-    <!-- Message box for copy confirmation -->
-    <div id="message-box" class="text-white bg-teal-500 rounded-full px-6 py-3 shadow-lg transition-opacity duration-500">
-        Link copied to clipboard!
-    </div>
-    
-    <!-- Custom Share Modal (for desktop) -->
-    <div id="share-modal" class="modal-overlay">
-        <div class="modal-content text-left">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">Share this page</h3>
-                <button id="close-modal-button" class="text-gray-400 hover:text-gray-200 text-2xl leading-none">&times;</button>
-            </div>
-            
-            <!-- Link Copy Section -->
-            <div class="mb-6">
-                <p class="text-sm text-gray-400 mb-2">Link to this page</p>
-                <div class="share-link-container">
-                    <input type="text" id="share-link-input" class="share-link-input" readonly>
-                    <button id="copy-modal-button" class="copy-button">
-                        Copy
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Social Share Section -->
-            <div>
-                <p class="text-sm text-gray-400 mb-2">Share on social media</p>
-                <div class="flex space-x-4">
-                    <!-- Twitter/X Share Button (SVG for icon) -->
-                    <a href="#" id="twitter-share" target="_blank" class="social-button text-gray-400 hover:text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M18.244 2.25h3.308l-7.227 8.261 8.503 11.24H16.155l-5.462-7.074-4.88 7.074H3.75L11.77 9.58 3.245 2.25h7.81L14.958 9.3l3.286-7.05zM17.75 20.887l-7.794-10.233L4.99 2.75h2.812l5.053 6.607L17.75 20.887z"/>
-                        </svg>
-                    </a>
-                    
-                    <!-- Facebook Share Button (SVG for icon) -->
-                    <a href="#" id="facebook-share" target="_blank" class="social-button text-gray-400 hover:text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-                           <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.909c0-.867.234-1.091 1.029-1.091h2.971v-4h-3c-4.637 0-5 3.125-5 5.736v2.264z"/>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <script>
-        // --- Redirect on refresh logic ---
-        window.onload = function() {
-            // Check if the user came from the index page
-            if (sessionStorage.getItem('fromIndex')) {
-                // If they did, remove the flag for the next refresh
-                sessionStorage.removeItem('fromIndex');
-            } else {
-                // If they did not come from the index page, redirect them
-                window.location.href = 'index.html';
-            }
-
-            // Initialize 3D starfield, heart animation, and colors on load
-            initThreeJS();
-            animate();
-            setupHeartCanvas(); // Call the function to set up the heart canvas
-            animateHeart(); // Start the heart animation loop
-            updateColorPalette();
-        };
-
-        // --- Core Application Logic ---
-        // A variable to track the current color palette index
-        let currentPaletteIndex = 0;
-        // An array of color palettes for the title glow and button
-        const colorPalettes = [
-            { primary: '#ec4899', secondary: '#f43f5e', button: 'linear-gradient(to right, #ec4899, #f43f5e)', heart: '#ec4899' }, // Pink/Red
-            { primary: '#8b5cf6', secondary: '#6366f1', button: 'linear-gradient(to right, #8b5cf6, #6366f1)', heart: '#8b5cf6' }, // Purple/Indigo
-            { primary: '#2dd4bf', secondary: '#06b6d4', button: 'linear-gradient(to right, #2dd4bf, #06b6d4)', heart: '#2dd4bf' }, // Teal/Cyan
-            { primary: '#fbbf24', secondary: '#f59e0b', button: 'linear-gradient(to right, #fbbf24, #f59e0b)', heart: '#fbbf24' }, // Yellow/Amber
-        ];
-
-        // Function to update the color palette
-        function updateColorPalette() {
-            const root = document.documentElement;
-            const titleElement = document.getElementById('main-title');
-            const colorButton = document.getElementById('color-change-button');
-            const shareButton = document.getElementById('share-button');
-
-            const currentPalette = colorPalettes[currentPaletteIndex];
-
-            // Update CSS variables for the glow effect
-            root.style.setProperty('--glow-color-1', currentPalette.primary);
-            root.style.setProperty('--glow-color-2', currentPalette.secondary);
-            
-            // Update the button gradient for all interactive buttons
-            colorButton.style.setProperty('--button-gradient', currentPalette.button);
-            shareButton.style.setProperty('--button-gradient', currentPalette.button);
-
-            // Update the text gradient of the title
-            titleElement.style.backgroundImage = `linear-gradient(to right, ${currentPalette.primary}, ${currentPalette.secondary})`;
-
-            // Update the heart color variable
-            heartColor = currentPalette.heart;
-
-            // Cycle to the next palette
-            currentPaletteIndex = (currentPaletteIndex + 1) % colorPalettes.length;
-        }
-        
-        // Add event listener to the color change button
-        document.getElementById('color-change-button').addEventListener('click', updateColorPalette);
-        
-
-        // --- Share Button Logic (UPDATED) ---
-        const shareButton = document.getElementById('share-button');
-        const messageBox = document.getElementById('message-box');
-        const shareModal = document.getElementById('share-modal');
-        const closeModalButton = document.getElementById('close-modal-button');
-        const shareLinkInput = document.getElementById('share-link-input');
-        const copyModalButton = document.getElementById('copy-modal-button');
-        const twitterShareButton = document.getElementById('twitter-share');
-        const facebookShareButton = document.getElementById('facebook-share');
-        
-        const pageTitle = "Sandeep's Heart";
-        const pageUrl = window.location.origin + '/index.html'; // Changed to link to the index page
-
-        // Function to close the modal
-        const closeModal = () => {
-            shareModal.classList.remove('open');
-        };
-
-        // Click event for the main Share button
-        shareButton.addEventListener('click', async () => {
-            // Check if the Web Share API is available (for mobile devices)
-            if (navigator.share) {
-                try {
-                    await navigator.share({
-                        title: pageTitle,
-                        text: 'Check out this cool webpage!',
-                        url: pageUrl
-                    });
-                    console.log('Page shared successfully.');
-                } catch (error) {
-                    console.error('Error sharing:', error);
-                }
-            } else {
-                // If Web Share API is not available (for desktop), open the custom modal
-                shareLinkInput.value = pageUrl;
-                shareModal.classList.add('open');
-                
-                // Set the social media share links
-                twitterShareButton.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent('Check out Sandeep\'s Heart!')}&url=${encodeURIComponent(pageUrl)}`;
-                facebookShareButton.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
-            }
-        });
-        
-        // Event listeners for the custom modal
-        closeModalButton.addEventListener('click', closeModal);
-        shareModal.addEventListener('click', (event) => {
-            if (event.target === shareModal) {
-                closeModal();
-            }
-        });
-        
-        // Copy button inside the modal
-        copyModalButton.addEventListener('click', async () => {
-             try {
-                // Use the new Clipboard API to copy the link
-                await navigator.clipboard.writeText(pageUrl);
-                
-                // Change button text to "Copied!" for a brief moment
-                const originalText = copyModalButton.textContent;
-                copyModalButton.textContent = 'Copied!';
-                setTimeout(() => {
-                    copyModalButton.textContent = originalText;
-                }, 2000); // Revert after 2 seconds
-
-            } catch (err) {
-                console.error('Failed to copy text: ', err);
-            }
-        });
-        
-        // --- 3D Starfield Background Script with Three.js ---
-        let scene, camera, renderer, starGeo, stars;
-        let mouseX = 0, mouseY = 0;
-
-        // Function to create and initialize the 3D scene
-        function initThreeJS() {
-            // Set up scene, camera, and renderer
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
-            camera.position.z = 1;
-            camera.rotation.x = Math.PI / 2;
-
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.domElement.style.position = 'fixed';
-            renderer.domElement.style.top = '0';
-            renderer.domElement.style.left = '0';
-            renderer.domElement.style.zIndex = '-1';
-            // Append the renderer's canvas to the body to ensure it's always the background
-            document.body.appendChild(renderer.domElement);
-
-            // Create geometry for the stars
-            starGeo = new THREE.BufferGeometry();
-            const starCount = 5000;
-            const positions = [];
-            const velocities = [];
-            for (let i = 0; i < starCount; i++) {
-                positions.push((Math.random() - 0.5) * 600, (Math.random() - 0.5) * 600, (Math.random() - 0.5) * 600);
-                velocities.push(0, 0, Math.random() * 0.2 + 0.1); // Move stars forward
-            }
-            starGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-            starGeo.setAttribute('velocity', new THREE.Float32BufferAttribute(velocities, 3));
-
-            // Create material for the stars (glowing effect)
-            const starMaterial = new THREE.PointsMaterial({
-                color: 0xaaaaaa,
-                size: 0.7,
-                transparent: true,
-                opacity: 0.8
-            });
-
-            // Create the stars object
-            stars = new THREE.Points(starGeo, starMaterial);
-            scene.add(stars);
-
-            // Add event listeners for mouse interaction
-            document.addEventListener('mousemove', onMouseMove, false);
-            window.addEventListener('resize', onWindowResize, false);
-        }
-
-        // Function to handle window resizing
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        // Function to handle mouse movement for camera control
-        function onMouseMove(event) {
-            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-        }
-
-        // --- Animation Loop ---
-        function animate() {
-            requestAnimationFrame(animate);
-
-            // Update star positions to create movement
-            const positions = starGeo.attributes.position.array;
-            const velocities = starGeo.attributes.velocity.array;
-            for (let i = 0; i < positions.length; i += 3) {
-                positions[i + 2] += velocities[i + 2];
-                if (positions[i + 2] > camera.position.z) {
-                    positions[i + 2] = -600;
-                    velocities[i + 2] = Math.random() * 0.2 + 0.1;
-                }
-            }
-            starGeo.attributes.position.needsUpdate = true;
-
-            // Animate camera based on mouse position
-            camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
-            camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
-            camera.lookAt(scene.position);
-
-            renderer.render(scene, camera);
-        }
-
-        // --- Heart Canvas Animation Logic ---
-        let heartCanvas, heartCtx;
-        let heartColor = '#ec4899'; // Initial heart color
-        let t = 0; // Time variable for animation
-
-        // Function to set up the heart canvas
-        function setupHeartCanvas() {
-            heartCanvas = document.getElementById('heartCanvas');
-            heartCtx = heartCanvas.getContext('2d');
-            resizeHeartCanvas();
-            window.addEventListener('resize', resizeHeartCanvas);
-        }
-
-        // Function to resize the heart canvas
-        function resizeHeartCanvas() {
-            heartCanvas.width = window.innerWidth;
-            heartCanvas.height = window.innerHeight;
-        }
-
-        // Function to draw the heart shape using a parametric equation
-        function drawHeart(ctx, time) {
-            // Clear the canvas
-            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-            // Center the heart
-            const centerX = ctx.canvas.width / 2;
-            const centerY = ctx.canvas.height / 2;
-
-            // Scale the heart size based on screen width
-            const scale = Math.min(ctx.canvas.width, ctx.canvas.height) / 8;
-
-            // Set up the line style
-            ctx.strokeStyle = heartColor;
-            ctx.lineWidth = 3;
-            ctx.shadowColor = heartColor;
-            ctx.shadowBlur = 20;
-
-            // Begin drawing the heart path
-            ctx.beginPath();
-            for (let i = 0; i <= 2 * Math.PI; i += 0.01) {
-                // Heart equation
-                let x = 16 * Math.pow(Math.sin(i), 3);
-                let y = 13 * Math.cos(i) - 5 * Math.cos(2 * i) - 2 * Math.cos(3 * i) - Math.cos(4 * i);
-
-                // Add a gentle pulsating animation
-                const pulse = 1 + 0.05 * Math.sin(time * 0.01);
-                x *= scale * pulse;
-                y *= scale * pulse;
-
-                // Move to the center of the canvas
-                if (i === 0) {
-                    ctx.moveTo(centerX + x, centerY - y);
-                } else {
-                    ctx.lineTo(centerX + x, centerY - y);
-                }
-            }
-            ctx.closePath();
-            ctx.stroke();
-        }
-
-        // Main animation loop for the heart
-        function animateHeart() {
-            t++;
-            drawHeart(heartCtx, t);
-            requestAnimationFrame(animateHeart);
-        }
-    </script>
 </body>
 </html>
