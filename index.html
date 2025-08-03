@@ -22,9 +22,9 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            text-align: center;
             position: relative;
             overflow-x: hidden;
+            text-align: center;
         }
 
         /* The 3D canvas will be positioned behind all content */
@@ -36,7 +36,18 @@
             height: 100%;
             z-index: -1;
         }
+
+        /* Center the content container and apply the parallax effect */
+        .content-container {
+            position: relative;
+            z-index: 1;
+            padding: 2rem;
+            max-width: 48rem;
+            width: 100%;
+            transition: transform 0.1s ease-out; /* Parallax smooth transition */
+        }
         
+        /* Apply the Allura font and glow to the title */
         .main-title {
             font-family: 'Allura', cursive;
             animation: text-glow 4s ease-in-out infinite;
@@ -45,99 +56,109 @@
         /* Keyframes for the title glow animation */
         @keyframes text-glow {
             0%, 100% {
-                text-shadow: 0 0 5px #ec4899, 0 0 10px #ec4899, 0 0 15px #ec4899;
+                text-shadow: 0 0 8px #ec4899, 0 0 16px #ec4899, 0 0 24px #ec4899;
             }
             50% {
-                text-shadow: 0 0 10px #f43f5e, 0 0 20px #f43f5e, 0 0 30px #f43f5e;
+                text-shadow: 0 0 12px #f43f5e, 0 0 24px #f43f5e, 0 0 36px #f43f5e;
+            }
+        }
+
+        /* Heart SVG styles and pulse animation */
+        .heart-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1.5rem;
+            fill: #ec4899;
+            animation: pulse-heart 2s infinite;
+        }
+        @keyframes pulse-heart {
+            0%, 100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 10px #f43f5e);
+            }
+            50% {
+                transform: scale(1.1);
+                filter: drop-shadow(0 0 20px #ec4899);
             }
         }
         
-        /* Styles for the main "Dive In" button */
-        .dive-in-button {
+        /* Button styles with gradient border and hover effect */
+        .action-button {
             border: 2px solid transparent;
             background-image: linear-gradient(#1f2937, #1f2937), linear-gradient(to right, #ec4899, #f43f5e);
             background-origin: border-box;
             background-clip: padding-box, border-box;
-            transition: transform 0.2s, box-shadow 0.2s, background-image 0.5s;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: pulse-border 2s infinite;
         }
-        .dive-in-button:hover {
+        .action-button:hover {
             transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.5);
+            box-shadow: 0 4px 20px rgba(236, 72, 153, 0.6);
         }
-        .dive-in-button:active {
+        .action-button:active {
             transform: scale(0.95);
         }
 
-        /* --- Smaller Seamless Glowing Heart Animation --- */
-        .heart {
-            position: relative;
-            width: 100px;
-            height: 100px;
-            transform: rotate(-45deg);
-            background: #f43f5e;
-            box-shadow: 0 0 20px #f43f5e, 0 0 40px #ec4899, 0 0 60px #f43f5e;
-            animation: heart-pulse 2s infinite, heart-glow 4s infinite;
-            /* Hide the overflow of the pseudo-elements to make them seamless */
-            overflow: hidden;
-            border-radius: 10px;
-        }
-        
-        .heart::before,
-        .heart::after {
-            content: '';
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            background: #f43f5e;
-            /* Make the pseudo-elements seamless with the main heart div */
-            border-radius: 50%;
-            box-shadow: inherit; /* Inherit the shadow for a continuous glow */
-        }
-        
-        .heart::before {
-            top: -50px; /* Adjusted from -75px to -50px */
-            left: 0;
-        }
-        .heart::after {
-            left: 50px; /* Adjusted from 75px to 50px */
-            top: 0;
+        @keyframes pulse-border {
+            0%, 100% {
+                border-color: #f43f5e;
+            }
+            50% {
+                border-color: #ec4899;
+            }
         }
 
-        /* Heart pulse and glow animation keyframes */
-        @keyframes heart-pulse {
-            0% { transform: rotate(-45deg) scale(1); }
-            50% { transform: rotate(-45deg) scale(1.1); }
-            100% { transform: rotate(-45deg) scale(1); }
+        /* Styles for shooting stars */
+        .shooting-star {
+            position: absolute;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0));
+            border-radius: 50%;
+            height: 2px;
+            pointer-events: none;
+            opacity: 0;
+            animation: star-fall linear infinite;
         }
-        @keyframes heart-glow {
-            0%, 100% { box-shadow: 0 0 20px #f43f5e, 0 0 40px #ec4899, 0 0 60px #f43f5e; }
-            50% { box-shadow: 0 0 30px #ec4899, 0 0 60px #f43f5e, 0 0 90px #ec4899; }
+
+        @keyframes star-fall {
+            0% {
+                opacity: 0;
+                transform: rotate(-45deg) translateX(0);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: rotate(-45deg) translateX(400px);
+            }
         }
-        
     </style>
 </head>
-<body class="bg-gray-900">
-    <!-- The 3D canvas for the starfield -->
+<body class="bg-black text-white">
+
+    <!-- The 3D canvas container -->
     <div id="threeCanvas"></div>
 
-    <div class="container mx-auto p-8 flex flex-col items-center justify-center min-h-screen z-10 relative">
-        <!-- The glowing heart animation element, positioned above the title -->
-        <div class="heart mb-12"></div>
-        
-        <h1 class="main-title text-5xl sm:text-7xl lg:text-8xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500 mb-2 leading-tight">
+    <main id="main-content" class="content-container mx-auto flex-grow flex flex-col items-center justify-center">
+        <!-- SVG Heart Icon -->
+        <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+
+        <h1 class="main-title text-6xl sm:text-7xl lg:text-8xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500 mb-4 tracking-tight leading-tight">
             Sandeep's Heart
         </h1>
-
-        <p class="text-xl sm:text-2xl text-gray-300 mb-10 max-w-2xl">
-            A personal space, a beautiful heart animation.
+        <p class="text-xl sm:text-2xl text-gray-300 mb-10">
+            A personal space, a beautiful animation.
         </p>
-        
-        <button id="dive-in-button" class="dive-in-button text-white font-bold py-4 px-12 rounded-full text-lg shadow-lg transition-all duration-300 ease-in-out">
+        <button id="dive-in-button" class="action-button text-white font-bold py-4 px-12 rounded-full shadow-lg">
             Dive into Sandeep's Heart
         </button>
-    </div>
-    
-    <!-- Footer, styled the same as main.html -->
+    </main>
+
     <footer class="w-full text-center p-6 text-gray-500 z-10 relative">
         <p class="text-sm">
             Built by <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">@HackerXBhai</a>. The source code is available on <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">Telegram</a>.
@@ -163,6 +184,7 @@
 
         // Function to create and initialize the 3D scene
         function initThreeJS() {
+            // Set up scene, camera, and renderer
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
             camera.position.z = 1;
@@ -176,6 +198,7 @@
             renderer.domElement.style.zIndex = '-1';
             document.body.appendChild(renderer.domElement);
 
+            // Create geometry for the stars
             starGeo = new THREE.BufferGeometry();
             const starCount = 5000;
             const positions = [];
@@ -187,6 +210,7 @@
             starGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
             starGeo.setAttribute('velocity', new THREE.Float32BufferAttribute(velocities, 3));
 
+            // Create material for the stars (glowing effect)
             const starMaterial = new THREE.PointsMaterial({
                 color: 0xaaaaaa,
                 size: 0.7,
@@ -194,9 +218,11 @@
                 opacity: 0.8
             });
 
+            // Create the stars object
             stars = new THREE.Points(starGeo, starMaterial);
             scene.add(stars);
 
+            // Add event listeners for mouse interaction
             document.addEventListener('mousemove', onMouseMove, false);
             window.addEventListener('resize', onWindowResize, false);
         }
@@ -208,15 +234,34 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        // Function to handle mouse movement for camera control
+        // Function to handle mouse movement for camera and parallax control
         function onMouseMove(event) {
             mouseX = (event.clientX / window.innerWidth) * 2 - 1;
             mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
         }
 
+        // Function to create a shooting star
+        function createShootingStar() {
+            const star = document.createElement('div');
+            star.classList.add('shooting-star');
+            star.style.width = `${Math.random() * 50 + 50}px`;
+            star.style.top = `${Math.random() * window.innerHeight}px`;
+            star.style.left = `${Math.random() * window.innerWidth}px`;
+            star.style.animationDuration = `${Math.random() * 2 + 1}s`;
+            star.style.animationDelay = `${Math.random() * 2}s`;
+            document.body.appendChild(star);
+            
+            // Remove the star after its animation completes
+            setTimeout(() => {
+                star.remove();
+            }, (Math.random() * 2 + 1) * 1000 + (Math.random() * 2) * 1000);
+        }
+
         // --- Animation Loop ---
         function animate() {
             requestAnimationFrame(animate);
+
+            // Update star positions to create movement
             const positions = starGeo.attributes.position.array;
             const velocities = starGeo.attributes.velocity.array;
             for (let i = 0; i < positions.length; i += 3) {
@@ -227,16 +272,28 @@
                 }
             }
             starGeo.attributes.position.needsUpdate = true;
+
+            // Animate camera based on mouse position
             camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
             camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
             camera.lookAt(scene.position);
+
+            // Parallax effect on the main content
+            const mainContent = document.getElementById('main-content');
+            const parallaxX = mouseX * 20; // Adjust multiplier for effect strength
+            const parallaxY = mouseY * 20; // Adjust multiplier for effect strength
+            mainContent.style.transform = `translate(${parallaxX}px, ${parallaxY}px)`;
+
             renderer.render(scene, camera);
         }
-        
-        // Initialize the 3D starfield on page load
+
+        // Start the application on window load
         window.onload = function() {
             initThreeJS();
             animate();
+            
+            // Periodically create a shooting star
+            setInterval(createShootingStar, 5000);
         };
     </script>
 </body>
