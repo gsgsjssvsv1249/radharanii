@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sandeep's Heart</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts - Inter and Allura -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Allura&display=swap">
-    <!-- Three.js CDN for 3D graphics -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <style>
@@ -68,19 +65,22 @@
             }
         }
         
+        /* New container box for the animation and buttons */
+        .animation-box-container {
+            border: 2px solid transparent;
+            background-image: linear-gradient(rgba(17, 24, 39, 0.5), rgba(17, 24, 39, 0.5)), var(--button-gradient, linear-gradient(to right, #ec4899, #f43f5e));
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            transition: background-image 0.5s ease-in-out;
+        }
+
         /* Heart Video styles with a new glowing border */
         .heart-video {
             width: 250px; /* Adjust size as needed */
             height: auto;
-            margin-top: 2rem;
-            margin-bottom: 2rem;
             border-radius: 1rem;
             box-shadow: 0 0 10px var(--glow-color-1, #ec4899), 0 0 20px var(--glow-color-2, #f43f5e);
             transition: box-shadow 0.5s ease-in-out;
-            border: 2px solid transparent;
-            background-image: linear-gradient(to right, #1f2937, #1f2937), var(--button-gradient, linear-gradient(to right, #ec4899, #f43f5e));
-            background-origin: border-box;
-            background-clip: content-box, border-box;
         }
 
         /* SVG Heart styles */
@@ -176,11 +176,9 @@
 </head>
 <body class="bg-black text-white">
 
-    <!-- The 3D canvas container -->
     <div id="threeCanvas"></div>
 
     <main id="main-content" class="content-container mx-auto flex-grow flex flex-col items-center justify-center">
-        <!-- SVG Heart Logo with a gradient fill -->
         <svg class="svg-heart" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <defs>
                 <linearGradient id="pink-red-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -197,30 +195,28 @@
         <p class="text-lg sm:text-xl text-gray-300 mb-8 max-w-2xl">
             Welcome to the main section of Sandeep's Heart. This is where your beautiful content will live.
         </p>
-
-        <!-- Video Heart Animation with placeholder link -->
-        <video class="heart-video" autoplay loop muted playsinline>
-    <source src="https://raw.githubusercontent.com/gsgsjssvsv1249/radharanii/main/heart.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-</video>
         
-        <!-- Button group for color change and share functionality -->
-        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8 button-group">
-            <button id="change-color-btn" class="color-button text-white font-bold py-3 px-8 rounded-full shadow-lg">
-                Change Color
-            </button>
-            <button id="share-btn" class="color-button text-white font-bold py-3 px-8 rounded-full shadow-lg">
-                Share
-            </button>
+        <div class="animation-box-container w-full max-w-sm p-6 bg-gray-900/50 backdrop-blur-sm rounded-2xl shadow-2xl border-2 border-transparent button-group flex flex-col items-center justify-center space-y-6">
+            <video class="heart-video" autoplay loop muted playsinline>
+                <source src="https://raw.githubusercontent.com/gsgsjssvsv1249/radharanii/main/heart.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            
+            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full button-group">
+                <button id="change-color-btn" class="color-button flex-1 text-white font-bold py-3 px-8 rounded-full shadow-lg">
+                    Change Color
+                </button>
+                <button id="share-btn" class="color-button flex-1 text-white font-bold py-3 px-8 rounded-full shadow-lg">
+                    Share
+                </button>
+            </div>
         </div>
     </main>
     
-    <!-- Message box for share confirmation -->
     <div id="message-box" role="status">
         URL copied to clipboard!
     </div>
 
-    <!-- Footer, same as index.html -->
     <footer class="w-full text-center p-6 text-gray-500 z-10 relative">
         <p class="text-sm">
             Built by <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">@HackerXBhai</a>. The source code is available on <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">Telegram</a>.
@@ -284,8 +280,23 @@
         shareBtn.addEventListener('click', () => {
             const url = window.location.href;
             
-            // Check if execCommand is supported
-            if (document.execCommand) {
+            // Check if navigator.clipboard API is supported
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(url).then(() => {
+                    messageBox.textContent = 'URL copied to clipboard!';
+                    messageBox.style.opacity = '1';
+                    setTimeout(() => {
+                        messageBox.style.opacity = '0';
+                    }, 3000);
+                }).catch(err => {
+                    messageBox.textContent = 'Failed to copy URL.';
+                    messageBox.style.opacity = '1';
+                    setTimeout(() => {
+                        messageBox.style.opacity = '0';
+                    }, 3000);
+                });
+            } else {
+                // Fallback for older browsers
                 const textarea = document.createElement('textarea');
                 textarea.value = url;
                 document.body.appendChild(textarea);
@@ -297,17 +308,12 @@
                     messageBox.textContent = 'Failed to copy URL.';
                 }
                 document.body.removeChild(textarea);
-            } else {
-                messageBox.textContent = 'Your browser does not use copying to clipboard.';
-            }
 
-            // Show the message box
-            messageBox.style.opacity = '1';
-            
-            // Hide the message box after 3 seconds
-            setTimeout(() => {
-                messageBox.style.opacity = '0';
-            }, 3000);
+                messageBox.style.opacity = '1';
+                setTimeout(() => {
+                    messageBox.style.opacity = '0';
+                }, 3000);
+            }
         });
         
         // --- 3D Starfield Background Script with Three.js ---
