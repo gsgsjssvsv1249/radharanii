@@ -37,16 +37,15 @@
             z-index: -1;
         }
 
-        /* Center the content container and apply the parallax effect */
+        /* Center the content container */
         .content-container {
             position: relative;
             z-index: 1;
             padding: 2rem;
             max-width: 48rem;
             width: 100%;
-            transition: transform 0.1s ease-out; /* Parallax smooth transition */
         }
-        
+
         /* Apply the Allura font and glow to the title */
         .main-title {
             font-family: 'Allura', cursive;
@@ -107,7 +106,6 @@
                 border-color: #ec4899;
             }
         }
-
         /* Styles for shooting stars */
         .shooting-star {
             position: absolute;
@@ -137,7 +135,7 @@
         }
     </style>
 </head>
-<body class="bg-black text-white">
+<body class="bg-black text-white flex flex-col min-h-screen">
 
     <!-- The 3D canvas container -->
     <div id="threeCanvas"></div>
@@ -160,6 +158,13 @@
             </button>
         </a>
     </main>
+    
+    <!-- Footer -->
+    <footer class="w-full text-center p-6 text-gray-500">
+        <p class="text-sm">
+            Built by <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">@HackerXBhai</a>. The source code is available on <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">Telegram</a>.
+        </p>
+    </footer>
 
     <script>
         // --- 3D Starfield Background Script with Three.js ---
@@ -238,7 +243,7 @@
             // Remove the star after its animation completes
             setTimeout(() => {
                 star.remove();
-            }, (Math.random() * 2 + 1) * 1000 + (Math.random() * 2) * 1000);
+            }, (parseFloat(star.style.animationDuration) * 1000) + (parseFloat(star.style.animationDelay) * 1000));
         }
 
         // --- Animation Loop ---
@@ -261,12 +266,6 @@
             camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
             camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
             camera.lookAt(scene.position);
-
-            // Parallax effect on the main content
-            const mainContent = document.getElementById('main-content');
-            const parallaxX = mouseX * 20; // Adjust multiplier for effect strength
-            const parallaxY = mouseY * 20; // Adjust multiplier for effect strength
-            mainContent.style.transform = `translate(${parallaxX}px, ${parallaxY}px)`;
 
             renderer.render(scene, camera);
         }
