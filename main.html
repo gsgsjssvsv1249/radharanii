@@ -135,7 +135,7 @@
     <!-- The 3D canvas container -->
     <div id="threeCanvas"></div>
 
-    <!-- Main Content Container for parallax effect and centering -->
+    <!-- Main Content Container for centering -->
     <main id="main-content" class="flex-grow flex flex-col items-center justify-center p-4">
 
         <!-- Hero Section: Title and Video -->
@@ -156,15 +156,6 @@
             <div class="mt-6 flex flex-wrap justify-center gap-4 button-group">
                 <button id="color-change-button" class="color-button text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out">
                     Change Colors
-                </button>
-                <button id="audio-toggle-button" class="py-3 px-4 rounded-full shadow-lg transition-all duration-300 ease-in-out">
-                    <!-- SVG for speaker icon (on/off) -->
-                    <svg id="speaker-on" class="h-6 w-6 text-white inline-block" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M9.383 3.033A1 1 0 0110 3v14a1 1 0 01-1.617.767L4.185 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.185l4.185-4.767zM15.707 10a1 1 0 01-1.414 0l-1.414-1.414a1 1 0 011.414-1.414L15.707 7.172a3.001 3.001 0 000-4.243 1 1 0 011.414 1.414A1.001 1.001 0 0116.414 4.88L15.707 6a2.001 2.001 0 00-2.828 0L12 6.828a1 1 0 01-1.414 0L9.172 6.828a1 1 0 010-1.414zM16.414 15a1 1 0 010 1.414l-1.414 1.414a1 1 0 01-1.414-1.414L14.414 15a2.001 2.001 0 002.828 0L17.828 15a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                    </svg>
-                    <svg id="speaker-off" class="h-6 w-6 text-white hidden" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M9.383 3.033A1 1 0 0110 3v14a1 1 0 01-1.617.767L4.185 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.185l4.185-4.767zM16.414 14.243a1 1 0 00-1.414-1.414L13.586 14a1 1 0 001.414 1.414l1.414-1.414zM16.414 7.757l-1.414 1.414a1 1 0 00-1.414-1.414L14 6.343a1 1 0 10-1.414 1.414L12.586 7a1 1 0 001.414 1.414L15 7.757a2 2 0 00-2.828 0l-.707.707a1 1 0 000 1.414l.707.707a1 1 0 001.414 0l.707-.707a1 1 0 001.414 0l.707.707a1 1 0 001.414 0l.707-.707a2 2 0 000-2.828z" clip-rule="evenodd"></path>
-                    </svg>
                 </button>
                 <button id="share-button" class="py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out flex items-center justify-center space-x-2">
                     <!-- SVG for share icon -->
@@ -189,14 +180,19 @@
         Link copied to clipboard!
     </div>
 
-    <!-- Audio element for background music -->
-    <audio id="bg-audio" loop>
-        <!-- Replace this URL with your desired audio file -->
-        <source src="https://raw.githubusercontent.com/gsgsjssvsv1249/radharanii/3a1d00e1f2519ce89b591cf09579a471a07e9e84/audio" type="audio/mp3">
-        Your browser does not support the audio element.
-    </audio>
-
     <script>
+        // --- Redirect on refresh logic ---
+        window.onload = function() {
+            // Check if the user came from the index page
+            if (sessionStorage.getItem('fromIndex')) {
+                // If they did, remove the flag for the next refresh
+                sessionStorage.removeItem('fromIndex');
+            } else {
+                // If they did not come from the index page, redirect them
+                window.location.href = 'index.html';
+            }
+        };
+
         // --- Core Application Logic ---
         // A variable to track the current color palette index
         let currentPaletteIndex = 0;
@@ -213,7 +209,6 @@
             const root = document.documentElement;
             const titleElement = document.getElementById('main-title');
             const colorButton = document.getElementById('color-change-button');
-            const audioButton = document.getElementById('audio-toggle-button');
             const shareButton = document.getElementById('share-button');
 
             const currentPalette = colorPalettes[currentPaletteIndex];
@@ -224,7 +219,6 @@
             
             // Update the button gradient for all interactive buttons
             colorButton.style.setProperty('--button-gradient', currentPalette.button);
-            audioButton.style.setProperty('--button-gradient', currentPalette.button);
             shareButton.style.setProperty('--button-gradient', currentPalette.button);
 
             // Update the text gradient of the title
@@ -236,26 +230,7 @@
         
         // Add event listener to the color change button
         document.getElementById('color-change-button').addEventListener('click', updateColorPalette);
-
-        // --- Audio Controls Logic ---
-        const audio = document.getElementById('bg-audio');
-        const audioToggleButton = document.getElementById('audio-toggle-button');
-        const speakerOnIcon = document.getElementById('speaker-on');
-        const speakerOffIcon = document.getElementById('speaker-off');
-        let isAudioPlaying = false;
-
-        audioToggleButton.addEventListener('click', () => {
-            if (isAudioPlaying) {
-                audio.pause();
-                speakerOnIcon.classList.add('hidden');
-                speakerOffIcon.classList.remove('hidden');
-            } else {
-                audio.play();
-                speakerOnIcon.classList.remove('hidden');
-                speakerOffIcon.classList.add('hidden');
-            }
-            isAudioPlaying = !isAudioPlaying;
-        });
+        
 
         // --- Share Button Logic ---
         const shareButton = document.getElementById('share-button');
@@ -370,11 +345,6 @@
             camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
             camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
             camera.lookAt(scene.position);
-
-            // Parallax effect on the main content
-            const mainContent = document.getElementById('main-content');
-            const scrollY = window.scrollY;
-            mainContent.style.transform = `translateY(${scrollY * 0.5}px)`;
 
             renderer.render(scene, camera);
         }
