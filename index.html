@@ -37,15 +37,16 @@
             z-index: -1;
         }
 
-        /* Center the content container */
+        /* Center the content container and apply the parallax effect */
         .content-container {
             position: relative;
             z-index: 1;
             padding: 2rem;
             max-width: 48rem;
             width: 100%;
+            transition: transform 0.1s ease-out; /* Parallax smooth transition */
         }
-
+        
         /* Apply the Allura font and glow to the title */
         .main-title {
             font-family: 'Allura', cursive;
@@ -59,6 +60,25 @@
             }
             50% {
                 text-shadow: 0 0 12px #f43f5e, 0 0 24px #f43f5e, 0 0 36px #f43f5e;
+            }
+        }
+
+        /* Heart SVG styles and pulse animation */
+        .heart-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1.5rem;
+            fill: #ec4899;
+            animation: pulse-heart 2s infinite;
+        }
+        @keyframes pulse-heart {
+            0%, 100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 10px #f43f5e);
+            }
+            50% {
+                transform: scale(1.1);
+                filter: drop-shadow(0 0 20px #ec4899);
             }
         }
         
@@ -87,6 +107,34 @@
                 border-color: #ec4899;
             }
         }
+
+        /* Styles for shooting stars */
+        .shooting-star {
+            position: absolute;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0));
+            border-radius: 50%;
+            height: 2px;
+            pointer-events: none;
+            opacity: 0;
+            animation: star-fall linear infinite;
+        }
+
+        @keyframes star-fall {
+            0% {
+                opacity: 0;
+                transform: rotate(-45deg) translateX(0);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: rotate(-45deg) translateX(400px);
+            }
+        }
     </style>
 </head>
 <body class="bg-black text-white">
@@ -94,7 +142,12 @@
     <!-- The 3D canvas container -->
     <div id="threeCanvas"></div>
 
-    <main class="content-container flex-grow flex flex-col items-center justify-center">
+    <main id="main-content" class="content-container mx-auto flex-grow flex flex-col items-center justify-center">
+        <!-- SVG Heart Icon -->
+        <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+
         <h1 class="main-title text-6xl sm:text-7xl lg:text-8xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500 mb-4 tracking-tight leading-tight">
             Sandeep's Heart
         </h1>
@@ -127,7 +180,6 @@
             renderer.domElement.style.top = '0';
             renderer.domElement.style.left = '0';
             renderer.domElement.style.zIndex = '-1';
-            // Append the renderer's canvas to the body to ensure it's always the background
             document.body.appendChild(renderer.domElement);
 
             // Create geometry for the stars
@@ -137,7 +189,7 @@
             const velocities = [];
             for (let i = 0; i < starCount; i++) {
                 positions.push((Math.random() - 0.5) * 600, (Math.random() - 0.5) * 600, (Math.random() - 0.5) * 600);
-                velocities.push(0, 0, Math.random() * 0.2 + 0.1); // Move stars forward
+                velocities.push(0, 0, Math.random() * 0.2 + 0.1);
             }
             starGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
             starGeo.setAttribute('velocity', new THREE.Float32BufferAttribute(velocities, 3));
@@ -166,10 +218,27 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        // Function to handle mouse movement for camera control
+        // Function to handle mouse movement for camera and parallax control
         function onMouseMove(event) {
             mouseX = (event.clientX / window.innerWidth) * 2 - 1;
             mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        }
+
+        // Function to create a shooting star
+        function createShootingStar() {
+            const star = document.createElement('div');
+            star.classList.add('shooting-star');
+            star.style.width = `${Math.random() * 50 + 50}px`;
+            star.style.top = `${Math.random() * window.innerHeight}px`;
+            star.style.left = `${Math.random() * window.innerWidth}px`;
+            star.style.animationDuration = `${Math.random() * 2 + 1}s`;
+            star.style.animationDelay = `${Math.random() * 2}s`;
+            document.body.appendChild(star);
+            
+            // Remove the star after its animation completes
+            setTimeout(() => {
+                star.remove();
+            }, (Math.random() * 2 + 1) * 1000 + (Math.random() * 2) * 1000);
         }
 
         // --- Animation Loop ---
@@ -193,14 +262,22 @@
             camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
             camera.lookAt(scene.position);
 
+            // Parallax effect on the main content
+            const mainContent = document.getElementById('main-content');
+            const parallaxX = mouseX * 20; // Adjust multiplier for effect strength
+            const parallaxY = mouseY * 20; // Adjust multiplier for effect strength
+            mainContent.style.transform = `translate(${parallaxX}px, ${parallaxY}px)`;
+
             renderer.render(scene, camera);
         }
 
         // Start the application on window load
         window.onload = function() {
-            // Initialize 3D scene and animation
             initThreeJS();
             animate();
+            
+            // Periodically create a shooting star
+            setInterval(createShootingStar, 5000);
         };
     </script>
 </body>
