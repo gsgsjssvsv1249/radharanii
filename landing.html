@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Sandeep's Heart</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter and Allura -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Allura&display=swap">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 48rem;
+            padding: 2rem;
+        }
+        
+        /* Apply the Allura font and glow to the title */
+        .main-title {
+            font-family: 'Allura', cursive;
+            animation: text-glow 4s ease-in-out infinite;
+        }
+
+        /* Keyframes for the title glow animation */
+        @keyframes text-glow {
+            0%, 100% {
+                text-shadow: 0 0 5px #ec4899, 0 0 10px #ec4899, 0 0 15px #ec4899;
+            }
+            50% {
+                text-shadow: 0 0 10px #f43f5e, 0 0 20px #f43f5e, 0 0 30px #f43f5e;
+            }
+        }
+
+        /* Button styles with gradient border and hover effect */
+        .action-button {
+            border: 2px solid transparent;
+            background-image: linear-gradient(#1f2937, #1f2937), linear-gradient(to right, #ec4899, #f43f5e);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .action-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(236, 72, 153, 0.6);
+        }
+    </style>
+</head>
+<body class="bg-black text-white">
+
+    <main class="container mx-auto">
+        <h1 class="main-title text-5xl sm:text-6xl lg:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500 mb-4 tracking-tight leading-tight">
+            Sandeep's Heart
+        </h1>
+        <p class="text-xl sm:text-2xl text-gray-300 mb-10">
+            A personal space, a beautiful animation.
+        </p>
+        <a href="index.html" class="inline-block">
+            <button class="action-button text-white font-bold py-4 px-12 rounded-full shadow-lg">
+                Dive into Sandeep's Heart
+            </button>
+        </a>
+    </main>
+
+</body>
+</html>
