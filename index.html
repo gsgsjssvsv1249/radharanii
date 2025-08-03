@@ -68,31 +68,32 @@
             transform: scale(0.95);
         }
 
-        /* --- Glowing Heart Animation --- */
+        /* --- Seamless Glowing Heart Animation --- */
         .heart {
             position: relative;
             width: 150px;
             height: 150px;
-            background: #f43f5e;
             transform: rotate(-45deg);
-            box-shadow: 0 0 20px rgba(244, 63, 94, 0.5), 0 0 40px rgba(244, 63, 94, 0.3);
+            background: #f43f5e;
+            box-shadow: 0 0 20px #f43f5e, 0 0 40px #ec4899, 0 0 60px #f43f5e;
             animation: heart-pulse 2s infinite, heart-glow 4s infinite;
+            /* Hide the overflow of the pseudo-elements to make them seamless */
+            overflow: hidden;
+            border-radius: 10px;
         }
         
-        /* Create the two top circles of the heart */
         .heart::before,
         .heart::after {
             content: '';
             position: absolute;
             width: 150px;
             height: 150px;
-            border-radius: 50%;
             background: #f43f5e;
-            box-shadow: 0 0 20px rgba(244, 63, 94, 0.5), 0 0 40px rgba(244, 63, 94, 0.3);
-            animation: heart-pulse 2s infinite, heart-glow 4s infinite;
+            /* Make the pseudo-elements seamless with the main heart div */
+            border-radius: 50%;
+            box-shadow: inherit; /* Inherit the shadow for a continuous glow */
         }
         
-        /* Position the two top circles */
         .heart::before {
             top: -75px;
             left: 0;
@@ -109,8 +110,8 @@
             100% { transform: rotate(-45deg) scale(1); }
         }
         @keyframes heart-glow {
-            0%, 100% { box-shadow: 0 0 20px #ec4899, 0 0 40px #f43f5e; }
-            50% { box-shadow: 0 0 30px #f43f5e, 0 0 60px #ec4899; }
+            0%, 100% { box-shadow: 0 0 20px #f43f5e, 0 0 40px #ec4899, 0 0 60px #f43f5e; }
+            50% { box-shadow: 0 0 30px #ec4899, 0 0 60px #f43f5e, 0 0 90px #ec4899; }
         }
         
     </style>
@@ -120,15 +121,15 @@
     <div id="threeCanvas"></div>
 
     <div class="container mx-auto p-8 flex flex-col items-center justify-center min-h-screen z-10 relative">
-        <h1 class="main-title text-5xl sm:text-7xl lg:text-8xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500 mb-6 leading-tight">
+        <!-- The glowing heart animation element, positioned above the title -->
+        <div class="heart mb-12"></div>
+        
+        <h1 class="main-title text-5xl sm:text-7xl lg:text-8xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500 mb-2 leading-tight">
             Sandeep's Heart
         </h1>
-        
-        <!-- The glowing heart animation element -->
-        <div class="heart my-12"></div>
 
         <p class="text-xl sm:text-2xl text-gray-300 mb-10 max-w-2xl">
-            A beautiful, interactive experience built for you.
+            A personal space, a beautiful heart animation.
         </p>
         
         <button id="dive-in-button" class="dive-in-button text-white font-bold py-4 px-12 rounded-full text-lg shadow-lg transition-all duration-300 ease-in-out">
