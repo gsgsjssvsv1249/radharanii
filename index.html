@@ -152,7 +152,7 @@
         <p class="text-xl sm:text-2xl text-gray-300 mb-10">
             A personal space, a beautiful animation.
         </p>
-        <a href="main.html" class="inline-block">
+        <a id="dive-button" href="main.html" class="inline-block">
             <button class="action-button text-white font-bold py-4 px-12 rounded-full shadow-lg">
                 Dive into Sandeep's Heart
             </button>
@@ -167,6 +167,11 @@
     </footer>
 
     <script>
+        // --- Core Application Logic for redirect flag ---
+        document.getElementById('dive-button').addEventListener('click', () => {
+            sessionStorage.setItem('fromIndex', 'true');
+        });
+
         // --- 3D Starfield Background Script with Three.js ---
         let scene, camera, renderer, starGeo, stars;
         let mouseX = 0, mouseY = 0;
