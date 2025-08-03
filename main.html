@@ -230,13 +230,8 @@
                 <button id="color-change-button" class="color-button text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out">
                     Change Colors
                 </button>
-                <button id="share-button" class="py-3 px-4 rounded-full shadow-lg transition-all duration-300 ease-in-out flex items-center justify-center relative group">
-                    <!-- SVG for share icon -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.885 12.984 9 12.599 9 12c0-.599-.115-.984-.316-1.342m-7.05 4.342a3 3 0 110-6m7.05 6a3 3 0 110-6m7.05 3.342a3 3 0 110-6M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    <!-- Tooltip for hover effect -->
-                    <div class="absolute bottom-full mb-2 hidden group-hover:block px-3 py-1 bg-gray-700 text-white text-sm rounded-lg whitespace-nowrap">Share</div>
+                <button id="share-button" class="color-button text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out">
+                    Share
                 </button>
             </div>
         </section>
@@ -359,7 +354,7 @@
         const facebookShareButton = document.getElementById('facebook-share');
         
         const pageTitle = "Sandeep's Heart";
-        const pageUrl = window.location.href;
+        const pageUrl = window.location.origin + '/index.html'; // Changed to link to the index page
 
         // Function to close the modal
         const closeModal = () => {
