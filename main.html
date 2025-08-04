@@ -49,19 +49,27 @@
         /* Apply the new Allura font and glowing effect to the main title */
         .main-title {
             font-family: 'Allura', cursive;
-            /* Combine glow animation with a new fade-in animation */
-            animation: text-glow 4s ease-in-out infinite, fade-in 1s ease-in-out forwards;
+            animation: text-glow 4s ease-in-out infinite, typing 2s steps(20, end), blink-caret .75s step-end infinite;
+            overflow: hidden; /* Ensures the content is not revealed until the animation */
+            white-space: nowrap; /* Keeps the content on a single line */
+            border-right: .15em solid orange; /* The typewriter cursor */
+            width: 100%; /* Adjusts width based on content */
+            max-width: fit-content;
             text-align: center;
-            /* Text color is now set to a single color to work better with text-shadow glow */
+            margin: auto;
             color: var(--glow-color-1, #ec4899);
             text-shadow: 0 0 5px var(--glow-color-1, #ec4899), 0 0 10px var(--glow-color-1, #ec4899), 0 0 15px var(--glow-color-1, #ec4899);
         }
         
         /* New styles for the fading paragraph with a slight delay */
         #main-content p {
-            animation: fade-in 1s ease-in-out forwards;
-            animation-delay: 0.5s; /* Delay the paragraph animation */
-            opacity: 0; /* Initially hidden */
+            animation: typing-p 2s steps(40, end) forwards;
+            animation-delay: 2s; /* Delay the paragraph animation after the title */
+            overflow: hidden;
+            white-space: nowrap;
+            width: 0;
+            opacity: 0; /* Start hidden */
+            border-right: .15em solid transparent;
         }
 
         /* Keyframes for the title glow animation, using CSS variables for dynamic colors */
@@ -74,16 +82,22 @@
             }
         }
         
-        /* Keyframes for the new text fade-in and slide-up animation */
-        @keyframes fade-in {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* Keyframes for the new text typewriter effect */
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        
+        /* Keyframes for the typing cursor blink effect */
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--glow-color-1, #ec4899) }
+        }
+        
+        /* Keyframes for the paragraph typewriter effect */
+        @keyframes typing-p {
+            from { width: 0; opacity: 1; }
+            to { width: 100%; opacity: 1; }
         }
         
         /* Heart Video styles with a new glowing border */
@@ -166,12 +180,18 @@
             transition: transform 0.2s, box-shadow 0.2s, background-image 0.5s;
         }
 
+        /* New and more dynamic button hover animation */
         .button-group button:hover {
-            transform: scale(1.05);
-            box-shadow: 4px 4px 15px rgba(236, 72, 153, 0.5);
+            animation: button-pop 0.3s forwards;
+            box-shadow: 0 0 15px var(--glow-color-1, #ec4899), 0 0 25px var(--glow-color-2, #f43f5e);
         }
         .button-group button:active {
             transform: scale(0.95);
+        }
+        @keyframes button-pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1.05); }
         }
 
         /* Message box for copy confirmation */
@@ -291,8 +311,8 @@
             },
             {
                 glow1: '#facc15', // Gold
-                glow2: '#f472b6', // Pink
-                gradient: 'linear-gradient(to right, #facc15, #f472b6)'
+                glow2: '#fdea00', // Yellow
+                gradient: 'linear-gradient(to right, #facc15, #fdea00)'
             }
         ];
         let currentPaletteIndex = 0;
