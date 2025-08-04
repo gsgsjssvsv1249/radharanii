@@ -34,12 +34,8 @@
             z-index: -1;
         }
 
-        /* Main content container for parallax effect and centering */
+        /* Main content container for centering */
         #main-content {
-            will-change: transform;
-            transition: transform 0.1s ease-out;
-            position: relative;
-            z-index: 1;
             width: 100%;
             max-width: 100%;
             display: flex;
@@ -48,6 +44,7 @@
             justify-content: center;
             flex-grow: 1; /* Allow content to grow and push the footer down */
             padding: 2rem;
+            /* Parallax effect on the content has been removed to keep it stationary */
         }
         
         /* Apply the new Allura font and glowing effect to the main title */
@@ -442,11 +439,6 @@
             camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
             camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
             camera.lookAt(scene.position);
-
-            const mainContent = document.getElementById('main-content');
-            const parallaxX = mouseX * 20;
-            const parallaxY = mouseY * 20;
-            mainContent.style.transform = `translate(${parallaxX}px, ${parallaxY}px)`;
 
             renderer.render(scene, camera);
         }
