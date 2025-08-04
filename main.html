@@ -52,6 +52,9 @@
             font-family: 'Allura', cursive;
             animation: text-glow 4s ease-in-out infinite;
             text-align: center;
+            /* Text color is now set to a single color to work better with text-shadow glow */
+            color: var(--glow-color-1, #ec4899);
+            text-shadow: 0 0 5px var(--glow-color-1, #ec4899), 0 0 10px var(--glow-color-1, #ec4899), 0 0 15px var(--glow-color-1, #ec4899);
         }
 
         /* Keyframes for the title glow animation, using CSS variables for dynamic colors */
@@ -215,7 +218,7 @@
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
         </svg>
 
-        <h1 id="main-title" class="main-title text-6xl sm:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500 mb-4 tracking-tight leading-tight">
+        <h1 id="main-title" class="main-title text-6xl sm:text-7xl font-extrabold mb-4 tracking-tight leading-tight">
             Sandeep's Heart
         </h1>
         <p id="sub-title" class="text-xl sm:text-2xl text-gray-300 mb-8 max-w-2xl">
@@ -296,9 +299,9 @@
             root.style.setProperty('--glow-color-2', current.glow2);
             root.style.setProperty('--button-gradient', current.gradient);
             
-            // Re-apply the text-glow gradient to the title
-            const mainTitle = document.querySelector('.main-title');
-            mainTitle.style.backgroundImage = `linear-gradient(to right, ${current.glow1}, ${current.glow2})`;
+            // Set the color directly for the title and let the CSS handle the glow
+            const mainTitle = document.getElementById('main-title');
+            mainTitle.style.color = current.glow1;
 
             // Also update the SVG heart gradient
             const svgHeartDefs = document.getElementById('pink-red-gradient');
@@ -430,6 +433,7 @@
 
         // Function to handle mouse movement for camera and parallax control
         function onMouseMove(event) {
+            // Update the mouse coordinates for use in the animation loop
             mouseX = (event.clientX / window.innerWidth) * 2 - 1;
             mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
         }
@@ -467,9 +471,9 @@
             starGeo.attributes.position.needsUpdate = true;
 
             // This part controls the camera movement, which creates the background parallax effect
-            // Multiplied the sensitivity by 4 to make the effect more obvious.
-            camera.position.x += (mouseX * 2 - camera.position.x) * 0.05;
-            camera.position.y += (mouseY * 2 - camera.position.y) * 0.05;
+            // The sensitivity has been increased to make the effect more noticeable.
+            camera.position.x += (mouseX * 5 - camera.position.x) * 0.05;
+            camera.position.y += (mouseY * 5 - camera.position.y) * 0.05;
             camera.lookAt(scene.position);
 
             renderer.render(scene, camera);
