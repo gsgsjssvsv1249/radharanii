@@ -20,6 +20,12 @@
             --day-glow-color-1: #ff69b4;
             --day-glow-color-2: #ff1493;
             --day-button-gradient: linear-gradient(to right, var(--day-glow-color-1), var(--day-glow-color-2));
+
+            /* Neon effect colors */
+            --neon-glow-color-1: #00f0ff; /* Cyan */
+            --neon-glow-color-2: #ff00ff; /* Magenta */
+            --neon-shadow-1: 0 0 5px var(--neon-glow-color-1), 0 0 10px var(--neon-glow-color-1), 0 0 20px var(--neon-glow-color-1);
+            --neon-shadow-2: 0 0 5px var(--neon-glow-color-2), 0 0 10px var(--neon-glow-color-2), 0 0 20px var(--neon-glow-color-2);
         }
 
         /* Day mode styles - will be applied when the 'day-mode' class is active */
@@ -27,6 +33,10 @@
             --body-bg-color: #f3f4f6; /* Light gray */
             --text-color: #000000;
             --button-bg-color: var(--body-bg-color);
+            --neon-glow-color-1: #00aaff; /* Lighter blue for day mode neon */
+            --neon-glow-color-2: #ff6600; /* Orange for day mode neon */
+            --neon-shadow-1: 0 0 5px var(--neon-glow-color-1), 0 0 10px var(--neon-glow-color-1), 0 0 20px var(--neon-glow-color-1);
+            --neon-shadow-2: 0 0 5px var(--neon-glow-color-2), 0 0 10px var(--neon-glow-color-2), 0 0 20px var(--neon-glow-color-2);
         }
 
         body.day-mode footer,
@@ -335,10 +345,9 @@
             justify-content: center;
             margin-top: 2rem;
             margin-bottom: 1rem;
-            /* Remove gap to make them joined */
-            border-radius: 9999px; /* Apply border-radius to the container */
-            overflow: hidden; /* Ensures inner borders are clipped */
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Optional: Add shadow to the whole bar */
+            border-radius: 9999px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
 
         .tab-button {
@@ -346,15 +355,15 @@
             color: var(--text-color);
             padding: 0.75rem 1.5rem;
             cursor: pointer;
-            transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
-            border: 2px solid transparent; /* Keep transparent border for gradient effect */
+            transition: background-color 0.3s, color 0.3s, box-shadow 0.3s, text-shadow 0.3s; /* Added text-shadow */
+            border: 2px solid transparent;
             background-image: linear-gradient(var(--button-bg-color), var(--button-bg-color)), var(--button-gradient);
             background-origin: border-box;
             background-clip: padding-box, border-box;
-            border-radius: 0; /* Remove individual button border-radius */
-            flex-grow: 1; /* Make buttons fill available space */
+            border-radius: 0;
+            flex-grow: 1;
             text-align: center;
-            white-space: nowrap; /* Prevent text wrapping */
+            white-space: nowrap;
         }
 
         /* Apply specific border-radius to first and last buttons */
@@ -370,35 +379,44 @@
 
         /* Add a right border to all but the last button for separation */
         .tab-button:not(:last-child) {
-            border-right: 1px solid rgba(255, 255, 255, 0.2); /* Subtle separator */
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .tab-button:hover {
-            /* Keep existing hover effects, but remove individual button shadow if applied */
-            box-shadow: none; /* Remove individual button shadow on hover */
+            box-shadow: none;
+            text-shadow: var(--neon-shadow-1); /* Neon glow on hover */
+            color: var(--neon-glow-color-1);
         }
 
         .tab-button.active {
             background-image: var(--button-gradient);
-            color: white; /* Text color for active tab */
-            /* Remove individual button shadow for active state */
-            box-shadow: none;
+            color: white;
+            box-shadow: var(--neon-shadow-1); /* Neon glow for active tab */
+            text-shadow: var(--neon-shadow-1); /* Text glow for active tab */
         }
 
         body.day-mode .tab-button.active {
             background-image: var(--day-button-gradient);
-            color: black; /* Text color for active tab in day mode */
+            color: black;
+            box-shadow: var(--neon-shadow-1); /* Day mode neon glow */
+            text-shadow: var(--neon-shadow-1);
         }
 
         .tab-content {
             display: none; /* Hidden by default */
             width: 100%;
-            max-width: 800px; /* Adjust as needed */
+            max-width: 800px;
             padding: 1rem;
-            background-color: var(--button-bg-color); /* Use button-bg-color for content background */
+            background-color: var(--button-bg-color);
             border-radius: 1rem;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             transition: background-color 0.5s ease-in-out;
+            /* For mobile, ensure content is in flow but can be hidden */
+            position: relative; /* Allow for z-index or opacity control */
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out;
         }
 
         body.day-mode .tab-content {
@@ -410,6 +428,101 @@
             flex-direction: column;
             align-items: center;
             gap: 1rem;
+            opacity: 1;
+            height: auto; /* Allow content to take its natural height */
+            overflow: visible;
+        }
+
+        /* Mobile-specific layout for animation */
+        @media (max-width: 767px) {
+            #main-content {
+                flex-direction: column; /* Stack elements vertically */
+            }
+
+            #animation-content {
+                order: -1; /* Place animation content first */
+                margin-bottom: 2rem; /* Space below video */
+                opacity: 1; /* Always visible on mobile */
+                height: auto;
+                overflow: visible;
+                display: flex; /* Ensure it's a flex container */
+            }
+
+            .tab-content:not(.active) {
+                /* For inactive tabs on mobile, keep them in flow but visually hidden */
+                opacity: 0;
+                height: 0;
+                padding: 0;
+                margin: 0;
+                overflow: hidden;
+                pointer-events: none; /* Prevent interaction */
+            }
+
+            .tab-content.active {
+                opacity: 1;
+                height: auto;
+                padding: 1rem;
+                margin-top: 1rem; /* Add some space above active tab content */
+                pointer-events: auto;
+            }
+        }
+
+        /* Laptop/Desktop Layout */
+        @media (min-width: 768px) {
+            #main-content {
+                flex-direction: row; /* Arrange elements horizontally */
+                align-items: flex-start; /* Align items to the top */
+                justify-content: center;
+                gap: 2rem; /* Space between video and tabs */
+                max-width: 1200px; /* Increase max-width for desktop layout */
+            }
+
+            #animation-container { /* New container for video on desktop */
+                flex: 1; /* Take up available space */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-width: 400px; /* Minimum width for the video section */
+                max-width: 50%; /* Max width for the video section */
+                order: 0; /* Default order */
+            }
+
+            .heart-video {
+                width: 100%;
+                max-width: 600px; /* Adjust video size for desktop */
+                height: auto;
+            }
+
+            .tabs-section { /* New container for tabs and content on desktop */
+                flex: 1; /* Take up available space */
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                min-width: 400px; /* Minimum width for the tabs section */
+                max-width: 50%; /* Max width for the tabs section */
+                order: 1; /* Place tabs section after animation */
+            }
+
+            .tab-buttons {
+                width: 100%;
+                max-width: 500px; /* Limit tab button width */
+            }
+
+            .tab-content {
+                width: 100%;
+                max-width: 500px; /* Limit tab content width */
+            }
+
+            /* Ensure video is always visible and playing on desktop */
+            #animation-content {
+                display: flex; /* Always display on desktop */
+                opacity: 1;
+                height: auto;
+                overflow: visible;
+                padding: 0; /* Remove padding from this specific content div */
+                background-color: transparent; /* No background for this content div */
+                box-shadow: none; /* No shadow for this content div */
+            }
         }
     </style>
 </head>
@@ -465,47 +578,53 @@
             Welcome to the main section of Sandeep's Heart.
         </p>
 
-        <!-- Tab Buttons -->
-        <div class="tab-buttons">
-            <button class="tab-button active" data-tab="animation">Animation</button>
-            <button class="tab-button" data-tab="edit">Edit</button>
-            <button class="tab-button" data-tab="about">About the project</button>
-        </div>
-
-        <!-- Tab Content - Animation -->
-        <div id="animation-content" class="tab-content active">
-            <video class="heart-video" autoplay loop muted playsinline>
-                <source src="https://raw.githubusercontent.com/gsgsjssvsv1249/radharanii/main/heart.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        </div>
-
-        <!-- Tab Content - Edit -->
-        <div id="edit-content" class="tab-content">
-            <div class="color-picker-container">
-                <div class="color-picker-group">
-                    <label for="color1" class="text-white">Glow Color 1:</label>
-                    <input type="color" id="color1" class="color-picker" value="#ec4899">
-                </div>
-                <div class="color-picker-group">
-                    <label for="color2" class="text-white">Glow Color 2:</label>
-                    <input type="color" id="color2" class="color-picker" value="#f43f5e">
-                </div>
-            </div>
-            <div class="flex flex-row space-x-4 button-group">
-                <button id="change-color-btn" class="color-button font-bold py-2 px-6 rounded-full shadow-lg">
-                    Random Color
-                </button>
-                <button id="share-btn" class="color-button font-bold py-2 px-6 rounded-full shadow-lg">
-                    Share
-                </button>
+        <!-- Animation Container for Desktop -->
+        <div id="animation-container">
+            <!-- Tab Content - Animation (Always visible on desktop, scrollable on mobile) -->
+            <div id="animation-content" class="tab-content active">
+                <video class="heart-video" autoplay loop muted playsinline>
+                    <source src="https://raw.githubusercontent.com/gsgsjssvsv1249/radharanii/main/heart.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
             </div>
         </div>
 
-        <!-- Tab Content - About the project -->
-        <div id="about-content" class="tab-content">
-            <p class="text-white">This project is a tribute to Sandeep. It features a dynamic background with a 3D starfield, interactive glow effects, and customizable colors. The heart animation symbolizes the core theme of the project.</p>
-            <p class="text-white">Feel free to explore the different sections and customize the glow colors to your liking!</p>
+        <!-- Tabs Section for Desktop -->
+        <div class="tabs-section">
+            <!-- Tab Buttons -->
+            <div class="tab-buttons">
+                <button class="tab-button active" data-tab="animation">Animation</button>
+                <button class="tab-button" data-tab="edit">Edit</button>
+                <button class="tab-button" data-tab="about">About the project</button>
+            </div>
+
+            <!-- Tab Content - Edit -->
+            <div id="edit-content" class="tab-content">
+                <div class="color-picker-container">
+                    <div class="color-picker-group">
+                        <label for="color1" class="text-white">Glow Color 1:</label>
+                        <input type="color" id="color1" class="color-picker" value="#ec4899">
+                    </div>
+                    <div class="color-picker-group">
+                        <label for="color2" class="text-white">Glow Color 2:</label>
+                        <input type="color" id="color2" class="color-picker" value="#f43f5e">
+                    </div>
+                </div>
+                <div class="flex flex-row space-x-4 button-group">
+                    <button id="change-color-btn" class="color-button font-bold py-2 px-6 rounded-full shadow-lg">
+                        Random Color
+                    </button>
+                    <button id="share-btn" class="color-button font-bold py-2 px-6 rounded-full shadow-lg">
+                        Share
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab Content - About the project -->
+            <div id="about-content" class="tab-content">
+                <p class="text-white">This project is a tribute to Sandeep. It features a dynamic background with a 3D starfield, interactive glow effects, and customizable colors. The heart animation symbolizes the core theme of the project.</p>
+                <p class="text-white">Feel free to explore the different sections and customize the glow colors to your liking!</p>
+            </div>
         </div>
 
     </main>
@@ -536,6 +655,8 @@
         // Tab elements
         const tabButtons = document.querySelectorAll('.tab-button');
         const tabContents = document.querySelectorAll('.tab-content');
+        const animationContent = document.getElementById('animation-content');
+        const heartVideo = document.querySelector('#animation-content .heart-video');
 
         // Function to update all colors based on the chosen palette
         function updateColors(glow1, glow2) {
@@ -805,24 +926,44 @@
             button.addEventListener('click', () => {
                 const targetTab = button.dataset.tab;
 
-                // Deactivate all tab buttons and hide all tab contents
+                // Deactivate all tab buttons
                 tabButtons.forEach(btn => btn.classList.remove('active'));
-                tabContents.forEach(content => content.classList.remove('active'));
 
-                // Activate the clicked button and show its content
+                // Hide all tab contents (except animation-content on desktop)
+                tabContents.forEach(content => {
+                    if (content.id !== 'animation-content' || window.innerWidth < 768) {
+                        content.classList.remove('active');
+                    }
+                });
+
+                // Activate the clicked button
                 button.classList.add('active');
-                document.getElementById(`${targetTab}-content`).classList.add('active');
 
-                // Special handling for animation tab to ensure video plays
+                // Show the target tab content
+                const targetContent = document.getElementById(`${targetTab}-content`);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+
+                // Handle video playback based on active tab and screen size
                 if (targetTab === 'animation') {
-                    const video = document.querySelector('#animation-content .heart-video');
-                    if (video) {
-                        video.play();
+                    if (heartVideo) {
+                        heartVideo.play();
+                    }
+                    // On desktop, ensure animation-content is visible and active
+                    if (window.innerWidth >= 768) {
+                        animationContent.classList.add('active');
                     }
                 } else {
-                    const video = document.querySelector('#animation-content .heart-video');
-                    if (video) {
-                        video.pause();
+                    if (heartVideo) {
+                        heartVideo.pause();
+                    }
+                    // On desktop, if another tab is active, animation-content should still be visible but not "active" in the tab sense
+                    if (window.innerWidth >= 768) {
+                        // No change to animationContent's active state on desktop, it's always visible
+                    } else {
+                        // On mobile, if another tab is active, hide animation-content
+                        animationContent.classList.remove('active');
                     }
                 }
             });
@@ -835,8 +976,16 @@
             setInterval(createShootingStar, 5000);
             updateColors(color1Input.value, color2Input.value);
 
-            // Set initial active tab
-            document.querySelector('.tab-button[data-tab="animation"]').click();
+            // Set initial active tab based on screen size
+            if (window.innerWidth < 768) {
+                // On mobile, default to animation tab
+                document.querySelector('.tab-button[data-tab="animation"]').click();
+            } else {
+                // On desktop, default to animation tab, but ensure video is always playing
+                document.querySelector('.tab-button[data-tab="animation"]').click();
+                // Ensure animation content is always active on desktop regardless of selected tab
+                animationContent.classList.add('active');
+            }
         };
     </script>
 </body>
