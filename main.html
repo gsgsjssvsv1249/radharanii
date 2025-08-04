@@ -449,14 +449,16 @@
             }
             starGeo.attributes.position.needsUpdate = true;
 
+            // This part controls the camera movement, which creates the background parallax effect
             camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
             camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
             camera.lookAt(scene.position);
 
-            const mainContent = document.getElementById('main-content');
-            const parallaxX = mouseX * 20;
-            const parallaxY = mouseY * 20;
-            mainContent.style.transform = `translate(${parallaxX}px, ${parallaxY}px)`;
+            // Removed the parallax effect for the main content to keep it stationary
+            // const mainContent = document.getElementById('main-content');
+            // const parallaxX = mouseX * 20;
+            // const parallaxY = mouseY * 20;
+            // mainContent.style.transform = `translate(${parallaxX}px, ${parallaxY}px)`;
 
             renderer.render(scene, camera);
         }
