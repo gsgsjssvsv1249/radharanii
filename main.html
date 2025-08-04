@@ -250,22 +250,22 @@
 
         /* Styles for the day/night toggle button */
         #day-night-toggle {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            z-index: 1000;
-            cursor: pointer;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            border: 2px solid var(--text-color);
-            background-color: var(--button-bg-color);
-            transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 10px var(--glow-color-1, #ec4899);
-        }
+    position: fixed;
+    top: 2rem;
+    right: calc(2rem + 1vw); /* Adjust the offset for smaller screens */
+    z-index: 1000;
+    cursor: pointer;
+    width: 48px; /* Use vw for width */
+    height: 48px; /* Use vw for height */
+    border-radius: 50%;
+    border: 2px solid var(--text-color);
+    background-color: var(--button-bg-color);
+    transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 10px var(--glow-color-1, #ec4899);
+}
 
         #day-night-toggle svg {
             width: 24px;
