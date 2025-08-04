@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sandeep's Heart</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts - Inter and Allura -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Allura&display=swap">
-    <!-- Three.js CDN for 3D graphics -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <style>
@@ -175,7 +172,6 @@
     </style>
 </head>
 <body class="bg-black text-white">
-    <!-- Redirect logic to ensure the page is only accessed from index.html -->
     <script>
         // Check if the user is coming from the index page.
         const fromIndex = sessionStorage.getItem('fromIndex');
@@ -189,11 +185,9 @@
         }
     </script>
 
-    <!-- The 3D canvas container -->
     <div id="threeCanvas"></div>
 
     <main id="main-content" class="content-container mx-auto flex-grow flex flex-col items-center justify-center">
-        <!-- SVG Heart Logo with a gradient fill -->
         <svg class="svg-heart" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <defs>
                 <linearGradient id="pink-red-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -211,18 +205,11 @@
             Welcome to the main section of Sandeep's Heart.
         </p>
 
-        <!-- Video Heart Animation with placeholder link -->
         <video class="heart-video" autoplay loop muted playsinline>
-            <!-- IMPORTANT: The provided URL is a GitHub page, not a raw video file. -->
-            <!-- To fix this, you must get the "raw" URL of your video from GitHub. -->
-            <!-- Example: https://raw.githubusercontent.com/user/repo/branch/video.mp4 -->
-            <!-- The current path: https://github.com/gsgsjssvsv1249/radharanii/blob/main/heart.mp4 is incorrect. -->
-            <!-- Please replace the 'src' attribute below with your correct raw video URL. -->
             <source src="https://raw.githubusercontent.com/gsgsjssvsv1249/radharanii/main/heart.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
         
-        <!-- Button group for color change and share functionality -->
         <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8 button-group">
             <button id="change-color-btn" class="color-button text-white font-bold py-3 px-8 rounded-full shadow-lg">
                 Change Color
@@ -233,12 +220,10 @@
         </div>
     </main>
     
-    <!-- Message box for share confirmation -->
     <div id="message-box" role="status">
         URL copied to clipboard!
     </div>
 
-    <!-- Footer, same as index.html -->
     <footer class="w-full text-center p-6 text-gray-500 z-10 relative">
         <p class="text-sm">
             Built by <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">@HackerXBhai</a>. The source code is available on <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">Telegram</a>.
@@ -303,10 +288,33 @@
         // Event listener for the "Share" button
         if (shareBtn) {
             shareBtn.addEventListener('click', () => {
-                const url = window.location.href;
-                
-                // Check if execCommand is supported
-                if (document.execCommand) {
+                // Check if the Web Share API is available
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Sandeep\'s Heart',
+                        text: 'Welcome to the main section of Sandeep\'s Heart.',
+                        url: window.location.href
+                    }).then(() => {
+                        // Show a success message
+                        messageBox.textContent = 'Shared successfully!';
+                        messageBox.style.backgroundColor = 'rgba(45, 212, 191, 0.9)'; // Teal for success
+                        messageBox.style.opacity = '1';
+                        setTimeout(() => {
+                            messageBox.style.opacity = '0';
+                        }, 3000);
+                    }).catch((error) => {
+                        console.error('Sharing failed:', error);
+                        // Show an error message
+                        messageBox.textContent = 'Sharing canceled or failed.';
+                        messageBox.style.backgroundColor = 'rgba(239, 68, 68, 0.9)'; // Red for failure
+                        messageBox.style.opacity = '1';
+                        setTimeout(() => {
+                            messageBox.style.opacity = '0';
+                        }, 3000);
+                    });
+                } else {
+                    // Fallback for browsers that do not support the Web Share API
+                    const url = window.location.href;
                     const textarea = document.createElement('textarea');
                     textarea.value = url;
                     document.body.appendChild(textarea);
@@ -314,21 +322,21 @@
                     try {
                         document.execCommand('copy');
                         messageBox.textContent = 'URL copied to clipboard!';
+                        messageBox.style.backgroundColor = 'rgba(45, 212, 191, 0.9)';
                     } catch (err) {
                         messageBox.textContent = 'Failed to copy URL.';
+                        messageBox.style.backgroundColor = 'rgba(239, 68, 68, 0.9)';
                     }
                     document.body.removeChild(textarea);
-                } else {
-                    messageBox.textContent = 'Your browser does not support copying to clipboard.';
-                }
 
-                // Show the message box
-                messageBox.style.opacity = '1';
-                
-                // Hide the message box after 3 seconds
-                setTimeout(() => {
-                    messageBox.style.opacity = '0';
-                }, 3000);
+                    // Show the message box
+                    messageBox.style.opacity = '1';
+                    
+                    // Hide the message box after 3 seconds
+                    setTimeout(() => {
+                        messageBox.style.opacity = '0';
+                    }, 3000);
+                }
             });
         }
         
