@@ -67,7 +67,7 @@
         
         /* Heart Video styles with a new glowing border */
         .heart-video {
-            width: 250px; /* Adjust size as needed */
+            width: 350px; /* Adjust size as needed */
             height: auto;
             margin-top: 2rem;
             margin-bottom: 2rem;
@@ -198,10 +198,10 @@
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
         </svg>
 
-        <h1 class="main-title text-5xl sm:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500 mb-4 tracking-tight leading-tight">
+        <h1 class="main-title text-6xl sm:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500 mb-4 tracking-tight leading-tight">
             Sandeep's Heart
         </h1>
-        <p class="text-lg sm:text-xl text-gray-300 mb-8 max-w-2xl">
+        <p class="text-xl sm:text-2xl text-gray-300 mb-8 max-w-2xl">
             Welcome to the main section of Sandeep's Heart.
         </p>
 
@@ -380,11 +380,11 @@
             document.body.appendChild(renderer.domElement);
 
             starGeo = new THREE.BufferGeometry();
-            const starCount = 30000;
+            const starCount = 50000;
             const positions = [];
             const velocities = [];
             for (let i = 0; i < starCount; i++) {
-                positions.push((Math.random() - 0.5) * 10000, (Math.random() - 0.5) * 10000, (Math.random() - 0.5) * 10000);
+                positions.push((Math.random() - 0.5) * 12000, (Math.random() - 0.5) * 12000, (Math.random() - 0.5) * 12000);
                 velocities.push(0, 0, Math.random() * 0.2 + 0.1);
             }
             starGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
@@ -392,7 +392,7 @@
 
             const starMaterial = new THREE.PointsMaterial({
                 color: 0xaaaaaa,
-                size: 5,
+                size: 7,
                 transparent: true,
                 opacity: 0.8
             });
@@ -443,7 +443,7 @@
             for (let i = 0; i < positions.length; i += 3) {
                 positions[i + 2] += velocities[i + 2];
                 if (positions[i + 2] > camera.position.z) {
-                    positions[i + 2] = -10000;
+                    positions[i + 2] = -12000;
                     velocities[i + 2] = Math.random() * 0.2 + 0.1;
                 }
             }
