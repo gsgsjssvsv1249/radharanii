@@ -34,10 +34,8 @@
             z-index: -1;
         }
 
-        /* Main content container for parallax effect and centering */
+        /* Main content container for centering */
         #main-content {
-            will-change: transform;
-            transition: transform 0.1s ease-out;
             width: 100%;
             max-width: 100%;
             display: flex;
@@ -46,6 +44,7 @@
             justify-content: center;
             flex-grow: 1; /* Allow content to grow and push the footer down */
             padding: 2rem;
+            /* The parallax effect on the content has been removed to keep it stationary */
         }
         
         /* Apply the new Allura font and glowing effect to the main title */
@@ -63,6 +62,24 @@
             50% {
                 text-shadow: 0 0 10px var(--glow-color-2, #f43f5e), 0 0 20px var(--glow-color-2, #f43f5e), 0 0 30px var(--glow-color-2, #f43f5e);
             }
+        }
+
+        /* Keyframes for the fade-in animation for text */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Class to apply the animation to the text elements */
+        .fade-in-text {
+            animation: fadeIn 1s ease-out forwards;
+            opacity: 0; /* Start invisible */
         }
         
         /* Heart Video styles with a new glowing border */
@@ -198,10 +215,10 @@
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
         </svg>
 
-        <h1 class="main-title text-6xl sm:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500 mb-4 tracking-tight leading-tight">
+        <h1 id="main-title" class="main-title text-6xl sm:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500 mb-4 tracking-tight leading-tight">
             Sandeep's Heart
         </h1>
-        <p class="text-xl sm:text-2xl text-gray-300 mb-8 max-w-2xl">
+        <p id="sub-title" class="text-xl sm:text-2xl text-gray-300 mb-8 max-w-2xl">
             Welcome to the main section of Sandeep's Heart.
         </p>
 
@@ -450,17 +467,32 @@
             starGeo.attributes.position.needsUpdate = true;
 
             // This part controls the camera movement, which creates the background parallax effect
-            camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
-            camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
+            // Multiplied the sensitivity by 4 to make the effect more obvious.
+            camera.position.x += (mouseX * 2 - camera.position.x) * 0.05;
+            camera.position.y += (mouseY * 2 - camera.position.y) * 0.05;
             camera.lookAt(scene.position);
 
-            // Removed the parallax effect for the main content to keep it stationary
-            // const mainContent = document.getElementById('main-content');
-            // const parallaxX = mouseX * 20;
-            // const parallaxY = mouseY * 20;
-            // mainContent.style.transform = `translate(${parallaxX}px, ${parallaxY}px)`;
-
             renderer.render(scene, camera);
+        }
+        
+        // Function to animate the text after a delay
+        function animateText() {
+            const mainTitle = document.getElementById('main-title');
+            const subTitle = document.getElementById('sub-title');
+            
+            if (mainTitle) {
+                // Animate main title first
+                setTimeout(() => {
+                    mainTitle.classList.add('fade-in-text');
+                }, 500); // 0.5s delay
+            }
+            
+            if (subTitle) {
+                // Animate sub-title after the main title
+                setTimeout(() => {
+                    subTitle.classList.add('fade-in-text');
+                }, 1500); // 1.5s delay
+            }
         }
 
         // Start the application on window load
@@ -471,6 +503,9 @@
             
             // Initial call to apply the color palette
             applyPalette(currentPaletteIndex);
+            
+            // Call the text animation function
+            animateText();
         };
     </script>
 </body>
