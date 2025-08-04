@@ -139,7 +139,9 @@
         
         /* Heart Video styles with a new glowing border */
         .heart-video {
-            width: 400px; /* Adjust size as needed */
+            /* REVISED: Make the video size responsive for better viewing on laptops and other screens */
+            width: 90%; /* Take up 90% of the container width */
+            max-width: 600px; /* Prevent it from getting too large on big screens */
             height: auto;
             margin-top: 2rem;
             margin-bottom: 2rem;
@@ -335,6 +337,158 @@
     </style>
 </head>
 <body class="bg-black text-white">
+    <script>
+        // Check if the user is coming from the index page.
+        const fromIndex = sessionStorage.getItem('fromIndex');
+        if (fromIndex !== 'true') {
+            // If the flag is not set, redirect to the landing page.
+            window.location.href = 'index.html';
+        } else {
+            // If the flag is set, clear it immediately so that a page refresh
+            // will cause a redirection back to index.html.
+            sessionStorage.removeItem('fromIndex');
+        }
+    </script>
+
+    <div id="dayBackground"></div>
+    <div id="threeCanvas"></div>
+
+    <button id="day-night-toggle">
+        <svg class="sun hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg class="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+    </button>
+
+    <main id="main-content" class="content-container mx-auto flex-grow flex flex-col items-center justify-center">
+        <svg class="svg-heart" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="pink-red-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgb(236,72,153);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(244,63,94);stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+
+        <h1 class="main-title text-5xl sm:text-6xl font-extrabold mb-4 tracking-tight leading-tight">
+            Sandeep's Heart
+        </h1>
+        <p class="text-lg sm:text-xl text-gray-300 mb-8 max-w-2xl">
+            Welcome to the main section of Sandeep's Heart.
+        </p>
+
+        <video class="heart-video" autoplay loop muted playsinline>
+            <source src="https://raw.githubusercontent.com/gsgsjssvsv1249/radharanii/main/heart.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+        <div class="flex flex-row space-x-4 mb-8 button-group">
+            <button id="change-color-btn" class="color-button font-bold py-2 px-6 rounded-full shadow-lg">
+                Change Color
+            </button>
+            <button id="share-btn" class="color-button font-bold py-2 px-6 rounded-full shadow-lg">
+                Share
+            </button>
+        </div>
+    </main>
+    
+    <div id="message-box" role="status">
+        URL copied to clipboard!
+    </div>
+
+    <footer class="w-full text-center p-6 text-gray-500 z-10 relative">
+        <p class="text-sm">
+            Built by <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">@HackerXBhai</a>. The source code is available on <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">Telegram</a>.
+        </p>
+    </footer>
+
+    <script>
+        // Check if the user is coming from the index page.
+        const fromIndex = sessionStorage.getItem('fromIndex');
+        if (fromIndex !== 'true') {
+            // If the flag is not set, redirect to the landing page.
+            window.location.href = 'index.html';
+        } else {
+            // If the flag is set, clear it immediately so that a page refresh
+            // will cause a redirection back to index.html.
+            sessionStorage.removeItem('fromIndex');
+        }
+    </script>
+
+    <div id="dayBackground"></div>
+    <div id="threeCanvas"></div>
+
+    <button id="day-night-toggle">
+        <svg class="sun hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg class="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+    </button>
+
+    <main id="main-content" class="content-container mx-auto flex-grow flex flex-col items-center justify-center">
+        <svg class="svg-heart" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="pink-red-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgb(236,72,153);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(244,63,94);stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+
+        <h1 class="main-title text-5xl sm:text-6xl font-extrabold mb-4 tracking-tight leading-tight">
+            Sandeep's Heart
+        </h1>
+        <p class="text-lg sm:text-xl text-gray-300 mb-8 max-w-2xl">
+            Welcome to the main section of Sandeep's Heart.
+        </p>
+
+        <video class="heart-video" autoplay loop muted playsinline>
+            <source src="https://raw.githubusercontent.com/gsgsjssvsv1249/radharanii/main/heart.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+        <div class="flex flex-row space-x-4 mb-8 button-group">
+            <button id="change-color-btn" class="color-button font-bold py-2 px-6 rounded-full shadow-lg">
+                Change Color
+            </button>
+            <button id="share-btn" class="color-button font-bold py-2 px-6 rounded-full shadow-lg">
+                Share
+            </button>
+        </div>
+    </main>
+    
+    <div id="message-box" role="status">
+        URL copied to clipboard!
+    </div>
+
+    <footer class="w-full text-center p-6 text-gray-500 z-10 relative">
+        <p class="text-sm">
+            Built by <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">@HackerXBhai</a>. The source code is available on <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">Telegram</a>.
+        </p>
+    </footer>
+
     <script>
         // Check if the user is coming from the index page.
         const fromIndex = sessionStorage.getItem('fromIndex');
