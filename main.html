@@ -20,7 +20,7 @@
         body.day-mode {
             --body-bg-color: #f3f4f6; /* Light gray */
             --text-color: #000000;
-            --button-bg-color: #56A0D3; /* Sky blue buttons */
+            --button-bg-color: var(--body-bg-color); /* Button background now matches body background */
             background-color: var(--body-bg-color);
             color: var(--text-color);
         }
@@ -266,32 +266,24 @@
             fill: var(--text-color);
             transition: fill 0.5s ease-in-out;
         }
-
-        /* Styles for the new light bloom animation */
-        .light-bloom {
+        
+        /* Styles for the circular wipe animation */
+        .theme-wipe {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 0;
-            height: 0;
             border-radius: 50%;
-            transform: translate(-50%, -50%);
+            z-index: 9999;
             pointer-events: none;
-            z-index: 999;
-            animation: bloom-fade-out 0.8s ease-out forwards;
+            opacity: 1;
+            transform: scale(0) translate(-50%, -50%);
+            animation: theme-wipe 0.6s cubic-bezier(0.8, 0.2, 0.2, 0.8) forwards;
         }
-        @keyframes bloom-fade-out {
-            0% {
-                width: 0;
-                height: 0;
-                opacity: 1;
-                box-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 40px currentColor;
+        
+        @keyframes theme-wipe {
+            from {
+                transform: scale(0) translate(-50%, -50%);
             }
-            100% {
-                width: 200px;
-                height: 200px;
-                opacity: 0;
-                box-shadow: 0 0 50px currentColor, 0 0 100px currentColor, 0 0 150px currentColor;
+            to {
+                transform: scale(200) translate(-50%, -50%);
             }
         }
 
@@ -487,43 +479,49 @@
             }
         }
         
-        // Function to toggle between day and night mode
-        function toggleDayNightMode() {
-            body.classList.toggle('day-mode');
-            const sunIcon = dayNightToggleBtn.querySelector('.sun');
-            const moonIcon = dayNightToggleBtn.querySelector('.moon');
+        // Function to toggle between day and night mode with a circular wipe animation
+        function toggleDayNightMode(event) {
+            const isDayMode = body.classList.contains('day-mode');
             
-            if (body.classList.contains('day-mode')) {
-                sunIcon.classList.remove('hidden');
-                moonIcon.classList.add('hidden');
-            } else {
-                sunIcon.classList.add('hidden');
-                moonIcon.classList.remove('hidden');
-            }
-            // Re-apply the current color palette to update glows for the new mode
-            applyPalette(currentPaletteIndex);
+            // Create the circular wipe element
+            const wipe = document.createElement('div');
+            wipe.classList.add('theme-wipe');
+            
+            // Set its color to the target theme's background color
+            const targetColor = isDayMode ? '#000000' : '#f3f4f6';
+            wipe.style.backgroundColor = targetColor;
+
+            // Get the button's position to start the animation from there
+            const rect = dayNightToggleBtn.getBoundingClientRect();
+            wipe.style.top = `${rect.top + rect.height / 2}px`;
+            wipe.style.left = `${rect.left + rect.width / 2}px`;
+            
+            // Append the wipe element to the body
+            document.body.appendChild(wipe);
+
+            // After a short delay, toggle the theme and icons
+            setTimeout(() => {
+                body.classList.toggle('day-mode');
+                const sunIcon = dayNightToggleBtn.querySelector('.sun');
+                const moonIcon = dayNightToggleBtn.querySelector('.moon');
+                
+                if (body.classList.contains('day-mode')) {
+                    sunIcon.classList.remove('hidden');
+                    moonIcon.classList.add('hidden');
+                } else {
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
+                }
+                
+                applyPalette(currentPaletteIndex);
+            }, 300); // This delay should be less than the animation duration
+
+            // Remove the wipe element after the animation is complete
+            wipe.addEventListener('animationend', () => {
+                wipe.remove();
+            });
         }
         
-        // Function to create a light bloom animation on click
-        function createLightBloom(x, y) {
-            // Only create the bloom in day mode
-            if (!body.classList.contains('day-mode')) {
-                return;
-            }
-            const bloom = document.createElement('div');
-            bloom.classList.add('light-bloom');
-            bloom.style.top = `${y}px`;
-            bloom.style.left = `${x}px`;
-            const currentPalette = palettes[currentPaletteIndex];
-            const bloomColor = currentPalette.dayGlow1;
-            bloom.style.color = bloomColor; // Use currentColor to pass the glow color
-            document.body.appendChild(bloom);
-            
-            setTimeout(() => {
-                bloom.remove();
-            }, 800); // Remove the element after the animation is finished
-        }
-
         // Event listener for the day/night toggle button
         if (dayNightToggleBtn) {
             dayNightToggleBtn.addEventListener('click', toggleDayNightMode);
@@ -538,9 +536,7 @@
         }
         
         // Event listener for the light bloom effect on the entire page
-        document.addEventListener('click', (event) => {
-            createLightBloom(event.clientX, event.clientY);
-        });
+        // Removed as it was a duplicate of the theme-wipe effect, and this new one is more specific.
 
         // Event listener for the "Share" button
         if (shareBtn) {
