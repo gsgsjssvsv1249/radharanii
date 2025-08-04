@@ -14,28 +14,26 @@
             --body-bg-color: #000000;
             --text-color: #ffffff;
             --button-bg-color: #1f2937;
+            --glow-color-1: #ec4899; /* Default Pink */
+            --glow-color-2: #f43f5e; /* Default Red */
+            --button-gradient: linear-gradient(to right, var(--glow-color-1), var(--glow-color-2));
+            --day-glow-color-1: #ff69b4;
+            --day-glow-color-2: #ff1493;
+            --day-button-gradient: linear-gradient(to right, var(--day-glow-color-1), var(--day-glow-color-2));
         }
 
         /* Day mode styles - will be applied when the 'day-mode' class is active */
         body.day-mode {
             --body-bg-color: #f3f4f6; /* Light gray */
             --text-color: #000000;
-            --button-bg-color: var(--body-bg-color); /* Button background now matches body background */
-            background-color: var(--body-bg-color);
-            color: var(--text-color);
+            --button-bg-color: var(--body-bg-color);
         }
 
-        /* Add the new rule for the footer text in day mode */
-        body.day-mode footer {
-            color: var(--text-color);
-        }
-
-        /* New rule to ensure the main content paragraph is black in day mode */
+        body.day-mode footer,
         body.day-mode #main-content p {
             color: var(--text-color);
         }
         
-        /* Custom styles for the body, background, and animations */
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--body-bg-color);
@@ -46,12 +44,11 @@
             align-items: center;
             min-height: 100vh;
             position: relative;
-            overflow-x: hidden; /* Prevent horizontal scrolling */
+            overflow-x: hidden;
             text-align: center;
             transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
         }
 
-        /* The 3D canvas will be positioned behind all content */
         #threeCanvas {
             position: fixed;
             top: 0;
@@ -59,7 +56,6 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            /* Day mode canvas will be hidden */
             transition: opacity 0.5s ease-in-out;
         }
 
@@ -67,7 +63,6 @@
             opacity: 0;
         }
         
-        /* New day mode background with a creative radial gradient effect */
         #dayBackground {
             position: fixed;
             top: 0;
@@ -75,7 +70,7 @@
             width: 100%;
             height: 100%;
             z-index: -2;
-            background-color: #87CEEB; /* Sky Blue background */
+            background-color: #87CEEB;
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
         }
@@ -84,7 +79,6 @@
             opacity: 1;
         }
 
-        /* Main content container for centering */
         #main-content {
             width: 100%;
             max-width: 100%;
@@ -92,107 +86,77 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            flex-grow: 1; /* Allow content to grow and push the footer down */
+            flex-grow: 1;
             padding: 2rem;
-            /* Added a gap to space out the elements within the main container */
-            gap: 2rem;
+            gap: 1rem; /* Reduced gap */
         }
         
-        /* Apply the new Allura font and glowing effect to the main title */
         .main-title {
             font-family: 'Allura', cursive;
-            /* Combine glow animation with a simple fade-in animation */
             animation: text-glow 4s ease-in-out infinite, fade-in 1s ease-in-out forwards;
             text-align: center;
-            /* Text color is now set to a single color to work better with text-shadow glow */
-            color: var(--glow-color-1, #ec4899);
-            text-shadow: 0 0 5px var(--glow-color-1, #ec4899), 0 0 10px var(--glow-color-1, #ec4899), 0 0 15px var(--glow-color-1, #ec4899);
-            opacity: 0; /* Start hidden for the fade-in effect */
+            color: var(--glow-color-1);
+            text-shadow: 0 0 5px var(--glow-color-1), 0 0 10px var(--glow-color-1), 0 0 15px var(--glow-color-1);
+            opacity: 0;
         }
         
-        /* New styles for the fading paragraph with a slight delay */
         #main-content p {
             animation: fade-in 1s ease-in-out forwards;
-            animation-delay: 0.5s; /* Delay the paragraph animation */
-            opacity: 0; /* Initially hidden */
+            animation-delay: 0.5s;
+            opacity: 0;
         }
 
-        /* Keyframes for the title glow animation, using CSS variables for dynamic colors */
         @keyframes text-glow {
             0%, 100% {
-                text-shadow: 0 0 5px var(--glow-color-1, #ec4899), 0 0 10px var(--glow-color-1, #ec4899), 0 0 15px var(--glow-color-1, #ec4899);
+                text-shadow: 0 0 5px var(--glow-color-1), 0 0 10px var(--glow-color-1), 0 0 15px var(--glow-color-1);
             }
             50% {
-                text-shadow: 0 0 10px var(--glow-color-2, #f43f5e), 0 0 20px var(--glow-color-2, #f43f5e), 0 0 30px var(--glow-color-2, #f43f5e);
+                text-shadow: 0 0 10px var(--glow-color-2), 0 0 20px var(--glow-color-2), 0 0 30px var(--glow-color-2);
             }
         }
 
-        /* Keyframes for the new text fade-in and slide-up animation */
         @keyframes fade-in {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
         
-        /* Heart Video styles with a new glowing border */
         .heart-video {
-            /* Changed to 100% width to make it bigger and responsive */
             width: 100%;
             height: auto;
             border-radius: 1rem;
-            box-shadow: 0 0 10px var(--glow-color-1, #ec4899), 0 0 20px var(--glow-color-2, #f43f5e);
+            box-shadow: 0 0 10px var(--glow-color-1), 0 0 20px var(--glow-color-2);
             transition: box-shadow 0.5s ease-in-out;
             border: 2px solid transparent;
-            background-image: linear-gradient(to right, #1f2937, #1f2937), var(--button-gradient, linear-gradient(to right, #ec4899, #f43f5e));
+            background-image: linear-gradient(to right, #1f2937, #1f2937), var(--button-gradient);
             background-origin: border-box;
             background-clip: content-box, border-box;
-            /* Added object-fit to ensure the video fits its container correctly */
             object-fit: cover;
         }
 
-        /* Styles for screens wider than 768px (e.g., tablets and laptops) */
         @media (min-width: 768px) {
             .heart-video {
-                /* Use a larger max-width to let the video scale but not get too wide */
                 max-width: 800px;
             }
         }
 
-        /* SVG Heart styles */
         .svg-heart {
             width: 80px;
             height: 80px;
             margin-bottom: 1rem;
-            fill: url(#pink-red-gradient);
+            fill: url(#heart-gradient);
             animation: heart-pulse 1.5s ease-in-out infinite, heart-glow 4s ease-in-out infinite;
         }
         
-        /* Keyframes for the heart pulse animation */
         @keyframes heart-pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
 
-        /* Keyframes for the heart glow animation */
         @keyframes heart-glow {
-            0%, 100% {
-                filter: drop-shadow(0 0 5px var(--glow-color-1, #ec4899)) drop-shadow(0 0 10px var(--glow-color-1, #ec4899));
-            }
-            50% {
-                filter: drop-shadow(0 0 10px var(--glow-color-2, #f43f5e)) drop-shadow(0 0 20px var(--glow-color-2, #f43f5e));
-            }
+            0%, 100% { filter: drop-shadow(0 0 5px var(--glow-color-1)) drop-shadow(0 0 10px var(--glow-color-1)); }
+            50% { filter: drop-shadow(0 0 10px var(--glow-color-2)) drop-shadow(0 0 20px var(--glow-color-2)); }
         }
         
-        /* Styles for shooting stars */
         .shooting-star {
             position: absolute;
             background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0));
@@ -203,45 +167,80 @@
             animation: star-fall linear infinite;
         }
         @keyframes star-fall {
-            0% {
-                opacity: 0;
-                transform: rotate(-45deg) translateX(0);
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                opacity: 0;
-                transform: rotate(-45deg) translateX(400px);
-            }
+            0% { opacity: 0; transform: rotate(-45deg) translateX(0); }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { opacity: 0; transform: rotate(-45deg) translateX(400px); }
+        }
+        
+        .color-picker-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .color-picker-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            background-color: #1f2937;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.5s ease-in-out;
         }
 
-        /* Button group for consistent styling */
+        body.day-mode .color-picker-group {
+            background-color: var(--body-bg-color);
+        }
+
+        .color-picker {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 2rem;
+            height: 2rem;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        .color-picker::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        
+        .color-picker::-webkit-color-swatch {
+            border: none;
+            border-radius: 50%;
+        }
+
+        .color-picker::-moz-color-swatch {
+            border: none;
+            border-radius: 50%;
+        }
+
         .button-group button {
             border: 2px solid transparent;
-            background-image: linear-gradient(var(--button-bg-color), var(--button-bg-color)), var(--button-gradient, linear-gradient(to right, #ec4899, #f43f5e));
+            background-image: linear-gradient(var(--button-bg-color), var(--button-bg-color)), var(--button-gradient);
             background-origin: border-box;
             background-clip: padding-box, border-box;
             transition: transform 0.2s, box-shadow 0.2s, background-image 0.5s, color 0.5s;
         }
         
-        /* Day mode button text color */
         body.day-mode .button-group button {
             color: #000000;
         }
 
-        /* Night mode button text color */
         body:not(.day-mode) .button-group button {
             color: #ffffff;
         }
         
-        /* New and more dynamic button hover animation */
         .button-group button:hover {
             animation: button-pop 0.3s forwards;
-            box-shadow: 0 0 15px var(--glow-color-1, #ec4899), 0 0 25px var(--glow-color-2, #f43f5e);
+            box-shadow: 0 0 15px var(--glow-color-1), 0 0 25px var(--glow-color-2);
         }
         .button-group button:active {
             transform: scale(0.95);
@@ -252,24 +251,23 @@
             100% { transform: scale(1.05); }
         }
 
-        /* Styles for the day/night toggle button */
         #day-night-toggle {
-    position: fixed;
-    top: 2rem;
-    right: calc(2rem + 1vw); /* Adjust the offset for smaller screens */
-    z-index: 1000;
-    cursor: pointer;
-    width: 48px; /* Use vw for width */
-    height: 48px; /* Use vw for height */
-    border-radius: 50%;
-    border: 2px solid var(--text-color);
-    background-color: var(--button-bg-color);
-    transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 10px var(--glow-color-1, #ec4899);
-}
+            position: fixed;
+            top: 2rem;
+            right: calc(2rem + 1vw);
+            z-index: 1000;
+            cursor: pointer;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid var(--text-color);
+            background-color: var(--button-bg-color);
+            transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px var(--glow-color-1);
+        }
 
         #day-night-toggle svg {
             width: 24px;
@@ -278,7 +276,6 @@
             transition: fill 0.5s ease-in-out;
         }
         
-        /* Styles for the circular wipe animation */
         .theme-wipe {
             position: fixed;
             border-radius: 50%;
@@ -290,15 +287,10 @@
         }
         
         @keyframes theme-wipe {
-            from {
-                transform: scale(0) translate(-50%, -50%);
-            }
-            to {
-                transform: scale(200) translate(-50%, -50%);
-            }
+            from { transform: scale(0) translate(-50%, -50%); }
+            to { transform: scale(200) translate(-50%, -50%); }
         }
         
-        /* Styles for the new light bloom animation on click */
         .light-bloom {
             position: fixed;
             top: 0;
@@ -314,20 +306,15 @@
         
         @keyframes bloom-fade-out {
             0% {
-                width: 0;
-                height: 0;
-                opacity: 1;
+                width: 0; height: 0; opacity: 1;
                 box-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 40px currentColor;
             }
             100% {
-                width: 200px;
-                height: 200px;
-                opacity: 0;
+                width: 200px; height: 200px; opacity: 0;
                 box-shadow: 0 0 50px currentColor, 0 0 100px currentColor, 0 0 150px currentColor;
             }
         }
 
-        /* Message box for copy confirmation */
         #message-box {
             position: fixed;
             bottom: 2rem;
@@ -382,7 +369,7 @@
     <main id="main-content" class="content-container mx-auto flex-grow flex flex-col items-center justify-center">
         <svg class="svg-heart" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <defs>
-                <linearGradient id="pink-red-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <linearGradient id="heart-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" style="stop-color:rgb(236,72,153);stop-opacity:1" />
                     <stop offset="100%" style="stop-color:rgb(244,63,94);stop-opacity:1" />
                 </linearGradient>
@@ -402,9 +389,20 @@
             Your browser does not support the video tag.
         </video>
         
+        <div class="color-picker-container">
+            <div class="color-picker-group">
+                <label for="color1" class="text-white">Glow Color 1:</label>
+                <input type="color" id="color1" class="color-picker" value="#ec4899">
+            </div>
+            <div class="color-picker-group">
+                <label for="color2" class="text-white">Glow Color 2:</label>
+                <input type="color" id="color2" class="color-picker" value="#f43f5e">
+            </div>
+        </div>
+        
         <div class="flex flex-row space-x-4 button-group">
             <button id="change-color-btn" class="color-button font-bold py-2 px-6 rounded-full shadow-lg">
-                Change Color
+                Random Color
             </button>
             <button id="share-btn" class="color-button font-bold py-2 px-6 rounded-full shadow-lg">
                 Share
@@ -430,88 +428,28 @@
         const dayNightToggleBtn = document.getElementById('day-night-toggle');
         const body = document.body;
         const mainContent = document.getElementById('main-content');
+        
+        // Color picker elements
+        const color1Input = document.getElementById('color1');
+        const color2Input = document.getElementById('color2');
 
-        // Define color palettes for both day and night modes
-        const palettes = [
-            { // Pink/Red (Night default)
-                glow1: '#ec4899', 
-                glow2: '#f43f5e',
-                gradient: 'linear-gradient(to right, #ec4899, #f43f5e)',
-                dayGlow1: '#ff69b4', // Hot Pink
-                dayGlow2: '#ff1493', // Deep Pink
-                dayGradient: 'linear-gradient(to right, #ff69b4, #ff1493)'
-            },
-            { // Blue/Purple (Night)
-                glow1: '#3b82f6',
-                glow2: '#a855f7',
-                gradient: 'linear-gradient(to right, #3b82f6, #a855f7)',
-                dayGlow1: '#63b3ed', // Light Blue
-                dayGlow2: '#805ad5', // Violet
-                dayGradient: 'linear-gradient(to right, #63b3ed, #805ad5)'
-            },
-            { // Emerald/Cyan (Night)
-                glow1: '#10b981',
-                glow2: '#22d3ee',
-                gradient: 'linear-gradient(to right, #10b981, #22d3ee)',
-                dayGlow1: '#48bb78', // Medium Green
-                dayGlow2: '#4fd1c5', // Teal
-                dayGradient: 'linear-gradient(to right, #48bb78, #4fd1c5)'
-            },
-            { // Teal/Aqua (Night)
-                glow1: '#20c997',
-                glow2: '#29d0d3',
-                gradient: 'linear-gradient(to right, #20c997, #29d0d3)',
-                dayGlow1: '#4fd1c5', // Teal
-                dayGlow2: '#667eea', // Indigo
-                dayGradient: 'linear-gradient(to right, #4fd1c5, #667eea)'
-            },
-            { // Deep Purple/Magenta (Night)
-                glow1: '#5b21b6',
-                glow2: '#c026d3',
-                gradient: 'linear-gradient(to right, #5b21b6, #c026d3)',
-                dayGlow1: '#805ad5', // Violet
-                dayGlow2: '#d53f8c', // Ruby
-                dayGradient: 'linear-gradient(to right, #805ad5, #d53f8c)'
-            },
-            { // Hot Pink/Deep Pink (Night)
-                glow1: '#ff69b4',
-                glow2: '#ff1493',
-                gradient: 'linear-gradient(to right, #ff69b4, #ff1493)',
-                dayGlow1: '#f687b3', // Light Pink
-                dayGlow2: '#e53e3e', // Red
-                dayGradient: 'linear-gradient(to right, #f687b3, #e53e3e)'
-            },
-            { // Gold/Amber (Night)
-                glow1: '#FFD700',
-                glow2: '#FFC107',
-                gradient: 'linear-gradient(to right, #FFD700, #FFC107)',
-                dayGlow1: '#F6E05E', // Light Gold
-                dayGlow2: '#FEEBC8', // Light Amber
-                dayGradient: 'linear-gradient(to right, #F6E05E, #FEEBC8)'
-            }
-        ];
-        let currentPaletteIndex = 0;
-
-        // Function to apply the current color palette
-        function applyPalette(index) {
+        // Function to update all colors based on the chosen palette
+        function updateColors(glow1, glow2) {
             const root = document.documentElement;
-            const current = palettes[index];
             const isDayMode = body.classList.contains('day-mode');
             
-            const glow1 = isDayMode ? current.dayGlow1 : current.glow1;
-            const glow2 = isDayMode ? current.dayGlow2 : current.glow2;
-            const gradient = isDayMode ? current.dayGradient : current.gradient;
-
+            // Set the main glow and gradient colors based on the mode
             root.style.setProperty('--glow-color-1', glow1);
             root.style.setProperty('--glow-color-2', glow2);
-            root.style.setProperty('--button-gradient', gradient);
-            
-            // Set the color directly for the title and let the CSS handle the glow
-            const mainTitle = document.querySelector('.main-title');
-            mainTitle.style.color = isDayMode ? glow1 : glow1;
+            root.style.setProperty('--button-gradient', `linear-gradient(to right, ${glow1}, ${glow2})`);
+
+            // Handle day mode specific colors and styles
+            if (isDayMode) {
+                // You can add more logic here to handle different colors for day mode
+            }
 
             // Also update the SVG heart gradient
-            const svgHeartDefs = document.getElementById('pink-red-gradient');
+            const svgHeartDefs = document.getElementById('heart-gradient');
             if (svgHeartDefs) {
                 const stops = svgHeartDefs.querySelectorAll('stop');
                 stops[0].style.stopColor = glow1;
@@ -519,27 +457,39 @@
             }
         }
         
+        // Function to generate a random hex color
+        function getRandomHexColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        // Handle color picker input changes
+        function handleColorChange() {
+            const glow1 = color1Input.value;
+            const glow2 = color2Input.value;
+            updateColors(glow1, glow2);
+        }
+        
         // Function to toggle between day and night mode with a circular wipe animation
         function toggleDayNightMode(event) {
             const isDayMode = body.classList.contains('day-mode');
             
-            // Create the circular wipe element
             const wipe = document.createElement('div');
             wipe.classList.add('theme-wipe');
             
-            // Set its color to the target theme's background color
             const targetColor = isDayMode ? '#000000' : '#f3f4f6';
             wipe.style.backgroundColor = targetColor;
 
-            // Get the button's position to start the animation from there
             const rect = dayNightToggleBtn.getBoundingClientRect();
             wipe.style.top = `${rect.top + rect.height / 2}px`;
             wipe.style.left = `${rect.left + rect.width / 2}px`;
             
-            // Append the wipe element to the body
             document.body.appendChild(wipe);
 
-            // After a short delay, toggle the theme and icons
             setTimeout(() => {
                 body.classList.toggle('day-mode');
                 const sunIcon = dayNightToggleBtn.querySelector('.sun');
@@ -553,18 +503,16 @@
                     moonIcon.classList.remove('hidden');
                 }
                 
-                applyPalette(currentPaletteIndex);
-            }, 300); // This delay should be less than the animation duration
+                // Reapply colors to handle day/night mode specific changes
+                updateColors(color1Input.value, color2Input.value);
+            }, 300);
 
-            // Remove the wipe element after the animation is complete
             wipe.addEventListener('animationend', () => {
                 wipe.remove();
             });
         }
         
-        // Function to create a light bloom animation on click
         function createLightBloom(x, y) {
-            // Only create the bloom in day mode
             if (!body.classList.contains('day-mode')) {
                 return;
             }
@@ -572,14 +520,12 @@
             bloom.classList.add('light-bloom');
             bloom.style.top = `${y}px`;
             bloom.style.left = `${x}px`;
-            const currentPalette = palettes[currentPaletteIndex];
-            const bloomColor = currentPalette.dayGlow1;
-            bloom.style.color = bloomColor; // Use currentColor to pass the glow color
+            bloom.style.color = color1Input.value; // Use currentColor to pass the glow color
             document.body.appendChild(bloom);
             
             setTimeout(() => {
                 bloom.remove();
-            }, 800); // Remove the element after the animation is finished
+            }, 800);
         }
 
         // Event listener for the day/night toggle button
@@ -587,48 +533,47 @@
             dayNightToggleBtn.addEventListener('click', toggleDayNightMode);
         }
         
-        // Event listener for the "Change Color" button
+        // Event listener for the "Random Color" button
         if (colorBtn) {
             colorBtn.addEventListener('click', () => {
-                currentPaletteIndex = (currentPaletteIndex + 1) % palettes.length;
-                applyPalette(currentPaletteIndex);
+                const randomColor1 = getRandomHexColor();
+                const randomColor2 = getRandomHexColor();
+                color1Input.value = randomColor1;
+                color2Input.value = randomColor2;
+                updateColors(randomColor1, randomColor2);
             });
         }
         
-        // Event listener for the new light bloom effect on the entire page
+        // Event listeners for color picker inputs
+        if (color1Input && color2Input) {
+            color1Input.addEventListener('input', handleColorChange);
+            color2Input.addEventListener('input', handleColorChange);
+        }
+
         document.addEventListener('click', (event) => {
             createLightBloom(event.clientX, event.clientY);
         });
 
-        // Event listener for the "Share" button
         if (shareBtn) {
             shareBtn.addEventListener('click', () => {
-                // Check if the Web Share API is available
                 if (navigator.share) {
                     navigator.share({
                         title: 'Sandeep\'s Heart',
                         text: 'Welcome to the main section of Sandeep\'s Heart.',
                         url: window.location.href
                     }).then(() => {
-                        // Show a success message
                         messageBox.textContent = 'Shared successfully!';
-                        messageBox.style.backgroundColor = 'rgba(45, 212, 191, 0.9)'; // Teal for success
+                        messageBox.style.backgroundColor = 'rgba(45, 212, 191, 0.9)';
                         messageBox.style.opacity = '1';
-                        setTimeout(() => {
-                            messageBox.style.opacity = '0';
-                        }, 3000);
+                        setTimeout(() => { messageBox.style.opacity = '0'; }, 3000);
                     }).catch((error) => {
                         console.error('Sharing failed:', error);
-                        // Show an error message
                         messageBox.textContent = 'Sharing canceled or failed.';
-                        messageBox.style.backgroundColor = 'rgba(239, 68, 68, 0.9)'; // Red for failure
+                        messageBox.style.backgroundColor = 'rgba(239, 68, 68, 0.9)';
                         messageBox.style.opacity = '1';
-                        setTimeout(() => {
-                            messageBox.style.opacity = '0';
-                        }, 3000);
+                        setTimeout(() => { messageBox.style.opacity = '0'; }, 3000);
                     });
                 } else {
-                    // Fallback for browsers that do not support the Web Share API
                     const url = window.location.href;
                     const textarea = document.createElement('textarea');
                     textarea.value = url;
@@ -643,14 +588,8 @@
                         messageBox.style.backgroundColor = 'rgba(239, 68, 68, 0.9)';
                     }
                     document.body.removeChild(textarea);
-
-                    // Show the message box
                     messageBox.style.opacity = '1';
-                    
-                    // Hide the message box after 3 seconds
-                    setTimeout(() => {
-                        messageBox.style.opacity = '0';
-                    }, 3000);
+                    setTimeout(() => { messageBox.style.opacity = '0'; }, 3000);
                 }
             });
         }
@@ -659,10 +598,9 @@
         let scene, camera, renderer, starGeo, stars;
         let mouseX = 0, mouseY = 0;
 
-        // Function to create and initialize the 3D scene
         function initThreeJS() {
             if (!THREE) {
-                console.error('Three.js library is not loaded. Cannot initialize animation.');
+                console.error('Three.js library is not loaded.');
                 return;
             }
 
@@ -704,20 +642,17 @@
             window.addEventListener('resize', onWindowResize, false);
         }
 
-        // Function to handle window resizing
         function onWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        // Function to handle mouse movement for camera and parallax control
         function onMouseMove(event) {
             mouseX = (event.clientX / window.innerWidth) * 2 - 1;
             mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
         }
 
-        // Function to create a shooting star
         function createShootingStar() {
             const star = document.createElement('div');
             star.classList.add('shooting-star');
@@ -728,7 +663,6 @@
             star.style.animationDelay = `${Math.random() * 2}s`;
             document.body.appendChild(star);
             
-            // Remove the star after its animation completes
             setTimeout(() => {
                 star.remove();
             }, (Math.random() * 2 + 1) * 1000 + (Math.random() * 2) * 1000);
@@ -758,14 +692,11 @@
             }
         }
         
-        // Start the application on window load
         window.onload = function() {
             initThreeJS();
             animate();
             setInterval(createShootingStar, 5000);
-            
-            // Initial call to apply the color palette
-            applyPalette(currentPaletteIndex);
+            updateColors(color1Input.value, color2Input.value);
         };
     </script>
 </body>
