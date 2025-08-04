@@ -32,12 +32,14 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            /* Ensure the canvas is not receiving mouse events */
-            pointer-events: none;
         }
 
-        /* Main content container for centering */
+        /* Main content container for parallax effect and centering */
         #main-content {
+            will-change: transform;
+            transition: transform 0.1s ease-out;
+            position: relative;
+            z-index: 1;
             width: 100%;
             max-width: 100%;
             display: flex;
@@ -46,7 +48,6 @@
             justify-content: center;
             flex-grow: 1; /* Allow content to grow and push the footer down */
             padding: 2rem;
-            /* The parallax effect on the content has been removed to keep it stationary */
         }
         
         /* Apply the new Allura font and glowing effect to the main title */
@@ -68,28 +69,10 @@
                 text-shadow: 0 0 10px var(--glow-color-2, #f43f5e), 0 0 20px var(--glow-color-2, #f43f5e), 0 0 30px var(--glow-color-2, #f43f5e);
             }
         }
-
-        /* Keyframes for the fade-in animation for text */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* Class to apply the animation to the text elements */
-        .fade-in-text {
-            animation: fadeIn 1s ease-out forwards;
-            opacity: 0; /* Start invisible */
-        }
         
         /* Heart Video styles with a new glowing border */
         .heart-video {
-            width: 350px; /* Adjust size as needed */
+            width: 250px; /* Adjust size as needed */
             height: auto;
             margin-top: 2rem;
             margin-bottom: 2rem;
@@ -220,10 +203,10 @@
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
         </svg>
 
-        <h1 id="main-title" class="main-title text-6xl sm:text-7xl font-extrabold mb-4 tracking-tight leading-tight">
+        <h1 class="main-title text-5xl sm:text-6xl font-extrabold mb-4 tracking-tight leading-tight">
             Sandeep's Heart
         </h1>
-        <p id="sub-title" class="text-xl sm:text-2xl text-gray-300 mb-8 max-w-2xl">
+        <p class="text-lg sm:text-xl text-gray-300 mb-8 max-w-2xl">
             Welcome to the main section of Sandeep's Heart.
         </p>
 
@@ -232,11 +215,11 @@
             Your browser does not support the video tag.
         </video>
         
-        <div class="flex flex-row space-x-4 mb-8 button-group">
-            <button id="change-color-btn" class="color-button text-white font-bold py-2 px-6 rounded-full shadow-lg">
+        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8 button-group">
+            <button id="change-color-btn" class="color-button text-white font-bold py-3 px-8 rounded-full shadow-lg">
                 Change Color
             </button>
-            <button id="share-btn" class="color-button text-white font-bold py-2 px-6 rounded-full shadow-lg">
+            <button id="share-btn" class="color-button text-white font-bold py-3 px-8 rounded-full shadow-lg">
                 Share
             </button>
         </div>
@@ -274,21 +257,6 @@
                 glow1: '#10b981', // Emerald
                 glow2: '#22d3ee', // Cyan
                 gradient: 'linear-gradient(to right, #10b981, #22d3ee)'
-            },
-            {
-                glow1: '#ff8c00', // Dark Orange
-                glow2: '#ffd700', // Gold
-                gradient: 'linear-gradient(to right, #ff8c00, #ffd700)'
-            },
-            {
-                glow1: '#8a2be2', // Blue Violet
-                glow2: '#ff00ff', // Magenta
-                gradient: 'linear-gradient(to right, #8a2be2, #ff00ff)'
-            },
-            {
-                glow1: '#00ffff', // Aqua
-                glow2: '#7fff00', // Chartreuse
-                gradient: 'linear-gradient(to right, #00ffff, #7fff00)'
             }
         ];
         let currentPaletteIndex = 0;
@@ -302,7 +270,7 @@
             root.style.setProperty('--button-gradient', current.gradient);
             
             // Set the color directly for the title and let the CSS handle the glow
-            const mainTitle = document.getElementById('main-title');
+            const mainTitle = document.querySelector('.main-title');
             mainTitle.style.color = current.glow1;
 
             // Also update the SVG heart gradient
@@ -380,7 +348,7 @@
         // --- 3D Starfield Background Script with Three.js ---
         let scene, camera, renderer, starGeo, stars;
         let mouseX = 0, mouseY = 0;
-        
+
         // Function to create and initialize the 3D scene
         function initThreeJS() {
             if (!THREE) {
@@ -389,12 +357,9 @@
             }
 
             scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
-            camera.position.z = 1000;
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
+            camera.position.z = 1;
             camera.rotation.x = Math.PI / 2;
-
-            // Get a reference to the canvas container
-            const threeCanvasContainer = document.getElementById('threeCanvas');
 
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -402,14 +367,14 @@
             renderer.domElement.style.top = '0';
             renderer.domElement.style.left = '0';
             renderer.domElement.style.zIndex = '-1';
-            threeCanvasContainer.appendChild(renderer.domElement);
+            document.body.appendChild(renderer.domElement);
 
             starGeo = new THREE.BufferGeometry();
-            const starCount = 50000;
+            const starCount = 5000;
             const positions = [];
             const velocities = [];
             for (let i = 0; i < starCount; i++) {
-                positions.push((Math.random() - 0.5) * 12000, (Math.random() - 0.5) * 12000, (Math.random() - 0.5) * 12000);
+                positions.push((Math.random() - 0.5) * 600, (Math.random() - 0.5) * 600, (Math.random() - 0.5) * 600);
                 velocities.push(0, 0, Math.random() * 0.2 + 0.1);
             }
             starGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
@@ -417,7 +382,7 @@
 
             const starMaterial = new THREE.PointsMaterial({
                 color: 0xaaaaaa,
-                size: 7,
+                size: 0.7,
                 transparent: true,
                 opacity: 0.8
             });
@@ -425,7 +390,6 @@
             stars = new THREE.Points(starGeo, starMaterial);
             scene.add(stars);
 
-            // Listen for mouse movement on the entire window to ensure it works
             window.addEventListener('mousemove', onMouseMove, false);
             window.addEventListener('resize', onWindowResize, false);
         }
@@ -439,7 +403,6 @@
 
         // Function to handle mouse movement for camera and parallax control
         function onMouseMove(event) {
-            // Update the mouse coordinates for use in the animation loop
             mouseX = (event.clientX / window.innerWidth) * 2 - 1;
             mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
         }
@@ -470,41 +433,24 @@
             for (let i = 0; i < positions.length; i += 3) {
                 positions[i + 2] += velocities[i + 2];
                 if (positions[i + 2] > camera.position.z) {
-                    positions[i + 2] = -12000;
+                    positions[i + 2] = -600;
                     velocities[i + 2] = Math.random() * 0.2 + 0.1;
                 }
             }
             starGeo.attributes.position.needsUpdate = true;
 
-            // This part controls the camera movement, which creates the background parallax effect
-            // The sensitivity has been increased to make the effect more noticeable.
-            camera.position.x += (mouseX * 5 - camera.position.x) * 0.05;
-            camera.position.y += (mouseY * 5 - camera.position.y) * 0.05;
+            camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
+            camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
             camera.lookAt(scene.position);
+
+            const mainContent = document.getElementById('main-content');
+            const parallaxX = mouseX * 20;
+            const parallaxY = mouseY * 20;
+            mainContent.style.transform = `translate(${parallaxX}px, ${parallaxY}px)`;
 
             renderer.render(scene, camera);
         }
         
-        // Function to animate the text after a delay
-        function animateText() {
-            const mainTitle = document.getElementById('main-title');
-            const subTitle = document.getElementById('sub-title');
-            
-            if (mainTitle) {
-                // Animate main title first
-                setTimeout(() => {
-                    mainTitle.classList.add('fade-in-text');
-                }, 500); // 0.5s delay
-            }
-            
-            if (subTitle) {
-                // Animate sub-title after the main title
-                setTimeout(() => {
-                    subTitle.classList.add('fade-in-text');
-                }, 1500); // 1.5s delay
-            }
-        }
-
         // Start the application on window load
         window.onload = function() {
             initThreeJS();
@@ -513,9 +459,6 @@
             
             // Initial call to apply the color palette
             applyPalette(currentPaletteIndex);
-            
-            // Call the text animation function
-            animateText();
         };
     </script>
 </body>
