@@ -94,6 +94,8 @@
             justify-content: center;
             flex-grow: 1; /* Allow content to grow and push the footer down */
             padding: 2rem;
+            /* Added a gap to space out the elements within the main container */
+            gap: 2rem;
         }
         
         /* Apply the new Allura font and glowing effect to the main title */
@@ -139,7 +141,8 @@
         
         /* Heart Video styles with a new glowing border */
         .heart-video {
-            width: 400px; /* Default size for mobile and smaller screens */
+            /* Changed to 100% width to make it bigger and responsive */
+            width: 100%;
             height: auto;
             margin-top: 2rem;
             margin-bottom: 2rem;
@@ -150,12 +153,15 @@
             background-image: linear-gradient(to right, #1f2937, #1f2937), var(--button-gradient, linear-gradient(to right, #ec4899, #f43f5e));
             background-origin: border-box;
             background-clip: content-box, border-box;
+            /* Added object-fit to ensure the video fits its container correctly */
+            object-fit: cover;
         }
 
         /* Styles for screens wider than 768px (e.g., tablets and laptops) */
         @media (min-width: 768px) {
             .heart-video {
-                width: 800px; /* Set a larger width for laptops */
+                /* Use a larger max-width to let the video scale but not get too wide */
+                max-width: 800px;
             }
         }
 
@@ -398,7 +404,7 @@
             Your browser does not support the video tag.
         </video>
         
-        <div class="flex flex-row space-x-4 mb-8 button-group">
+        <div class="flex flex-row space-x-4 button-group">
             <button id="change-color-btn" class="color-button font-bold py-2 px-6 rounded-full shadow-lg">
                 Change Color
             </button>
@@ -412,7 +418,7 @@
         URL copied to clipboard!
     </div>
 
-    <footer class="w-full text-center p-6 text-gray-500 z-10 relative">
+    <footer class="w-full text-center text-gray-500 z-10 relative">
         <p class="text-sm">
             Built by <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">@HackerXBhai</a>. The source code is available on <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">Telegram</a>.
         </p>
