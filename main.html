@@ -93,7 +93,7 @@
             width: 100%;
             max-width: 100%;
             display: flex;
-            flex-direction: column;
+            flex-direction: column; /* Default to column for mobile */
             align-items: center;
             justify-content: center;
             flex-grow: 1;
@@ -105,8 +105,8 @@
             font-family: 'Allura', cursive;
             animation: text-glow 4s ease-in-out infinite, fade-in 1s ease-in-out forwards;
             text-align: center;
-            color: var(--glow-color-1);
-            text-shadow: 0 0 5px var(--glow-color-1), 0 0 10px var(--glow-color-1), 0 0 15px var(--glow-color-1);
+            color: var(--neon-glow-color-1); /* Neon color for title */
+            text-shadow: var(--neon-shadow-1); /* Neon shadow for title */
             opacity: 0;
         }
 
@@ -118,10 +118,10 @@
 
         @keyframes text-glow {
             0%, 100% {
-                text-shadow: 0 0 5px var(--glow-color-1), 0 0 10px var(--glow-color-1), 0 0 15px var(--glow-color-1);
+                text-shadow: var(--neon-shadow-1);
             }
             50% {
-                text-shadow: 0 0 10px var(--glow-color-2), 0 0 20px var(--glow-color-2), 0 0 30px var(--glow-color-2);
+                text-shadow: var(--neon-shadow-2);
             }
         }
 
@@ -348,6 +348,17 @@
             border-radius: 9999px;
             overflow: hidden;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            /* Neon border for the tab bar container */
+            border: 2px solid transparent;
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            position: relative; /* Needed for pseudo-elements or border-image */
+            z-index: 1; /* Ensure it's above other elements if needed */
+        }
+
+        .tab-buttons.active-neon {
+            box-shadow: var(--neon-shadow-1); /* Neon glow for the active tab bar */
+            border-image: linear-gradient(to right, var(--neon-glow-color-1), var(--neon-glow-color-2)) 1;
         }
 
         .tab-button {
@@ -355,12 +366,8 @@
             color: var(--text-color);
             padding: 0.75rem 1.5rem;
             cursor: pointer;
-            transition: background-color 0.3s, color 0.3s, box-shadow 0.3s, text-shadow 0.3s; /* Added text-shadow */
-            border: 2px solid transparent;
-            background-image: linear-gradient(var(--button-bg-color), var(--button-bg-color)), var(--button-gradient);
-            background-origin: border-box;
-            background-clip: padding-box, border-box;
-            border-radius: 0;
+            transition: background-color 0.3s, color 0.3s, text-shadow 0.3s;
+            border: none; /* Remove individual button borders */
             flex-grow: 1;
             text-align: center;
             white-space: nowrap;
@@ -383,23 +390,20 @@
         }
 
         .tab-button:hover {
-            box-shadow: none;
-            text-shadow: var(--neon-shadow-1); /* Neon glow on hover */
             color: var(--neon-glow-color-1);
+            text-shadow: 0 0 5px var(--neon-glow-color-1); /* Subtle text glow on hover */
         }
 
         .tab-button.active {
             background-image: var(--button-gradient);
             color: white;
-            box-shadow: var(--neon-shadow-1); /* Neon glow for active tab */
-            text-shadow: var(--neon-shadow-1); /* Text glow for active tab */
+            text-shadow: 0 0 5px white; /* Subtle text glow for active button */
         }
 
         body.day-mode .tab-button.active {
             background-image: var(--day-button-gradient);
             color: black;
-            box-shadow: var(--neon-shadow-1); /* Day mode neon glow */
-            text-shadow: var(--neon-shadow-1);
+            text-shadow: 0 0 5px black;
         }
 
         .tab-content {
@@ -411,12 +415,6 @@
             border-radius: 1rem;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             transition: background-color 0.5s ease-in-out;
-            /* For mobile, ensure content is in flow but can be hidden */
-            position: relative; /* Allow for z-index or opacity control */
-            opacity: 0;
-            height: 0;
-            overflow: hidden;
-            transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out;
         }
 
         body.day-mode .tab-content {
@@ -428,37 +426,60 @@
             flex-direction: column;
             align-items: center;
             gap: 1rem;
-            opacity: 1;
-            height: auto; /* Allow content to take its natural height */
-            overflow: visible;
         }
 
-        /* Mobile-specific layout for animation */
+        /* Mobile-specific layout */
         @media (max-width: 767px) {
             #main-content {
                 flex-direction: column; /* Stack elements vertically */
             }
 
-            #animation-content {
-                order: -1; /* Place animation content first */
-                margin-bottom: 2rem; /* Space below video */
-                opacity: 1; /* Always visible on mobile */
-                height: auto;
-                overflow: visible;
-                display: flex; /* Ensure it's a flex container */
+            .tabs-section {
+                order: 0; /* Tabs at the top */
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
 
-            .tab-content:not(.active) {
-                /* For inactive tabs on mobile, keep them in flow but visually hidden */
+            #animation-container {
+                order: 1; /* Animation at the bottom */
+                width: 100%;
+                margin-top: 2rem; /* Space between tabs content and video */
+            }
+
+            /* Control visibility of animation content on mobile */
+            #animation-content {
+                display: flex; /* Always flex for layout */
+                opacity: 1; /* Default visible */
+                height: auto;
+                overflow: visible;
+                padding: 1rem; /* Restore padding for mobile */
+                background-color: var(--button-bg-color); /* Restore background for mobile */
+                box-shadow: 0 0 10px var(--glow-color-1), 0 0 20px var(--glow-color-2); /* Restore shadow for mobile */
+                transition: opacity 0.3s ease-in-out;
+            }
+
+            #animation-content.hidden-on-mobile {
                 opacity: 0;
                 height: 0;
                 padding: 0;
                 margin: 0;
                 overflow: hidden;
-                pointer-events: none; /* Prevent interaction */
+                pointer-events: none; /* Prevent interaction when hidden */
             }
 
-            .tab-content.active {
+            .tab-content:not(#animation-content) { /* For other tab contents */
+                opacity: 0;
+                height: 0;
+                padding: 0;
+                margin: 0;
+                overflow: hidden;
+                pointer-events: none;
+                transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out;
+            }
+
+            .tab-content.active:not(#animation-content) {
                 opacity: 1;
                 height: auto;
                 padding: 1rem;
@@ -477,14 +498,15 @@
                 max-width: 1200px; /* Increase max-width for desktop layout */
             }
 
-            #animation-container { /* New container for video on desktop */
+            #animation-container {
                 flex: 1; /* Take up available space */
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 min-width: 400px; /* Minimum width for the video section */
                 max-width: 50%; /* Max width for the video section */
-                order: 0; /* Default order */
+                order: 0; /* Animation on the left */
+                margin-top: 0; /* Remove mobile margin */
             }
 
             .heart-video {
@@ -493,14 +515,14 @@
                 height: auto;
             }
 
-            .tabs-section { /* New container for tabs and content on desktop */
+            .tabs-section {
                 flex: 1; /* Take up available space */
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 min-width: 400px; /* Minimum width for the tabs section */
                 max-width: 50%; /* Max width for the tabs section */
-                order: 1; /* Place tabs section after animation */
+                order: 1; /* Tabs section on the right */
             }
 
             .tab-buttons {
@@ -513,15 +535,16 @@
                 max-width: 500px; /* Limit tab content width */
             }
 
-            /* Ensure video is always visible and playing on desktop */
+            /* On desktop, animation-content is always visible and active */
             #animation-content {
-                display: flex; /* Always display on desktop */
+                display: flex;
                 opacity: 1;
                 height: auto;
                 overflow: visible;
                 padding: 0; /* Remove padding from this specific content div */
                 background-color: transparent; /* No background for this content div */
                 box-shadow: none; /* No shadow for this content div */
+                pointer-events: auto;
             }
         }
     </style>
@@ -578,18 +601,7 @@
             Welcome to the main section of Sandeep's Heart.
         </p>
 
-        <!-- Animation Container for Desktop -->
-        <div id="animation-container">
-            <!-- Tab Content - Animation (Always visible on desktop, scrollable on mobile) -->
-            <div id="animation-content" class="tab-content active">
-                <video class="heart-video" autoplay loop muted playsinline>
-                    <source src="https://raw.githubusercontent.com/gsgsjssvsv1249/radharanii/main/heart.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
-        </div>
-
-        <!-- Tabs Section for Desktop -->
+        <!-- Tabs Section (contains buttons and tab content) -->
         <div class="tabs-section">
             <!-- Tab Buttons -->
             <div class="tab-buttons">
@@ -627,6 +639,17 @@
             </div>
         </div>
 
+        <!-- Animation Container (for video) -->
+        <div id="animation-container">
+            <!-- Tab Content - Animation -->
+            <div id="animation-content" class="tab-content">
+                <video class="heart-video" autoplay loop muted playsinline>
+                    <source src="https://raw.githubusercontent.com/gsgsjssvsv1249/radharanii/main/heart.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+
     </main>
 
     <div id="message-box" role="status">
@@ -654,6 +677,7 @@
 
         // Tab elements
         const tabButtons = document.querySelectorAll('.tab-button');
+        const tabButtonsContainer = document.querySelector('.tab-buttons'); // Get the container
         const tabContents = document.querySelectorAll('.tab-content');
         const animationContent = document.getElementById('animation-content');
         const heartVideo = document.querySelector('#animation-content .heart-video');
@@ -929,10 +953,15 @@
                 // Deactivate all tab buttons
                 tabButtons.forEach(btn => btn.classList.remove('active'));
 
-                // Hide all tab contents (except animation-content on desktop)
+                // Deactivate neon glow on tab bar container
+                tabButtonsContainer.classList.remove('active-neon');
+
+                // Hide all tab contents
                 tabContents.forEach(content => {
-                    if (content.id !== 'animation-content' || window.innerWidth < 768) {
-                        content.classList.remove('active');
+                    content.classList.remove('active');
+                    // On mobile, hide animation content if another tab is selected
+                    if (window.innerWidth < 768 && content.id === 'animation-content') {
+                        content.classList.add('hidden-on-mobile');
                     }
                 });
 
@@ -943,27 +972,31 @@
                 const targetContent = document.getElementById(`${targetTab}-content`);
                 if (targetContent) {
                     targetContent.classList.add('active');
+                    // On mobile, if animation tab is selected, show animation content
+                    if (window.innerWidth < 768 && targetContent.id === 'animation-content') {
+                        targetContent.classList.remove('hidden-on-mobile');
+                    }
                 }
 
-                // Handle video playback based on active tab and screen size
+                // Handle video playback
                 if (targetTab === 'animation') {
                     if (heartVideo) {
                         heartVideo.play();
                     }
-                    // On desktop, ensure animation-content is visible and active
-                    if (window.innerWidth >= 768) {
-                        animationContent.classList.add('active');
-                    }
+                    // Activate neon glow on tab bar container only for animation tab
+                    tabButtonsContainer.classList.add('active-neon');
                 } else {
                     if (heartVideo) {
                         heartVideo.pause();
                     }
-                    // On desktop, if another tab is active, animation-content should still be visible but not "active" in the tab sense
-                    if (window.innerWidth >= 768) {
-                        // No change to animationContent's active state on desktop, it's always visible
-                    } else {
-                        // On mobile, if another tab is active, hide animation-content
-                        animationContent.classList.remove('active');
+                }
+
+                // On desktop, animation content is always visible and playing
+                if (window.innerWidth >= 768) {
+                    animationContent.classList.add('active'); // Ensure it's active for desktop layout
+                    animationContent.classList.remove('hidden-on-mobile'); // Ensure it's not hidden
+                    if (heartVideo) {
+                        heartVideo.play(); // Ensure video plays on desktop regardless of tab
                     }
                 }
             });
@@ -976,15 +1009,25 @@
             setInterval(createShootingStar, 5000);
             updateColors(color1Input.value, color2Input.value);
 
-            // Set initial active tab based on screen size
+            // Set initial active tab
+            // On mobile, default to animation tab, but hide other content
             if (window.innerWidth < 768) {
-                // On mobile, default to animation tab
                 document.querySelector('.tab-button[data-tab="animation"]').click();
+                // Ensure other tabs are hidden initially on mobile
+                tabContents.forEach(content => {
+                    if (content.id !== 'animation-content') {
+                        content.classList.remove('active');
+                    }
+                });
             } else {
-                // On desktop, default to animation tab, but ensure video is always playing
+                // On desktop, default to animation tab, and ensure video is always playing
                 document.querySelector('.tab-button[data-tab="animation"]').click();
-                // Ensure animation content is always active on desktop regardless of selected tab
+                // Ensure animation content is always active and visible on desktop
                 animationContent.classList.add('active');
+                animationContent.classList.remove('hidden-on-mobile');
+                if (heartVideo) {
+                    heartVideo.play();
+                }
             }
         };
     </script>
