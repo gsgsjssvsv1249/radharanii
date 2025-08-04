@@ -206,7 +206,17 @@
             background-clip: padding-box, border-box;
             transition: transform 0.2s, box-shadow 0.2s, background-image 0.5s, color 0.5s;
         }
+        
+        /* Day mode button text color */
+        body.day-mode .button-group button {
+            color: #000000;
+        }
 
+        /* Night mode button text color */
+        body:not(.day-mode) .button-group button {
+            color: #ffffff;
+        }
+        
         /* New and more dynamic button hover animation */
         .button-group button:hover {
             animation: button-pop 0.3s forwards;
@@ -247,6 +257,34 @@
             transition: fill 0.5s ease-in-out;
         }
 
+        /* Styles for the new light bloom animation */
+        .light-bloom {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 999;
+            animation: bloom-fade-out 0.8s ease-out forwards;
+        }
+        @keyframes bloom-fade-out {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+                box-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 40px currentColor;
+            }
+            100% {
+                width: 200px;
+                height: 200px;
+                opacity: 0;
+                box-shadow: 0 0 50px currentColor, 0 0 100px currentColor, 0 0 150px currentColor;
+            }
+        }
+
         /* Message box for copy confirmation */
         #message-box {
             position: fixed;
@@ -283,7 +321,7 @@
     <div id="threeCanvas"></div>
 
     <button id="day-night-toggle">
-        <svg class="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="sun hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="5"></circle>
             <line x1="12" y1="1" x2="12" y2="3"></line>
             <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -294,7 +332,7 @@
             <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
             <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
         </svg>
-        <svg class="moon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
     </button>
@@ -349,6 +387,7 @@
         const messageBox = document.getElementById('message-box');
         const dayNightToggleBtn = document.getElementById('day-night-toggle');
         const body = document.body;
+        const mainContent = document.getElementById('main-content');
 
         // Define color palettes for both day and night modes
         const palettes = [
@@ -424,16 +463,10 @@
             root.style.setProperty('--glow-color-1', glow1);
             root.style.setProperty('--glow-color-2', glow2);
             root.style.setProperty('--button-gradient', gradient);
-
-            // Update button text color based on the mode
-            const buttons = document.querySelectorAll('.color-button');
-            buttons.forEach(button => {
-                button.style.color = isDayMode ? '#000000' : '#ffffff';
-            });
             
             // Set the color directly for the title and let the CSS handle the glow
             const mainTitle = document.querySelector('.main-title');
-            mainTitle.style.color = isDayMode ? '#000000' : glow1;
+            mainTitle.style.color = glow1;
 
             // Also update the SVG heart gradient
             const svgHeartDefs = document.getElementById('pink-red-gradient');
@@ -460,6 +493,26 @@
             // Re-apply the current color palette to update glows for the new mode
             applyPalette(currentPaletteIndex);
         }
+        
+        // Function to create a light bloom animation on click
+        function createLightBloom(x, y) {
+            // Only create the bloom in day mode
+            if (!body.classList.contains('day-mode')) {
+                return;
+            }
+            const bloom = document.createElement('div');
+            bloom.classList.add('light-bloom');
+            bloom.style.top = `${y}px`;
+            bloom.style.left = `${x}px`;
+            const currentPalette = palettes[currentPaletteIndex];
+            const bloomColor = currentPalette.dayGlow1;
+            bloom.style.color = bloomColor; // Use currentColor to pass the glow color
+            document.body.appendChild(bloom);
+            
+            setTimeout(() => {
+                bloom.remove();
+            }, 800); // Remove the element after the animation is finished
+        }
 
         // Event listener for the day/night toggle button
         if (dayNightToggleBtn) {
@@ -473,6 +526,11 @@
                 applyPalette(currentPaletteIndex);
             });
         }
+        
+        // Event listener for the light bloom effect on the entire page
+        document.addEventListener('click', (event) => {
+            createLightBloom(event.clientX, event.clientY);
+        });
 
         // Event listener for the "Share" button
         if (shareBtn) {
