@@ -184,6 +184,34 @@
                 transform: rotate(-45deg) translateX(400px);
             }
         }
+        
+        /* Styles for the new light bloom animation */
+        .light-bloom {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 999;
+            animation: bloom-fade-out 0.8s ease-out forwards;
+        }
+        @keyframes bloom-fade-out {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+                box-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 40px currentColor;
+            }
+            100% {
+                width: 200px;
+                height: 200px;
+                opacity: 0;
+                box-shadow: 0 0 50px currentColor, 0 0 100px currentColor, 0 0 150px currentColor;
+            }
+        }
 
         /* Styles for the day/night toggle button */
         #day-night-toggle {
@@ -263,6 +291,87 @@
     const dayNightToggleBtn = document.getElementById('day-night-toggle');
     const body = document.body;
 
+    // Define color palettes for both day and night modes
+    const palettes = [
+        { // Pink/Red (Night default)
+            glow1: '#ec4899', 
+            glow2: '#f43f5e',
+            gradient: 'linear-gradient(to right, #ec4899, #f43f5e)',
+            dayGlow1: '#ff69b4', // Hot Pink
+            dayGlow2: '#ff1493', // Deep Pink
+            dayGradient: 'linear-gradient(to right, #ff69b4, #ff1493)'
+        },
+        { // Blue/Purple (Night)
+            glow1: '#3b82f6',
+            glow2: '#a855f7',
+            gradient: 'linear-gradient(to right, #3b82f6, #a855f7)',
+            dayGlow1: '#63b3ed', // Light Blue
+            dayGlow2: '#805ad5', // Violet
+            dayGradient: 'linear-gradient(to right, #63b3ed, #805ad5)'
+        },
+        { // Emerald/Cyan (Night)
+            glow1: '#10b981',
+            glow2: '#22d3ee',
+            gradient: 'linear-gradient(to right, #10b981, #22d3ee)',
+            dayGlow1: '#48bb78', // Medium Green
+            dayGlow2: '#4fd1c5', // Teal
+            dayGradient: 'linear-gradient(to right, #48bb78, #4fd1c5)'
+        },
+        { // Teal/Aqua (Night)
+            glow1: '#20c997',
+            glow2: '#29d0d3',
+            gradient: 'linear-gradient(to right, #20c997, #29d0d3)',
+            dayGlow1: '#4fd1c5', // Teal
+            dayGlow2: '#667eea', // Indigo
+            dayGradient: 'linear-gradient(to right, #4fd1c5, #667eea)'
+        },
+        { // Deep Purple/Magenta (Night)
+            glow1: '#5b21b6',
+            glow2: '#c026d3',
+            gradient: 'linear-gradient(to right, #5b21b6, #c026d3)',
+            dayGlow1: '#805ad5', // Violet
+            dayGlow2: '#d53f8c', // Ruby
+            dayGradient: 'linear-gradient(to right, #805ad5, #d53f8c)'
+        },
+        { // Hot Pink/Deep Pink (Night)
+            glow1: '#ff69b4',
+            glow2: '#ff1493',
+            gradient: 'linear-gradient(to right, #ff69b4, #ff1493)',
+            dayGlow1: '#f687b3', // Light Pink
+            dayGlow2: '#e53e3e', // Red
+            dayGradient: 'linear-gradient(to right, #f687b3, #e53e3e)'
+        },
+        { // Gold/Amber (Night)
+            glow1: '#FFD700',
+            glow2: '#FFC107',
+            gradient: 'linear-gradient(to right, #FFD700, #FFC107)',
+            dayGlow1: '#F6E05E', // Light Gold
+            dayGlow2: '#FEEBC8', // Light Amber
+            dayGradient: 'linear-gradient(to right, #F6E05E, #FEEBC8)'
+        }
+    ];
+    let currentPaletteIndex = 0;
+    const mainContent = document.getElementById('main-content');
+
+    // Function to apply the current color palette
+    function applyPalette(index) {
+        const root = document.documentElement;
+        const current = palettes[index];
+        const isDayMode = body.classList.contains('day-mode');
+        
+        const glow1 = isDayMode ? current.dayGlow1 : current.glow1;
+        const glow2 = isDayMode ? current.dayGlow2 : current.glow2;
+        const gradient = isDayMode ? current.dayGradient : current.gradient;
+
+        root.style.setProperty('--glow-color-1', glow1);
+        root.style.setProperty('--glow-color-2', glow2);
+        root.style.setProperty('--button-gradient', gradient);
+        
+        // Set the color directly for the title and let the CSS handle the glow
+        const mainTitle = document.querySelector('.main-title');
+        mainTitle.style.color = isDayMode ? glow1 : glow1;
+    }
+
     // Add a click event listener to the button.
     if (diveinbutton) {
         diveinbutton.addEventListener('click', () => {
@@ -273,6 +382,31 @@
             window.location.href = 'main.html';
         });
     }
+
+    // Function to create a light bloom animation on click
+    function createLightBloom(x, y) {
+        // Only create the bloom in day mode
+        if (!body.classList.contains('day-mode')) {
+            return;
+        }
+        const bloom = document.createElement('div');
+        bloom.classList.add('light-bloom');
+        bloom.style.top = `${y}px`;
+        bloom.style.left = `${x}px`;
+        const currentPalette = palettes[currentPaletteIndex];
+        const bloomColor = currentPalette.dayGlow1;
+        bloom.style.color = bloomColor; // Use currentColor to pass the glow color
+        document.body.appendChild(bloom);
+        
+        setTimeout(() => {
+            bloom.remove();
+        }, 800); // Remove the element after the animation is finished
+    }
+
+    // Event listener for the light bloom effect on the entire page
+    document.addEventListener('click', (event) => {
+        createLightBloom(event.clientX, event.clientY);
+    });
 
     // --- Core Day/Night Logic ---
     function toggleDayNightMode() {
@@ -287,6 +421,8 @@
             sunIcon.classList.add('hidden');
             moonIcon.classList.remove('hidden');
         }
+        // Re-apply the current color palette to update glows for the new mode
+        applyPalette(currentPaletteIndex);
     }
 
     if (dayNightToggleBtn) {
@@ -417,6 +553,9 @@
         
         // Periodically create a shooting star
         setInterval(createShootingStar, 5000);
+        
+        // Initial call to apply the color palette
+        applyPalette(currentPaletteIndex);
     };
     </script>
 </body>
