@@ -333,32 +333,56 @@
         .tab-buttons {
             display: flex;
             justify-content: center;
-            gap: 1rem;
             margin-top: 2rem;
             margin-bottom: 1rem;
+            /* Remove gap to make them joined */
+            border-radius: 9999px; /* Apply border-radius to the container */
+            overflow: hidden; /* Ensures inner borders are clipped */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Optional: Add shadow to the whole bar */
         }
 
         .tab-button {
             background-color: var(--button-bg-color);
             color: var(--text-color);
             padding: 0.75rem 1.5rem;
-            border-radius: 9999px;
             cursor: pointer;
             transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
-            border: 2px solid transparent;
+            border: 2px solid transparent; /* Keep transparent border for gradient effect */
             background-image: linear-gradient(var(--button-bg-color), var(--button-bg-color)), var(--button-gradient);
             background-origin: border-box;
             background-clip: padding-box, border-box;
+            border-radius: 0; /* Remove individual button border-radius */
+            flex-grow: 1; /* Make buttons fill available space */
+            text-align: center;
+            white-space: nowrap; /* Prevent text wrapping */
+        }
+
+        /* Apply specific border-radius to first and last buttons */
+        .tab-button:first-child {
+            border-top-left-radius: 9999px;
+            border-bottom-left-radius: 9999px;
+        }
+
+        .tab-button:last-child {
+            border-top-right-radius: 9999px;
+            border-bottom-right-radius: 9999px;
+        }
+
+        /* Add a right border to all but the last button for separation */
+        .tab-button:not(:last-child) {
+            border-right: 1px solid rgba(255, 255, 255, 0.2); /* Subtle separator */
         }
 
         .tab-button:hover {
-            box-shadow: 0 0 10px var(--glow-color-1), 0 0 20px var(--glow-color-2);
+            /* Keep existing hover effects, but remove individual button shadow if applied */
+            box-shadow: none; /* Remove individual button shadow on hover */
         }
 
         .tab-button.active {
             background-image: var(--button-gradient);
             color: white; /* Text color for active tab */
-            box-shadow: 0 0 15px var(--glow-color-1), 0 0 25px var(--glow-color-2);
+            /* Remove individual button shadow for active state */
+            box-shadow: none;
         }
 
         body.day-mode .tab-button.active {
