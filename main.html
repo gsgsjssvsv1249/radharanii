@@ -33,7 +33,7 @@
         body.day-mode #main-content p {
             color: var(--text-color);
         }
-        
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--body-bg-color);
@@ -62,7 +62,7 @@
         body.day-mode #threeCanvas {
             opacity: 0;
         }
-        
+
         #dayBackground {
             position: fixed;
             top: 0;
@@ -90,7 +90,7 @@
             padding: 2rem;
             gap: 1rem; /* Reduced gap */
         }
-        
+
         .main-title {
             font-family: 'Allura', cursive;
             animation: text-glow 4s ease-in-out infinite, fade-in 1s ease-in-out forwards;
@@ -99,7 +99,7 @@
             text-shadow: 0 0 5px var(--glow-color-1), 0 0 10px var(--glow-color-1), 0 0 15px var(--glow-color-1);
             opacity: 0;
         }
-        
+
         #main-content p {
             animation: fade-in 1s ease-in-out forwards;
             animation-delay: 0.5s;
@@ -119,7 +119,7 @@
             0% { opacity: 0; transform: translateY(20px); }
             100% { opacity: 1; transform: translateY(0); }
         }
-        
+
         .heart-video {
             width: 100%;
             height: auto;
@@ -146,17 +146,16 @@
             fill: url(#heart-gradient);
             animation: heart-pulse 1.5s ease-in-out infinite, heart-glow 4s ease-in-out infinite;
         }
-        
+
         @keyframes heart-pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.1); }
         }
-
         @keyframes heart-glow {
             0%, 100% { filter: drop-shadow(0 0 5px var(--glow-color-1)) drop-shadow(0 0 10px var(--glow-color-1)); }
             50% { filter: drop-shadow(0 0 10px var(--glow-color-2)) drop-shadow(0 0 20px var(--glow-color-2)); }
         }
-        
+
         .shooting-star {
             position: absolute;
             background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0));
@@ -172,14 +171,14 @@
             90% { opacity: 1; }
             100% { opacity: 0; transform: rotate(-45deg) translateX(400px); }
         }
-        
+
         .color-picker-container {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 1rem;
         }
-        
+
         .color-picker-group {
             display: flex;
             align-items: center;
@@ -207,16 +206,15 @@
             padding: 0;
             overflow: hidden;
         }
-        
+
         .color-picker::-webkit-color-swatch-wrapper {
             padding: 0;
         }
-        
+
         .color-picker::-webkit-color-swatch {
             border: none;
             border-radius: 50%;
         }
-
         .color-picker::-moz-color-swatch {
             border: none;
             border-radius: 50%;
@@ -229,7 +227,7 @@
             background-clip: padding-box, border-box;
             transition: transform 0.2s, box-shadow 0.2s, background-image 0.5s, color 0.5s;
         }
-        
+
         body.day-mode .button-group button {
             color: #000000;
         }
@@ -237,7 +235,7 @@
         body:not(.day-mode) .button-group button {
             color: #ffffff;
         }
-        
+
         .button-group button:hover {
             animation: button-pop 0.3s forwards;
             box-shadow: 0 0 15px var(--glow-color-1), 0 0 25px var(--glow-color-2);
@@ -275,7 +273,7 @@
             fill: var(--text-color);
             transition: fill 0.5s ease-in-out;
         }
-        
+
         .theme-wipe {
             position: fixed;
             border-radius: 50%;
@@ -285,12 +283,12 @@
             transform: scale(0) translate(-50%, -50%);
             animation: theme-wipe 0.6s cubic-bezier(0.8, 0.2, 0.2, 0.8) forwards;
         }
-        
+
         @keyframes theme-wipe {
             from { transform: scale(0) translate(-50%, -50%); }
             to { transform: scale(200) translate(-50%, -50%); }
         }
-        
+
         .light-bloom {
             position: fixed;
             top: 0;
@@ -303,7 +301,7 @@
             z-index: 999;
             animation: bloom-fade-out 0.8s ease-out forwards;
         }
-        
+
         @keyframes bloom-fade-out {
             0% {
                 width: 0; height: 0; opacity: 1;
@@ -329,6 +327,65 @@
             opacity: 0;
             pointer-events: none;
             z-index: 1000;
+        }
+
+        /* Tab specific styles */
+        .tab-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .tab-button {
+            background-color: var(--button-bg-color);
+            color: var(--text-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+            border: 2px solid transparent;
+            background-image: linear-gradient(var(--button-bg-color), var(--button-bg-color)), var(--button-gradient);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+        }
+
+        .tab-button:hover {
+            box-shadow: 0 0 10px var(--glow-color-1), 0 0 20px var(--glow-color-2);
+        }
+
+        .tab-button.active {
+            background-image: var(--button-gradient);
+            color: white; /* Text color for active tab */
+            box-shadow: 0 0 15px var(--glow-color-1), 0 0 25px var(--glow-color-2);
+        }
+
+        body.day-mode .tab-button.active {
+            background-image: var(--day-button-gradient);
+            color: black; /* Text color for active tab in day mode */
+        }
+
+        .tab-content {
+            display: none; /* Hidden by default */
+            width: 100%;
+            max-width: 800px; /* Adjust as needed */
+            padding: 1rem;
+            background-color: var(--button-bg-color); /* Use button-bg-color for content background */
+            border-radius: 1rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.5s ease-in-out;
+        }
+
+        body.day-mode .tab-content {
+            background-color: var(--body-bg-color);
+        }
+
+        .tab-content.active {
+            display: flex; /* Show active tab content */
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
         }
     </style>
 </head>
@@ -384,32 +441,51 @@
             Welcome to the main section of Sandeep's Heart.
         </p>
 
-        <video class="heart-video" autoplay loop muted playsinline>
-            <source src="https://raw.githubusercontent.com/gsgsjssvsv1249/radharanii/main/heart.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-        
-        <div class="color-picker-container">
-            <div class="color-picker-group">
-                <label for="color1" class="text-white">Glow Color 1:</label>
-                <input type="color" id="color1" class="color-picker" value="#ec4899">
+        <!-- Tab Buttons -->
+        <div class="tab-buttons">
+            <button class="tab-button active" data-tab="animation">Animation</button>
+            <button class="tab-button" data-tab="edit">Edit</button>
+            <button class="tab-button" data-tab="about">About the project</button>
+        </div>
+
+        <!-- Tab Content - Animation -->
+        <div id="animation-content" class="tab-content active">
+            <video class="heart-video" autoplay loop muted playsinline>
+                <source src="https://raw.githubusercontent.com/gsgsjssvsv1249/radharanii/main/heart.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <!-- Tab Content - Edit -->
+        <div id="edit-content" class="tab-content">
+            <div class="color-picker-container">
+                <div class="color-picker-group">
+                    <label for="color1" class="text-white">Glow Color 1:</label>
+                    <input type="color" id="color1" class="color-picker" value="#ec4899">
+                </div>
+                <div class="color-picker-group">
+                    <label for="color2" class="text-white">Glow Color 2:</label>
+                    <input type="color" id="color2" class="color-picker" value="#f43f5e">
+                </div>
             </div>
-            <div class="color-picker-group">
-                <label for="color2" class="text-white">Glow Color 2:</label>
-                <input type="color" id="color2" class="color-picker" value="#f43f5e">
+            <div class="flex flex-row space-x-4 button-group">
+                <button id="change-color-btn" class="color-button font-bold py-2 px-6 rounded-full shadow-lg">
+                    Random Color
+                </button>
+                <button id="share-btn" class="color-button font-bold py-2 px-6 rounded-full shadow-lg">
+                    Share
+                </button>
             </div>
         </div>
-        
-        <div class="flex flex-row space-x-4 button-group">
-            <button id="change-color-btn" class="color-button font-bold py-2 px-6 rounded-full shadow-lg">
-                Random Color
-            </button>
-            <button id="share-btn" class="color-button font-bold py-2 px-6 rounded-full shadow-lg">
-                Share
-            </button>
+
+        <!-- Tab Content - About the project -->
+        <div id="about-content" class="tab-content">
+            <p class="text-white">This project is a tribute to Sandeep. It features a dynamic background with a 3D starfield, interactive glow effects, and customizable colors. The heart animation symbolizes the core theme of the project.</p>
+            <p class="text-white">Feel free to explore the different sections and customize the glow colors to your liking!</p>
         </div>
+
     </main>
-    
+
     <div id="message-box" role="status">
         URL copied to clipboard!
     </div>
@@ -428,25 +504,24 @@
         const dayNightToggleBtn = document.getElementById('day-night-toggle');
         const body = document.body;
         const mainContent = document.getElementById('main-content');
-        
+
         // Color picker elements
         const color1Input = document.getElementById('color1');
         const color2Input = document.getElementById('color2');
+
+        // Tab elements
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
 
         // Function to update all colors based on the chosen palette
         function updateColors(glow1, glow2) {
             const root = document.documentElement;
             const isDayMode = body.classList.contains('day-mode');
-            
+
             // Set the main glow and gradient colors based on the mode
             root.style.setProperty('--glow-color-1', glow1);
             root.style.setProperty('--glow-color-2', glow2);
             root.style.setProperty('--button-gradient', `linear-gradient(to right, ${glow1}, ${glow2})`);
-
-            // Handle day mode specific colors and styles
-            if (isDayMode) {
-                // You can add more logic here to handle different colors for day mode
-            }
 
             // Also update the SVG heart gradient
             const svgHeartDefs = document.getElementById('heart-gradient');
@@ -455,8 +530,17 @@
                 stops[0].style.stopColor = glow1;
                 stops[1].style.stopColor = glow2;
             }
+
+            // Update day mode specific gradients if needed
+            if (isDayMode) {
+                // You can add more logic here to handle different colors for day mode
+                // For now, it will use the same glow colors for day mode buttons
+                root.style.setProperty('--day-glow-color-1', glow1);
+                root.style.setProperty('--day-glow-color-2', glow2);
+                root.style.setProperty('--day-button-gradient', `linear-gradient(to right, ${glow1}, ${glow2})`);
+            }
         }
-        
+
         // Function to generate a random hex color
         function getRandomHexColor() {
             const letters = '0123456789ABCDEF';
@@ -473,28 +557,28 @@
             const glow2 = color2Input.value;
             updateColors(glow1, glow2);
         }
-        
+
         // Function to toggle between day and night mode with a circular wipe animation
         function toggleDayNightMode(event) {
             const isDayMode = body.classList.contains('day-mode');
-            
+
             const wipe = document.createElement('div');
             wipe.classList.add('theme-wipe');
-            
+
             const targetColor = isDayMode ? '#000000' : '#f3f4f6';
             wipe.style.backgroundColor = targetColor;
 
             const rect = dayNightToggleBtn.getBoundingClientRect();
             wipe.style.top = `${rect.top + rect.height / 2}px`;
             wipe.style.left = `${rect.left + rect.width / 2}px`;
-            
+
             document.body.appendChild(wipe);
 
             setTimeout(() => {
                 body.classList.toggle('day-mode');
                 const sunIcon = dayNightToggleBtn.querySelector('.sun');
                 const moonIcon = dayNightToggleBtn.querySelector('.moon');
-                
+
                 if (body.classList.contains('day-mode')) {
                     sunIcon.classList.remove('hidden');
                     moonIcon.classList.add('hidden');
@@ -502,16 +586,16 @@
                     sunIcon.classList.add('hidden');
                     moonIcon.classList.remove('hidden');
                 }
-                
+
                 // Reapply colors to handle day/night mode specific changes
                 updateColors(color1Input.value, color2Input.value);
-            }, 300);
+            }, 300); // Half of the animation duration
 
             wipe.addEventListener('animationend', () => {
                 wipe.remove();
             });
         }
-        
+
         function createLightBloom(x, y) {
             if (!body.classList.contains('day-mode')) {
                 return;
@@ -522,7 +606,7 @@
             bloom.style.left = `${x}px`;
             bloom.style.color = color1Input.value; // Use currentColor to pass the glow color
             document.body.appendChild(bloom);
-            
+
             setTimeout(() => {
                 bloom.remove();
             }, 800);
@@ -532,7 +616,7 @@
         if (dayNightToggleBtn) {
             dayNightToggleBtn.addEventListener('click', toggleDayNightMode);
         }
-        
+
         // Event listener for the "Random Color" button
         if (colorBtn) {
             colorBtn.addEventListener('click', () => {
@@ -543,7 +627,7 @@
                 updateColors(randomColor1, randomColor2);
             });
         }
-        
+
         // Event listeners for color picker inputs
         if (color1Input && color2Input) {
             color1Input.addEventListener('input', handleColorChange);
@@ -568,7 +652,7 @@
                         setTimeout(() => { messageBox.style.opacity = '0'; }, 3000);
                     }).catch((error) => {
                         console.error('Sharing failed:', error);
-                        messageBox.textContent = 'Sharing canceled or failed.';
+                        messageBox.textContent = 'Sharing cancelled or failed.';
                         messageBox.style.backgroundColor = 'rgba(239, 68, 68, 0.9)';
                         messageBox.style.opacity = '1';
                         setTimeout(() => { messageBox.style.opacity = '0'; }, 3000);
@@ -593,7 +677,7 @@
                 }
             });
         }
-        
+
         // --- 3D Starfield Background Script with Three.js ---
         let scene, camera, renderer, starGeo, stars;
         let mouseX = 0, mouseY = 0;
@@ -662,7 +746,7 @@
             star.style.animationDuration = `${Math.random() * 2 + 1}s`;
             star.style.animationDelay = `${Math.random() * 2}s`;
             document.body.appendChild(star);
-            
+
             setTimeout(() => {
                 star.remove();
             }, (Math.random() * 2 + 1) * 1000 + (Math.random() * 2) * 1000);
@@ -691,12 +775,44 @@
                 renderer.render(scene, camera);
             }
         }
-        
+
+        // --- Tab Functionality ---
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetTab = button.dataset.tab;
+
+                // Deactivate all tab buttons and hide all tab contents
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                // Activate the clicked button and show its content
+                button.classList.add('active');
+                document.getElementById(`${targetTab}-content`).classList.add('active');
+
+                // Special handling for animation tab to ensure video plays
+                if (targetTab === 'animation') {
+                    const video = document.querySelector('#animation-content .heart-video');
+                    if (video) {
+                        video.play();
+                    }
+                } else {
+                    const video = document.querySelector('#animation-content .heart-video');
+                    if (video) {
+                        video.pause();
+                    }
+                }
+            });
+        });
+
+
         window.onload = function() {
             initThreeJS();
             animate();
             setInterval(createShootingStar, 5000);
             updateColors(color1Input.value, color2Input.value);
+
+            // Set initial active tab
+            document.querySelector('.tab-button[data-tab="animation"]').click();
         };
     </script>
 </body>
