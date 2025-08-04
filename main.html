@@ -44,7 +44,6 @@
             justify-content: center;
             flex-grow: 1; /* Allow content to grow and push the footer down */
             padding: 2rem;
-            /* Parallax effect on the content has been removed to keep it stationary */
         }
         
         /* Apply the new Allura font and glowing effect to the main title */
@@ -69,7 +68,7 @@
         
         /* Heart Video styles with a new glowing border */
         .heart-video {
-            width: 250px; /* Adjust size as needed */
+            width: 400px; /* Adjust size as needed */
             height: auto;
             margin-top: 2rem;
             margin-bottom: 2rem;
@@ -212,11 +211,11 @@
             Your browser does not support the video tag.
         </video>
         
-        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8 button-group">
-            <button id="change-color-btn" class="color-button text-white font-bold py-3 px-8 rounded-full shadow-lg">
+        <div class="flex flex-row space-x-4 mb-8 button-group">
+            <button id="change-color-btn" class="color-button text-white font-bold py-2 px-6 rounded-full shadow-lg">
                 Change Color
             </button>
-            <button id="share-btn" class="color-button text-white font-bold py-3 px-8 rounded-full shadow-lg">
+            <button id="share-btn" class="color-button text-white font-bold py-2 px-6 rounded-full shadow-lg">
                 Share
             </button>
         </div>
