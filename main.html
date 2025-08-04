@@ -30,6 +30,11 @@
             color: var(--text-color);
         }
 
+        /* New rule to ensure the main content paragraph is black in day mode */
+        body.day-mode #main-content p {
+            color: var(--text-color);
+        }
+        
         /* Custom styles for the body, background, and animations */
         body {
             font-family: 'Inter', sans-serif;
@@ -356,7 +361,7 @@
         <h1 class="main-title text-5xl sm:text-6xl font-extrabold mb-4 tracking-tight leading-tight">
             Sandeep's Heart
         </h1>
-        <p class="text-sm">
+        <p class="text-lg sm:text-xl text-gray-300 mb-8 max-w-2xl">
             Welcome to the main section of Sandeep's Heart.
         </p>
 
