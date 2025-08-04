@@ -4,19 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to Sandeep's Heart</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts - Inter and Allura -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Allura&display=swap">
-    <!-- Three.js CDN for 3D graphics -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <style>
+        /* CSS variables for night mode (default) */
+        :root {
+            --body-bg-color: #000000;
+            --text-color: #ffffff;
+            --button-bg-color: #1f2937;
+            --glow-color-1: #ec4899;
+            --glow-color-2: #f43f5e;
+            --button-gradient: linear-gradient(to right, #ec4899, #f43f5e);
+        }
+
+        /* Day mode styles - will be applied when the 'day-mode' class is active */
+        body.day-mode {
+            --body-bg-color: #f3f4f6; /* Light gray */
+            --text-color: #000000;
+            --button-bg-color: #56A0D3; /* Sky blue buttons */
+            --glow-color-1: #ff69b4; /* Hot Pink */
+            --glow-color-2: #ff1493; /* Deep Pink */
+            --button-gradient: linear-gradient(to right, #ff69b4, #ff1493);
+            background-color: var(--body-bg-color);
+            color: var(--text-color);
+        }
+
         /* Custom styles for the body, background, and animations */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #000000;
-            color: #ffffff;
+            background-color: var(--body-bg-color);
+            color: var(--text-color);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -25,6 +44,7 @@
             position: relative;
             overflow-x: hidden;
             text-align: center;
+            transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
         }
 
         /* The 3D canvas will be positioned behind all content */
@@ -35,6 +55,28 @@
             width: 100%;
             height: 100%;
             z-index: -1;
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        body.day-mode #threeCanvas {
+            opacity: 0;
+        }
+
+        /* Day mode background */
+        #dayBackground {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background-color: #87CEEB; /* Sky Blue background */
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        body.day-mode #dayBackground {
+            opacity: 1;
         }
 
         /* Center the content container and apply the parallax effect */
@@ -51,15 +93,21 @@
         .main-title {
             font-family: 'Allura', cursive;
             animation: text-glow 4s ease-in-out infinite;
+            color: var(--glow-color-1);
+        }
+        
+        /* The paragraph text will also be colored by the theme */
+        .content-container p {
+            color: var(--text-color);
         }
 
         /* Keyframes for the title glow animation */
         @keyframes text-glow {
             0%, 100% {
-                text-shadow: 0 0 8px #ec4899, 0 0 16px #ec4899, 0 0 24px #ec4899;
+                text-shadow: 0 0 8px var(--glow-color-1), 0 0 16px var(--glow-color-1), 0 0 24px var(--glow-color-1);
             }
             50% {
-                text-shadow: 0 0 12px #f43f5e, 0 0 24px #f43f5e, 0 0 36px #f43f5e;
+                text-shadow: 0 0 12px var(--glow-color-2), 0 0 24px var(--glow-color-2), 0 0 36px var(--glow-color-2);
             }
         }
 
@@ -68,28 +116,29 @@
             width: 100px;
             height: 100px;
             margin: 0 auto 1.5rem;
-            fill: #ec4899;
+            fill: var(--glow-color-1);
             animation: pulse-heart 2s infinite;
         }
         @keyframes pulse-heart {
             0%, 100% {
                 transform: scale(1);
-                filter: drop-shadow(0 0 10px #f43f5e);
+                filter: drop-shadow(0 0 10px var(--glow-color-2));
             }
             50% {
                 transform: scale(1.1);
-                filter: drop-shadow(0 0 20px #ec4899);
+                filter: drop-shadow(0 0 20px var(--glow-color-1));
             }
         }
         
         /* Button styles with gradient border and hover effect */
         .action-button {
             border: 2px solid transparent;
-            background-image: linear-gradient(#1f2937, #1f2937), linear-gradient(to right, #ec4899, #f43f5e);
+            background-image: linear-gradient(var(--button-bg-color), var(--button-bg-color)), var(--button-gradient);
             background-origin: border-box;
             background-clip: padding-box, border-box;
             transition: transform 0.3s, box-shadow 0.3s;
             animation: pulse-border 2s infinite;
+            color: var(--text-color);
         }
         .action-button:hover {
             transform: scale(1.05);
@@ -101,10 +150,10 @@
 
         @keyframes pulse-border {
             0%, 100% {
-                border-color: #f43f5e;
+                border-color: var(--glow-color-2);
             }
             50% {
-                border-color: #ec4899;
+                border-color: var(--glow-color-1);
             }
         }
 
@@ -135,27 +184,69 @@
                 transform: rotate(-45deg) translateX(400px);
             }
         }
+
+        /* Styles for the day/night toggle button */
+        #day-night-toggle {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            cursor: pointer;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid var(--text-color);
+            background-color: var(--button-bg-color);
+            transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px var(--glow-color-1);
+        }
+
+        #day-night-toggle svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--text-color);
+            transition: fill 0.5s ease-in-out;
+        }
     </style>
 </head>
 <body class="bg-black text-white">
 
-    <!-- The 3D canvas container -->
     <div id="threeCanvas"></div>
 
+    <div id="dayBackground"></div>
+    
+    <button id="day-night-toggle">
+        <svg class="sun hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg class="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+    </button>
+
     <main id="main-content" class="content-container mx-auto flex-grow flex flex-col items-center justify-center">
-        <!-- SVG Heart Icon -->
         <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
         </svg>
 
-        <h1 class="main-title text-6xl sm:text-7xl lg:text-8xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500 mb-4 tracking-tight leading-tight">
+        <h1 class="main-title text-6xl sm:text-7xl lg:text-8xl font-extrabold mb-4 tracking-tight leading-tight">
             Sandeep's Heart
         </h1>
-        <p class="text-xl sm:text-2xl text-gray-300 mb-10">
+        <p class="text-xl sm:text-2xl mb-10">
             A personal space, a beautiful animation.
         </p>
-        <!-- The "Dive In" button with the updated text -->
-        <button id="dive-in-button" class="action-button text-white font-bold py-4 px-12 rounded-full shadow-lg">
+        <button id="dive-in-button" class="action-button font-bold py-3 px-8 rounded-full shadow-lg">
             Dive Into Sandeep's Heart
         </button>
     </main>
@@ -169,6 +260,8 @@
     <script>
     // Get the button element by its ID.
     const diveinbutton = document.getElementById('dive-in-button');
+    const dayNightToggleBtn = document.getElementById('day-night-toggle');
+    const body = document.body;
 
     // Add a click event listener to the button.
     if (diveinbutton) {
@@ -180,89 +273,116 @@
             window.location.href = 'main.html';
         });
     }
-        // --- 3D Starfield Background Script with Three.js ---
-        let scene, camera, renderer, starGeo, stars;
-        let mouseX = 0, mouseY = 0;
 
-        // Function to create and initialize the 3D scene
-        function initThreeJS() {
-            // Set up scene, camera, and renderer
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
-            camera.position.z = 1;
-            camera.rotation.x = Math.PI / 2;
-
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.domElement.style.position = 'fixed';
-            renderer.domElement.style.top = '0';
-            renderer.domElement.style.left = '0';
-            renderer.domElement.style.zIndex = '-1';
-            document.body.appendChild(renderer.domElement);
-
-            // Create geometry for the stars
-            starGeo = new THREE.BufferGeometry();
-            const starCount = 5000;
-            const positions = [];
-            const velocities = [];
-            for (let i = 0; i < starCount; i++) {
-                positions.push((Math.random() - 0.5) * 600, (Math.random() - 0.5) * 600, (Math.random() - 0.5) * 600);
-                velocities.push(0, 0, Math.random() * 0.2 + 0.1);
-            }
-            starGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-            starGeo.setAttribute('velocity', new THREE.Float32BufferAttribute(velocities, 3));
-
-            // Create material for the stars (glowing effect)
-            const starMaterial = new THREE.PointsMaterial({
-                color: 0xaaaaaa,
-                size: 0.7,
-                transparent: true,
-                opacity: 0.8
-            });
-
-            // Create the stars object
-            stars = new THREE.Points(starGeo, starMaterial);
-            scene.add(stars);
-
-            // Add event listeners for mouse interaction
-            document.addEventListener('mousemove', onMouseMove, false);
-            window.addEventListener('resize', onWindowResize, false);
+    // --- Core Day/Night Logic ---
+    function toggleDayNightMode() {
+        body.classList.toggle('day-mode');
+        const sunIcon = dayNightToggleBtn.querySelector('.sun');
+        const moonIcon = dayNightToggleBtn.querySelector('.moon');
+        
+        if (body.classList.contains('day-mode')) {
+            sunIcon.classList.remove('hidden');
+            moonIcon.classList.add('hidden');
+        } else {
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
         }
+    }
 
-        // Function to handle window resizing
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+    if (dayNightToggleBtn) {
+        dayNightToggleBtn.addEventListener('click', toggleDayNightMode);
+    }
+    
+    // --- 3D Starfield Background Script with Three.js ---
+    let scene, camera, renderer, starGeo, stars;
+    let mouseX = 0, mouseY = 0;
+
+    // Function to create and initialize the 3D scene
+    function initThreeJS() {
+        // Set up scene, camera, and renderer
+        if (!THREE) {
+            console.error('Three.js library is not loaded. Cannot initialize animation.');
+            return;
         }
+        
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
+        camera.position.z = 1;
+        camera.rotation.x = Math.PI / 2;
 
-        // Function to handle mouse movement for camera and parallax control
-        function onMouseMove(event) {
-            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.domElement.style.position = 'fixed';
+        renderer.domElement.style.top = '0';
+        renderer.domElement.style.left = '0';
+        renderer.domElement.style.zIndex = '-1';
+        document.getElementById('threeCanvas').appendChild(renderer.domElement);
+
+        // Create geometry for the stars
+        starGeo = new THREE.BufferGeometry();
+        const starCount = 5000;
+        const positions = [];
+        const velocities = [];
+        for (let i = 0; i < starCount; i++) {
+            positions.push((Math.random() - 0.5) * 600, (Math.random() - 0.5) * 600, (Math.random() - 0.5) * 600);
+            velocities.push(0, 0, Math.random() * 0.2 + 0.1);
         }
+        starGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        starGeo.setAttribute('velocity', new THREE.Float32BufferAttribute(velocities, 3));
 
-        // Function to create a shooting star
-        function createShootingStar() {
-            const star = document.createElement('div');
-            star.classList.add('shooting-star');
-            star.style.width = `${Math.random() * 50 + 50}px`;
-            star.style.top = `${Math.random() * window.innerHeight}px`;
-            star.style.left = `${Math.random() * window.innerWidth}px`;
-            star.style.animationDuration = `${Math.random() * 2 + 1}s`;
-            star.style.animationDelay = `${Math.random() * 2}s`;
-            document.body.appendChild(star);
-            
-            // Remove the star after its animation completes
-            setTimeout(() => {
-                star.remove();
-            }, (Math.random() * 2 + 1) * 1000 + (Math.random() * 2) * 1000);
-        }
+        // Create material for the stars (glowing effect)
+        const starMaterial = new THREE.PointsMaterial({
+            color: 0xaaaaaa,
+            size: 0.7,
+            transparent: true,
+            opacity: 0.8
+        });
 
-        // --- Animation Loop ---
-        function animate() {
-            requestAnimationFrame(animate);
+        // Create the stars object
+        stars = new THREE.Points(starGeo, starMaterial);
+        scene.add(stars);
 
+        // Add event listeners for mouse interaction
+        document.addEventListener('mousemove', onMouseMove, false);
+        window.addEventListener('resize', onWindowResize, false);
+    }
+
+    // Function to handle window resizing
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    // Function to handle mouse movement for camera and parallax control
+    function onMouseMove(event) {
+        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+        mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+    }
+
+    // Function to create a shooting star
+    function createShootingStar() {
+        const star = document.createElement('div');
+        star.classList.add('shooting-star');
+        star.style.width = `${Math.random() * 50 + 50}px`;
+        star.style.top = `${Math.random() * window.innerHeight}px`;
+        star.style.left = `${Math.random() * window.innerWidth}px`;
+        star.style.animationDuration = `${Math.random() * 2 + 1}s`;
+        star.style.animationDelay = `${Math.random() * 2}s`;
+        document.body.appendChild(star);
+        
+        // Remove the star after its animation completes
+        setTimeout(() => {
+            star.remove();
+        }, (Math.random() * 2 + 1) * 1000 + (Math.random() * 2) * 1000);
+    }
+
+    // --- Animation Loop ---
+    function animate() {
+        requestAnimationFrame(animate);
+
+        // Only run the starfield animation in night mode
+        if (!body.classList.contains('day-mode')) {
             // Update star positions to create movement
             const positions = starGeo.attributes.position.array;
             const velocities = starGeo.attributes.velocity.array;
@@ -274,29 +394,30 @@
                 }
             }
             starGeo.attributes.position.needsUpdate = true;
-
+    
             // Animate camera based on mouse position
             camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
             camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
             camera.lookAt(scene.position);
-
+    
             // Parallax effect on the main content
             const mainContent = document.getElementById('main-content');
             const parallaxX = mouseX * 20; // Adjust multiplier for effect strength
             const parallaxY = mouseY * 20; // Adjust multiplier for effect strength
             mainContent.style.transform = `translate(${parallaxX}px, ${parallaxY}px)`;
-
+    
             renderer.render(scene, camera);
         }
+    }
 
-        // Start the application on window load
-        window.onload = function() {
-            initThreeJS();
-            animate();
-            
-            // Periodically create a shooting star
-            setInterval(createShootingStar, 5000);
-        };
+    // Start the application on window load
+    window.onload = function() {
+        initThreeJS();
+        animate();
+        
+        // Periodically create a shooting star
+        setInterval(createShootingStar, 5000);
+    };
     </script>
 </body>
 </html>
