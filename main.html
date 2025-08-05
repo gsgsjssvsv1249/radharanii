@@ -626,6 +626,11 @@
             box-shadow: none;
             transform: none;
         }
+
+        /* NEW: Hide animation content when About tab is active */
+        body.about-tab-active #animation-content {
+            display: none;
+        }
     </style>
 </head>
 <body class="bg-black text-white">
@@ -749,8 +754,50 @@
 
         <!-- Tab Content - About the project -->
         <div id="about-content" class="tab-content">
-            <p class="text-white">This project is a tribute to Sandeep. It features a dynamic background with a 3D starfield, interactive glow effects, and customizable colors. The heart animation symbolizes the core theme of the project.</p>
-            <p class="text-white">Feel free to explore the different sections and customize the glow colors to your liking!</p>
+            <h2 class="text-3xl font-extrabold mb-4 text-center">About Sandeep's Heart</h2>
+            <p class="text-lg mb-4 text-gray-300">
+                "Sandeep's Heart" is a personalized web experience designed to showcase dynamic visual effects and interactive customization. It's built as a tribute, offering a unique blend of aesthetics and user control.
+            </p>
+            <h3 class="text-2xl font-bold mb-3 text-left">What This Project Does:</h3>
+            <ul class="list-disc list-inside text-left text-gray-300 mb-4 space-y-2">
+                <li>
+                    <strong class="text-white">Dynamic Background:</strong> Features a captivating 3D starfield animation that creates an immersive, cosmic atmosphere. This background dynamically changes with the day/night mode.
+                </li>
+                <li>
+                    <strong class="text-white">Interactive Glow Effects:</strong> The main title and the central heart icon pulsate with vibrant, customizable glow effects, adding a lively touch to the interface.
+                </li>
+                <li>
+                    <strong class="text-white">Customizable Colors:</strong> Provides extensive options to personalize the glow colors, allowing you to tailor the visual theme to your preference.
+                </li>
+                <li>
+                    <strong class="text-white">Responsive Design:</strong> Optimized for various screen sizes, ensuring a consistent and engaging experience on both mobile and desktop devices.
+                </li>
+            </ul>
+
+            <h3 class="text-2xl font-bold mb-3 text-left">How to Use the Options:</h3>
+            <ul class="list-disc list-inside text-left text-gray-300 mb-4 space-y-2">
+                <li>
+                    <strong class="text-white">Day/Night Toggle:</strong> Located at the top-left corner, this button allows you to switch between a dark, star-filled night mode and a bright, serene day mode. Watch how the background and overall color scheme transform!
+                </li>
+                <li>
+                    <strong class="text-white">Navigation Tabs (Top-Right):</strong>
+                    <ul class="list-circle list-inside ml-4 space-y-1">
+                        <li><strong class="text-white">Animation:</strong> This is the default view, displaying the main heart animation and the dynamic background.</li>
+                        <li><strong class="text-white">Edit:</strong> Dive into customization here!
+                            <ul class="list-square list-inside ml-4 space-y-1">
+                                <li><strong class="text-white">Glow 1 & Glow 2 Color Pickers:</strong> Use these to select your desired primary and secondary glow colors. Experiment to find your perfect combination!</li>
+                                <li><strong class="text-white">Random Color Button:</strong> Feeling adventurous? Click this to instantly apply a new, randomly generated color scheme to the glow effects.</li>
+                                <li><strong class="text-white">Share Button:</strong> Easily share this project with others via your device's native sharing options or by copying the URL.</li>
+                            </ul>
+                        </li>
+                        <li><strong class="text-white">Presets:</strong> Not sure where to start with colors? This tab offers a collection of pre-designed color themes. Simply click on a preset to instantly apply a new look.</li>
+                        <li><strong class="text-white">About:</strong> You're here! This section provides details about the project and guides you through its features.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p class="text-lg text-gray-300">
+                We hope you enjoy exploring and customizing "Sandeep's Heart"!
+            </p>
         </div>
     </main>
     <div id="message-box" role="status">
@@ -1086,10 +1133,22 @@
                 // Activate the clicked button and show its content
                 button.classList.add('active');
                 document.getElementById(`${targetTab}-content`).classList.add('active');
+
                 // Special handling for animation tab to ensure video plays
                 const video = document.querySelector('#animation-content .heart-video');
                 if (video) {
-                    video.play();
+                    if (targetTab === 'animation') {
+                        video.play();
+                    } else {
+                        video.pause(); // Pause video when not on animation tab
+                    }
+                }
+
+                // NEW: Add/remove 'about-tab-active' class to body
+                if (targetTab === 'about') {
+                    body.classList.add('about-tab-active');
+                } else {
+                    body.classList.remove('about-tab-active');
                 }
             });
         });
