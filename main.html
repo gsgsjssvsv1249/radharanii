@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -137,12 +136,8 @@
             object-fit: cover;
         }
 
-        /* MODIFIED: Remove border/background/shadow from .heart-video in day mode */
-        body.day-mode .heart-video {
-            border: none;
-            background-image: none;
-            box-shadow: none;
-        }
+        /* REVERTED: Keep the glow/border for heart-video in day mode */
+        /* The issue was not with this element's border/shadow */
 
         /* Show animation below other tabs on mobile */
         @media (max-width: 767px) {
@@ -305,12 +300,14 @@
             font-size: 0.875rem;
         }
 
+        /* REVERTED: Keep the glow/border for button-group button in day mode */
+        /* The issue was not with this element's border/shadow */
         body.day-mode .button-group button {
             color: #000000;
-            /* MODIFIED: Remove gradient background and set transparent background */
-            background-image: none;
-            background-color: transparent;
-            border: 2px solid #000000; /* Keep a black border for visibility */
+            /* Ensure the button background is transparent in day mode */
+            background-image: none; /* Remove the gradient background */
+            background-color: transparent; /* Ensure background is transparent */
+            border: 2px solid #000; /* Add a border for visibility */
         }
 
         body:not(.day-mode) .button-group button {
@@ -526,13 +523,14 @@
             max-width: 800px; /* Adjust as needed */
             padding: 1rem;
             order: 0;
-            background-color: transparent;
+            background-color: transparent; /* Keep transparent by default */
             border-radius: 0;
             margin-bottom: 1rem;
         }
 
+        /* MODIFIED: Remove background-color from .tab-content in day mode */
         body.day-mode .tab-content {
-            background-color: var(--body-bg-color);
+            background-color: transparent; /* Ensure it's transparent in day mode */
         }
 
         .tab-content.active {
