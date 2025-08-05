@@ -123,10 +123,10 @@
         }
 
         .heart-video {
-            width: calc(100% - 2rem);
+            width: 100%;
             height: auto;
-            max-height: 85vh;
-            border-radius: 1rem;
+            max-height: 90vh;
+            border-radius: 0;
             box-shadow: 0 0 10px var(--glow-color-1), 0 0 20px var(--glow-color-2);
             transition: box-shadow 0.5s ease-in-out;
             border: 2px solid transparent;
@@ -144,6 +144,7 @@
                 margin-top: 1rem;
                 width: 100%;
                 padding: 0;
+            margin: 0;
             }
             .tab-buttons {
                 margin-top: 1rem;
@@ -152,8 +153,9 @@
 
         @media (min-width: 768px) {
             .heart-video {
-                max-width: 90vw;
-                max-height: 80vh;
+                width: 90vw;
+                max-height: 85vh;
+                border-radius: 1rem;
             }
             body {
                 padding: 2rem; /* Larger padding for laptop */
