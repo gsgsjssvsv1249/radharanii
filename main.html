@@ -414,15 +414,24 @@
             text-align: center;
             white-space: nowrap;
             z-index: 1;
-            text-shadow: 0 0 5px var(--glow-color-1);
+            /* MODIFIED: text-shadow for tab buttons */
+            text-shadow: 0 0 5px var(--glow-color-1); /* Default glow */
             animation: neon-pulse 2s infinite alternate;
             font-size: 0.9rem;
+        }
+        /* Day mode specific text-shadow for tab buttons */
+        body.day-mode .tab-button {
+            text-shadow: none; /* Remove text shadow in day mode */
         }
         
         .tab-button:hover {
             transform: translateY(-2px);
             animation: none;
             text-shadow: 0 0 10px var(--glow-color-1), 0 0 20px var(--glow-color-1);
+        }
+        /* Day mode specific hover text-shadow for tab buttons */
+        body.day-mode .tab-button:hover {
+            text-shadow: none; /* No text shadow on hover in day mode */
         }
         
         .tab-button:active {
@@ -437,6 +446,11 @@
                 text-shadow: 0 0 15px var(--glow-color-1), 0 0 25px var(--glow-color-2);
             }
         }
+        /* Day mode specific neon-pulse animation */
+        body.day-mode .tab-button {
+            animation: none; /* Disable neon-pulse in day mode */
+        }
+
         .tab-button:after {
             content: '';
             position: absolute;
@@ -461,6 +475,11 @@
             text-shadow: 0 0 10px var(--glow-color-1), 0 0 20px var(--glow-color-1);
             transform: translateY(-1px);
         }
+        /* Day mode specific active text-shadow for tab buttons */
+        body.day-mode .tab-button.active {
+            text-shadow: none; /* No text shadow for active tab in day mode */
+        }
+
         /* Apply specific border-radius to first and last buttons */
         .tab-button:first-child {
             border-top-left-radius: 9999px;
@@ -474,6 +493,11 @@
         .tab-button:not(:last-child) {
             border-right: 1px solid rgba(255, 255, 255, 0.2); /* Subtle separator */
         }
+        /* Day mode specific border for tab buttons */
+        body.day-mode .tab-button:not(:last-child) {
+            border-right: 1px solid rgba(0, 0, 0, 0.1); /* Lighter separator in day mode */
+        }
+
         .tab-button:hover {
             /* Keep existing hover effects, but remove individual button shadow if applied */
             box-shadow: none; /* Remove individual button shadow on hover */
