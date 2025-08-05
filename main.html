@@ -407,15 +407,13 @@
             justify-content: center;
             margin-top: 1rem;
             margin-bottom: 1rem;
-            background-color: rgba(31, 41, 55, 0.8);
+            background-color: transparent;
             border-radius: 9999px;
             overflow: hidden;
             box-shadow: 0 0 10px var(--glow-color-1), 
                         inset 0 1px 1px rgba(255, 255, 255, 0.05);
             border: 2px solid transparent;
-            background-image: linear-gradient(var(--button-bg-color), var(--button-bg-color)), var(--button-gradient);
-            background-origin: border-box;
-            background-clip: padding-box, border-box;
+            background-image: none;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
         }
@@ -472,7 +470,8 @@
 
         .tab-button.active:after {
             height: 3px;
-            background-image: var(--button-gradient);
+            background-image: none;
+            background-color: var(--glow-color-1);
             box-shadow: 0 0 15px var(--glow-color-1);
         }
         .tab-button.active {
@@ -519,7 +518,7 @@
             max-width: 800px; /* Adjust as needed */
             padding: 1rem;
             order: 0;
-            background-color: var(--body-bg-color);
+            background-color: transparent;
             border-radius: 0;
             margin-bottom: 1rem;
         }
@@ -549,7 +548,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: var(--body-bg-color);
         }
     </style>
 </head>
