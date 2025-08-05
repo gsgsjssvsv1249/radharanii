@@ -322,10 +322,11 @@
             100% { transform: scale(1.05); }
         }
 
+        /* MODIFIED: Fixed position for day-night toggle button */
         #day-night-toggle {
             position: fixed;
             top: 2rem;
-            right: calc(2rem + 1vw);
+            right: 2rem; /* Changed from calc(2rem + 1vw) to a fixed value */
             z-index: 1000;
             cursor: pointer;
             width: 48px;
