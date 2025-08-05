@@ -123,10 +123,11 @@
         }
 
         .heart-video {
-            width: 100%;
-            height: auto;
-            max-height: 90vh;
+            width: 100vw;
+            height: 100vh;
+            max-height: none;
             border-radius: 0;
+            object-fit: contain;
             box-shadow: 0 0 10px var(--glow-color-1), 0 0 20px var(--glow-color-2);
             transition: box-shadow 0.5s ease-in-out;
             border: 2px solid transparent;
@@ -153,9 +154,11 @@
 
         @media (min-width: 768px) {
             .heart-video {
-                width: 90vw;
-                max-height: 85vh;
-                border-radius: 1rem;
+                width: 95vw;
+                height: 95vh;
+                max-height: none;
+                border-radius: 0;
+                object-fit: contain;
             }
             body {
                 padding: 2rem; /* Larger padding for laptop */
