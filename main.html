@@ -490,6 +490,18 @@
             align-items: center;
             gap: 1rem;
         }
+
+        /* Updated Footer Styles */
+        footer {
+            width: 100%; /* Ensure it takes full width */
+            text-align: center;
+            color: #6b7280; /* text-gray-500 */
+            z-index: 10;
+            margin-top: auto; /* Pushes it to the bottom of the flex container */
+            padding-top: 1rem; /* py-4 */
+            padding-bottom: 1rem; /* py-4 */
+            /* Removed: fixed, bottom-0, left-0, right-0 */
+        }
     </style>
 </head>
 <body class="bg-black text-white">
@@ -593,7 +605,7 @@
         URL copied to clipboard!
     </div>
 
-    <footer class="w-full text-center text-gray-500 z-10 mt-auto py-4 fixed bottom-0 left-0 right-0">
+    <footer class="w-full text-center text-gray-500 z-10 mt-auto py-4">
         <p class="text-sm">
             Built by <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">@HackerXBhai</a>. The source code is available on <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">Telegram</a>.
         </p>
