@@ -70,6 +70,39 @@
         body.day-mode #dayBackground {
             opacity: 1;
         }
+        /* NEW: Aurora Effect Styles */
+        #aurora-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3; /* Below dayBackground and threeCanvas */
+            background: linear-gradient(
+                45deg,
+                rgba(236, 72, 153, 0.05) 0%, /* glow-color-1 with low opacity */
+                rgba(244, 63, 94, 0.05) 25%, /* glow-color-2 with low opacity */
+                transparent 50%,
+                rgba(236, 72, 153, 0.05) 75%,
+                rgba(244, 63, 94, 0.05) 100%
+            );
+            background-size: 200% 200%; /* Make gradient larger than viewport */
+            animation: aurora-movement 60s linear infinite;
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.5s ease-in-out;
+            filter: blur(50px); /* Soften the effect */
+            pointer-events: none; /* Ensure it doesn't block clicks */
+        }
+        body:not(.day-mode) #aurora-effect {
+            opacity: 0.1; /* Visible only in night mode */
+        }
+        @keyframes aurora-movement {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+        /* END NEW: Aurora Effect Styles */
+
         #main-content {
             width: 100%;
             max-width: 100%;
@@ -188,6 +221,7 @@
             opacity: 0;
             animation: star-fall linear infinite;
         }
+        /* MODIFIED: shooting-star animation to allow custom start points */
         @keyframes star-fall {
             0% { opacity: 0; transform: rotate(-45deg) translateX(0); }
             10% { opacity: 1; }
@@ -569,6 +603,7 @@
     </script>
     <div id="dayBackground"></div>
     <div id="threeCanvas"></div>
+    <div id="aurora-effect"></div> <!-- NEW: Aurora Effect Div -->
     
     <!-- Day-night toggle button moved to top left -->
     <button id="day-night-toggle">
@@ -658,6 +693,20 @@
             Built by <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">@HackerXBhai</a>. The source code is available on <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">Telegram</a>.
         </p>
     </footer>
+    <!-- NEW: Audio element for twinkle sound -->
+    <audio id="twinkle-sound" src="https://www.soundjay.com/misc/sounds/twinkle-1.mp3" preload="auto"></audio>
+    <script>
+        // Check if the user is coming from the index page.
+        const fromIndex = sessionStorage.getItem('fromIndex');
+        if (fromIndex !== 'true') {
+            // If the flag is not set, redirect to the landing page.
+            window.location.href = 'index.html';
+        } else {
+            // If the flag is set, clear it immediately so that a page refresh
+            // will cause a redirection back to index.html.
+            sessionStorage.removeItem('fromIndex');
+        }
+    </script>
     <script>
         // --- Core Page Logic ---
         const colorBtn = document.getElementById('change-color-btn');
@@ -672,6 +721,9 @@
         // Tab elements
         const tabButtons = document.querySelectorAll('.tab-button');
         const tabContents = document.querySelectorAll('.tab-content');
+        // NEW: Audio element for twinkle sound
+        const twinkleSound = document.getElementById('twinkle-sound');
+
         // Function to update all colors based on the chosen palette
         function updateColors(glow1, glow2) {
             const root = document.documentElement;
@@ -840,19 +892,46 @@
             mouseX = (event.clientX / window.innerWidth) * 2 - 1;
             mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
         }
-        function createShootingStar() {
+        // MODIFIED: createShootingStar to accept x, y coordinates
+        function createShootingStar(x = null, y = null) {
             const star = document.createElement('div');
             star.classList.add('shooting-star');
             star.style.width = `${Math.random() * 50 + 50}px`;
-            star.style.top = `${Math.random() * window.innerHeight}px`;
-            star.style.left = `${Math.random() * window.innerWidth}px`;
-            star.style.animationDuration = `${Math.random() * 2 + 1}s`;
-            star.style.animationDelay = `${Math.random() * 2}s`;
+            
+            // If x, y are provided, use them as the starting point
+            if (x !== null && y !== null) {
+                star.style.top = `${y}px`;
+                star.style.left = `${x}px`;
+                // Adjust animation duration/delay for a more immediate effect on click
+                star.style.animationDuration = `${Math.random() * 1 + 1}s`; // Faster
+                star.style.animationDelay = `0s`; // Immediate
+            } else {
+                // Original random placement for periodic stars
+                star.style.top = `${Math.random() * window.innerHeight}px`;
+                star.style.left = `${Math.random() * window.innerWidth}px`;
+                star.style.animationDuration = `${Math.random() * 2 + 1}s`;
+                star.style.animationDelay = `${Math.random() * 2}s`;
+            }
+
             document.body.appendChild(star);
             setTimeout(() => {
                 star.remove();
-            }, (Math.random() * 2 + 1) * 1000 + (Math.random() * 2) * 1000);
+            }, parseFloat(star.style.animationDuration) * 1000 + parseFloat(star.style.animationDelay) * 1000);
         }
+
+        // NEW: Event listener for "Wish Upon a Star" click effect
+        document.addEventListener('click', (event) => {
+            // Only trigger in night mode
+            if (!body.classList.contains('day-mode')) {
+                createShootingStar(event.clientX, event.clientY);
+                // Play twinkle sound
+                if (twinkleSound) {
+                    twinkleSound.currentTime = 0; // Rewind to start
+                    twinkleSound.play().catch(e => console.error("Twinkle sound play failed:", e));
+                }
+            }
+        });
+
         // --- Animation Loop ---
         function animate() {
             requestAnimationFrame(animate);
@@ -894,7 +973,12 @@
         window.onload = function() {
             initThreeJS();
             animate();
-            setInterval(createShootingStar, 5000);
+            // Only create periodic shooting stars in night mode
+            setInterval(() => {
+                if (!body.classList.contains('day-mode')) {
+                    createShootingStar();
+                }
+            }, 5000);
             updateColors(color1Input.value, color2Input.value);
             // Set initial active tab
             document.querySelector('.tab-button[data-tab="animation"]').click();
