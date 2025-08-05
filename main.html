@@ -161,6 +161,18 @@
             .tab-content {
                 padding: 2rem; /* Adjust padding for laptop tab content */
             }
+
+            /* Ensure animation content is always visible on larger screens */
+            #animation-content {
+                display: flex; /* Always show the animation content */
+                order: 1; /* Place it below the active tab content */
+                margin-top: 2rem; /* Add some space */
+            }
+
+            /* Adjust the order of other tab contents to appear above the animation */
+            .tab-content {
+                order: 0; /* Default order for other tabs */
+            }
         }
 
         .svg-heart {
