@@ -40,13 +40,13 @@
             color: var(--text-color);
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            min-height: 100vh; /* Ensure body takes at least full viewport height */
             position: relative;
             overflow-x: hidden;
             text-align: center;
             transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
             padding: 1rem;
-            padding-bottom: 4rem; /* Add padding for footer */
+            /* REMOVED: padding-bottom as footer is no longer fixed */
         }
 
         #threeCanvas {
@@ -87,7 +87,7 @@
             flex-wrap: wrap;
             align-items: center;
             justify-content: flex-start;
-            flex-grow: 1;
+            flex-grow: 1; /* Allows main content to expand and push footer down */
             padding: 1rem;
             gap: 1rem;
         }
@@ -135,9 +135,6 @@
             background-clip: content-box, border-box;
             object-fit: cover;
         }
-
-        /* REVERTED: Keep the glow/border for heart-video in day mode */
-        /* The issue was not with this element's border/shadow */
 
         /* Show animation below other tabs on mobile */
         @media (max-width: 767px) {
@@ -257,8 +254,7 @@
         /* Day mode styles for color picker group */
         body.day-mode .color-picker-group {
             background: transparent;
-            /* MODIFIED: Use day-button-gradient for border in day mode */
-            border: 2px solid transparent;
+            border: 2px solid transparent; /* Ensure transparent border for gradient to show */
             background-image: linear-gradient(var(--body-bg-color), var(--body-bg-color)), var(--day-button-gradient);
             background-origin: border-box;
             background-clip: padding-box, border-box;
@@ -304,7 +300,6 @@
             font-size: 0.875rem;
         }
 
-        /* MODIFIED: Use day-button-gradient for button borders in day mode */
         body.day-mode .button-group button {
             color: #000000;
             background-image: linear-gradient(var(--body-bg-color), var(--body-bg-color)), var(--day-button-gradient);
@@ -333,7 +328,7 @@
         #day-night-toggle {
             position: fixed;
             top: 2rem;
-            right: 2rem; /* Changed from calc(2rem + 1vw) to a fixed value */
+            right: 2rem;
             z-index: 1000;
             cursor: pointer;
             width: 48px;
@@ -353,6 +348,11 @@
             height: 24px;
             fill: var(--text-color);
             transition: fill 0.5s ease-in-out;
+        }
+
+        /* NEW: Sun icon color in day mode */
+        body.day-mode #day-night-toggle .sun {
+            fill: gold; /* Set sun color to gold */
         }
 
         /* REMOVED: theme-wipe related CSS */
@@ -534,7 +534,7 @@
             margin-bottom: 1rem;
         }
 
-        /* MODIFIED: Ensure tab-content background is transparent in day mode */
+        /* Ensure tab-content background is transparent in day mode */
         body.day-mode .tab-content {
             background-color: transparent;
         }
@@ -546,17 +546,15 @@
             gap: 1rem;
         }
 
-        /* Updated Footer Styles */
+        /* MODIFIED: Footer positioning */
         footer {
             width: 100%;
             text-align: center;
             color: #6b7280;
             z-index: 10;
             padding: 1rem 0;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            margin-top: auto; /* Pushes footer to the bottom when content is short */
+            /* REMOVED: position: fixed; bottom: 0; left: 0; right: 0; */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -668,7 +666,7 @@
         URL copied to clipboard!
     </div>
 
-    <footer class="w-full text-center text-gray-500 z-10 mt-auto py-4">
+    <footer class="w-full text-center text-gray-500 z-10 py-4">
         <p class="text-sm">
             Built by <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">@HackerXBhai</a>. The source code is available on <a href="https://t.me/HackerXBhai" class="text-blue-400 hover:underline">Telegram</a>.
         </p>
@@ -700,14 +698,6 @@
             root.style.setProperty('--glow-color-1', glow1);
             root.style.setProperty('--glow-color-2', glow2);
             root.style.setProperty('--button-gradient', `linear-gradient(to right, ${glow1}, ${glow2})`);
-
-            // Also update the SVG heart gradient
-            const svgHeartDefs = document.getElementById('heart-gradient');
-            if (svgHeartDefs) {
-                const stops = svgHeartDefs.querySelectorAll('stop');
-                stops[0].style.stopColor = glow1;
-                stops[1].style.stopColor = glow2;
-            }
 
             // Update day mode specific gradients if needed
             // These are used for the button borders in day mode
