@@ -631,6 +631,29 @@
         body.about-tab-active #animation-content {
             display: none;
         }
+
+        /* NEW: Day mode text colors for About and Presets tabs */
+        body.day-mode #about-content h2,
+        body.day-mode #about-content h3,
+        body.day-mode #about-content p,
+        body.day-mode #about-content ul,
+        body.day-mode #about-content li,
+        body.day-mode #about-content strong,
+        body.day-mode #presets-content h2,
+        body.day-mode #presets-content .preset-group button {
+            color: var(--text-color); /* This will be black in day mode */
+        }
+
+        /* Specific adjustment for the grey text in About tab */
+        body.day-mode #about-content p.text-gray-300,
+        body.day-mode #about-content ul.text-gray-300 li {
+            color: #4b5563; /* A darker grey for contrast, similar to Tailwind's gray-700 */
+        }
+
+        /* Ensure strong tags within lists in day mode are black */
+        body.day-mode #about-content ul strong {
+            color: var(--text-color); /* Should be black */
+        }
     </style>
 </head>
 <body class="bg-black text-white">
