@@ -257,7 +257,11 @@
         /* Day mode styles for color picker group */
         body.day-mode .color-picker-group {
             background: transparent;
-            border: 2px solid #000;
+            /* MODIFIED: Use day-button-gradient for border in day mode */
+            border: 2px solid transparent;
+            background-image: linear-gradient(var(--body-bg-color), var(--body-bg-color)), var(--day-button-gradient);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
         }
         body.day-mode .color-picker-group span {
             color: #000;
@@ -300,14 +304,13 @@
             font-size: 0.875rem;
         }
 
-        /* REVERTED: Keep the glow/border for button-group button in day mode */
-        /* The issue was not with this element's border/shadow */
+        /* MODIFIED: Use day-button-gradient for button borders in day mode */
         body.day-mode .button-group button {
             color: #000000;
-            /* Ensure the button background is transparent in day mode */
-            background-image: none; /* Remove the gradient background */
-            background-color: transparent; /* Ensure background is transparent */
-            border: 2px solid #000; /* Add a border for visibility */
+            background-image: linear-gradient(var(--body-bg-color), var(--body-bg-color)), var(--day-button-gradient);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            border: 2px solid transparent; /* Ensure transparent border for gradient to show */
         }
 
         body:not(.day-mode) .button-group button {
@@ -352,6 +355,8 @@
             transition: fill 0.5s ease-in-out;
         }
 
+        /* REMOVED: theme-wipe related CSS */
+        /*
         .theme-wipe {
             position: fixed;
             border-radius: 50%;
@@ -366,6 +371,7 @@
             from { transform: scale(0) translate(-50%, -50%); }
             to { transform: scale(200) translate(-50%, -50%); }
         }
+        */
 
         .light-bloom {
             position: fixed;
@@ -528,9 +534,9 @@
             margin-bottom: 1rem;
         }
 
-        /* MODIFIED: Remove background-color from .tab-content in day mode */
+        /* MODIFIED: Ensure tab-content background is transparent in day mode */
         body.day-mode .tab-content {
-            background-color: transparent; /* Ensure it's transparent in day mode */
+            background-color: transparent;
         }
 
         .tab-content.active {
@@ -704,13 +710,10 @@
             }
 
             // Update day mode specific gradients if needed
-            if (isDayMode) {
-                // You can add more logic here to handle different colors for day mode
-                // For now, it will use the same glow colors for day mode buttons
-                root.style.setProperty('--day-glow-color-1', glow1);
-                root.style.setProperty('--day-glow-color-2', glow2);
-                root.style.setProperty('--day-button-gradient', `linear-gradient(to right, ${glow1}, ${glow2})`);
-            }
+            // These are used for the button borders in day mode
+            root.style.setProperty('--day-glow-color-1', glow1);
+            root.style.setProperty('--day-glow-color-2', glow2);
+            root.style.setProperty('--day-button-gradient', `linear-gradient(to right, ${glow1}, ${glow2})`);
         }
 
         // Function to generate a random hex color
@@ -730,42 +733,22 @@
             updateColors(glow1, glow2);
         }
 
-        // Function to toggle between day and night mode with a circular wipe animation
-        function toggleDayNightMode(event) {
-            const isDayMode = body.classList.contains('day-mode');
+        // MODIFIED: Simplified toggleDayNightMode function
+        function toggleDayNightMode() {
+            body.classList.toggle('day-mode');
+            const sunIcon = dayNightToggleBtn.querySelector('.sun');
+            const moonIcon = dayNightToggleBtn.querySelector('.moon');
 
-            const wipe = document.createElement('div');
-            wipe.classList.add('theme-wipe');
+            if (body.classList.contains('day-mode')) {
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
 
-            const targetColor = isDayMode ? '#000000' : '#f3f4f6';
-            wipe.style.backgroundColor = targetColor;
-
-            const rect = dayNightToggleBtn.getBoundingClientRect();
-            wipe.style.top = `${rect.top + rect.height / 2}px`;
-            wipe.style.left = `${rect.left + rect.width / 2}px`;
-
-            document.body.appendChild(wipe);
-
-            setTimeout(() => {
-                body.classList.toggle('day-mode');
-                const sunIcon = dayNightToggleBtn.querySelector('.sun');
-                const moonIcon = dayNightToggleBtn.querySelector('.moon');
-
-                if (body.classList.contains('day-mode')) {
-                    sunIcon.classList.remove('hidden');
-                    moonIcon.classList.add('hidden');
-                } else {
-                    sunIcon.classList.add('hidden');
-                    moonIcon.classList.remove('hidden');
-                }
-
-                // Reapply colors to handle day/night mode specific changes
-                updateColors(color1Input.value, color2Input.value);
-            }, 300); // Half of the animation duration
-
-            wipe.addEventListener('animationend', () => {
-                wipe.remove();
-            });
+            // Reapply colors to handle day/night mode specific changes
+            updateColors(color1Input.value, color2Input.value);
         }
 
         function createLightBloom(x, y) {
