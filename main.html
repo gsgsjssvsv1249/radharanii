@@ -554,48 +554,77 @@
         }
 
         /* Styles for the preset buttons within the presets tab */
-        .preset-button-group {
+        .preset-options-container {
             display: flex;
-            flex-wrap: wrap; /* Allow buttons to wrap to next line */
+            align-items: center;
             justify-content: center;
-            gap: 1rem; /* Space between buttons */
+            gap: 0.8rem; /* Same gap as color-picker-container */
             width: 100%;
-            max-width: 600px; /* Limit width for better layout */
-            margin-top: 1rem;
+            max-width: 800px;
+            margin-bottom: 1rem;
+            flex-wrap: wrap; /* Allow wrapping for smaller screens */
         }
 
-        .preset-button-group button {
-            flex: 1 1 auto; /* Allow buttons to grow and shrink, but maintain base size */
-            min-width: 120px; /* Minimum width for buttons */
-            max-width: 180px; /* Maximum width for buttons */
-            padding: 0.8rem 1.5rem;
+        .preset-group {
+            display: flex;
+            align-items: center;
             border-radius: 9999px;
-            font-weight: bold;
-            cursor: pointer;
-            /* Inherit glowing styles from .button-group button */
             border: 2px solid transparent;
             background-image: linear-gradient(var(--button-bg-color), var(--button-bg-color)), var(--button-gradient);
             background-origin: border-box;
             background-clip: padding-box, border-box;
-            transition: transform 0.2s, box-shadow 0.2s, background-image 0.5s, color 0.5s;
-            font-size: 0.875rem;
+            transition: all 0.5s ease-in-out;
+            margin: 0;
+            flex-grow: 1; /* Allow groups to grow */
+            min-width: 120px; /* Ensure a minimum width for each group */
+            max-width: 200px; /* Max width for each group */
+            cursor: pointer; /* Make the whole group clickable */
         }
 
-        body.day-mode .preset-button-group button {
-            color: #000000;
+        body.day-mode .preset-group {
+            background: transparent;
+            border: 2px solid transparent;
             background-image: linear-gradient(var(--body-bg-color), var(--body-bg-color)), var(--day-button-gradient);
             background-origin: border-box;
             background-clip: padding-box, border-box;
-            border: 2px solid transparent;
         }
 
-        body:not(.day-mode) .preset-button-group button {
+        .preset-group:hover {
+            animation: button-pop 0.3s forwards; /* Apply button pop animation on hover */
+            box-shadow: 0 0 15px var(--glow-color-1), 0 0 25px var(--glow-color-2);
+        }
+
+        .preset-group:active {
+            transform: scale(0.95); /* Apply active state */
+        }
+
+        .preset-group button {
+            /* Reset button styles to let the parent .preset-group handle the styling */
+            background: transparent;
+            border: none;
+            color: inherit; /* Inherit text color from parent */
+            padding: 0.6rem 1.2rem; /* Adjust padding as needed */
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            flex-grow: 1; /* Make button fill the group */
+            white-space: nowrap; /* Prevent text wrapping */
+        }
+
+        /* Ensure text color is correct in day mode for preset buttons */
+        body.day-mode .preset-group button {
+            color: #000;
+        }
+        body:not(.day-mode) .preset-group button {
             color: #ffffff;
         }
 
-        .preset-button-group button:hover {
-            animation: button-pop 0.3s forwards;
-            box-shadow: 0 0 15px var(--glow-color-1), 0 0 25px var(--glow-color-2);
+        /* Remove individual button hover/active effects as the parent group handles them */
+        .preset-group button:hover,
+        .preset-group button:active {
+            animation: none;
+            box-shadow: none;
+            transform: none;
         }
     </style>
 </head>
@@ -637,7 +666,7 @@
     <div class="tab-buttons">
         <button class="tab-button active" data-tab="animation">Animation</button>
         <button class="tab-button" data-tab="edit">Edit</button>
-        <button class="tab-button" data-tab="presets">Presets</button> <!-- NEW PRESETS TAB BUTTON -->
+        <button class="tab-button" data-tab="presets">Presets</button>
         <button class="tab-button" data-tab="about">About</button>
     </div>
     
@@ -694,14 +723,27 @@
         <!-- NEW Tab Content - Presets -->
         <div id="presets-content" class="tab-content">
             <h2 class="text-2xl font-bold mb-4">Choose a Theme Preset</h2>
-            <div class="preset-button-group">
-                <button class="preset-btn" data-preset="default-night">Default Night</button>
-                <button class="preset-btn" data-preset="ocean-blue">Ocean Blue</button>
-                <button class="preset-btn" data-preset="forest-green">Forest Green</button>
-                <button class="preset-btn" data-preset="sunset-blaze">Sunset Blaze</button>
-                <button class="preset-btn" data-preset="cyber-punk">Cyber Punk</button>
-                <button class="preset-btn" data-preset="day-light">Day Light</button>
-                <!-- Add more preset buttons here -->
+            <div class="preset-options-container">
+                <!-- Each preset is now wrapped in a div with class 'preset-group' -->
+                <div class="preset-group" data-preset="default-night">
+                    <button class="preset-btn">Default Night</button>
+                </div>
+                <div class="preset-group" data-preset="ocean-blue">
+                    <button class="preset-btn">Ocean Blue</button>
+                </div>
+                <div class="preset-group" data-preset="forest-green">
+                    <button class="preset-btn">Forest Green</button>
+                </div>
+                <div class="preset-group" data-preset="sunset-blaze">
+                    <button class="preset-btn">Sunset Blaze</button>
+                </div>
+                <div class="preset-group" data-preset="cyber-punk">
+                    <button class="preset-btn">Cyber Punk</button>
+                </div>
+                <div class="preset-group" data-preset="day-light">
+                    <button class="preset-btn">Day Light</button>
+                </div>
+                <!-- Add more preset groups here -->
             </div>
         </div>
 
@@ -1052,10 +1094,10 @@
             });
         });
 
-        // Event listeners for preset buttons
-        document.querySelectorAll('.preset-btn').forEach(button => {
-            button.addEventListener('click', (event) => {
-                const presetName = event.target.dataset.preset;
+        // Event listeners for preset buttons (now on the parent div.preset-group)
+        document.querySelectorAll('.preset-group').forEach(group => {
+            group.addEventListener('click', (event) => {
+                const presetName = group.dataset.preset; // Get data-preset from the group
                 applyThemePreset(presetName);
             });
         });
