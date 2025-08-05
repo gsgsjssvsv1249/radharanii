@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -136,6 +137,13 @@
             object-fit: cover;
         }
 
+        /* MODIFIED: Remove border/background/shadow from .heart-video in day mode */
+        body.day-mode .heart-video {
+            border: none;
+            background-image: none;
+            box-shadow: none;
+        }
+
         /* Show animation below other tabs on mobile */
         @media (max-width: 767px) {
             #animation-content.always-visible {
@@ -251,8 +259,6 @@
             margin-right: 0.2rem;
         }
 
-        /* --- START OF CHANGES --- */
-
         /* Day mode styles for color picker group */
         body.day-mode .color-picker-group {
             background: transparent;
@@ -261,8 +267,6 @@
         body.day-mode .color-picker-group span {
             color: #000;
         }
-
-        /* --- END OF CHANGES --- */
 
         .color-picker {
             -webkit-appearance: none;
@@ -303,6 +307,10 @@
 
         body.day-mode .button-group button {
             color: #000000;
+            /* MODIFIED: Remove gradient background and set transparent background */
+            background-image: none;
+            background-color: transparent;
+            border: 2px solid #000000; /* Keep a black border for visibility */
         }
 
         body:not(.day-mode) .button-group button {
@@ -322,7 +330,6 @@
             100% { transform: scale(1.05); }
         }
 
-        /* MODIFIED: Fixed position for day-night toggle button */
         #day-night-toggle {
             position: fixed;
             top: 2rem;
