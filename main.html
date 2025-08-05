@@ -299,7 +299,7 @@
         #day-night-toggle {
             position: fixed;
             top: 2rem;
-            right: 2rem;
+            left: 2rem; /* Changed from right to left */
             z-index: 1000;
             cursor: pointer;
             width: 48px;
@@ -396,12 +396,14 @@
             top: 1rem; /* Position at top */
             right: 1rem; /* Position at right */
             z-index: 999; /* Ensure it's above other content */
-            max-width: 300px; /* Limit width on larger screens */
+            max-width: 400px; /* Increased width for broader tab bar */
+            width: auto; /* Allow width to adjust based on content */
+            padding: 0.25rem; /* Added padding for broader appearance */
         }
         .tab-button {
             position: relative;
             color: var(--text-color);
-            padding: 0.5rem 1rem;
+            padding: 0.6rem 1.2rem; /* Increased padding for broader tabs */
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: none;
@@ -520,22 +522,34 @@
         /* Responsive adjustments for tab bar */
         @media (max-width: 767px) {
             .tab-buttons {
-                max-width: 200px; /* Smaller width on mobile */
+                max-width: 280px; /* Increased width on mobile */
                 top: 0.5rem; /* Adjust top position */
                 right: 0.5rem; /* Adjust right position */
+                padding: 0.2rem; /* Adjust padding */
             }
             
             .tab-button {
-                font-size: 0.7rem; /* Smaller font on mobile */
-                padding: 0.4rem 0.6rem; /* Smaller padding on mobile */
+                font-size: 0.8rem; /* Slightly larger font on mobile */
+                padding: 0.5rem 0.8rem; /* Adjust padding on mobile */
+            }
+            
+            #day-night-toggle {
+                top: 1rem; /* Adjust top position for mobile */
+                left: 1rem; /* Adjust left position for mobile */
             }
         }
         
         @media (min-width: 768px) {
             .tab-buttons {
-                max-width: 300px; /* Larger width on desktop */
+                max-width: 400px; /* Increased width on desktop */
                 top: 1rem; /* Adjust top position */
                 right: 1rem; /* Adjust right position */
+                padding: 0.25rem; /* Adjust padding */
+            }
+            
+            #day-night-toggle {
+                top: 2rem; /* Adjust top position for desktop */
+                left: 2rem; /* Adjust left position for desktop */
             }
         }
     </style>
@@ -556,13 +570,7 @@
     <div id="dayBackground"></div>
     <div id="threeCanvas"></div>
     
-    <!-- Tab Buttons moved outside main content -->
-    <div class="tab-buttons">
-        <button class="tab-button active" data-tab="animation">Animation</button>
-        <button class="tab-button" data-tab="edit">Edit</button>
-        <button class="tab-button" data-tab="about">About</button>
-    </div>
-    
+    <!-- Day-night toggle button moved to top left -->
     <button id="day-night-toggle">
         <svg class="sun hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="5"></circle>
@@ -579,6 +587,13 @@
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
     </button>
+    
+    <!-- Tab Buttons moved outside main content -->
+    <div class="tab-buttons">
+        <button class="tab-button active" data-tab="animation">Animation</button>
+        <button class="tab-button" data-tab="edit">Edit</button>
+        <button class="tab-button" data-tab="about">About</button>
+    </div>
     
     <main id="main-content" class="content-container mx-auto flex-grow flex flex-col items-center justify-center">
         <svg class="svg-heart" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
