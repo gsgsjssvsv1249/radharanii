@@ -503,15 +503,14 @@
         }
 
         .tab-button.active {
-            background-image: var(--button-gradient);
-            color: white; /* Text color for active tab */
+            background-color: transparent;
+            color: var(--text-color);
             /* Remove individual button shadow for active state */
             box-shadow: none;
         }
 
         body.day-mode .tab-button.active {
-            background-image: var(--day-button-gradient);
-            color: black; /* Text color for active tab in day mode */
+            color: var(--text-color);
         }
 
         .tab-content {
@@ -520,13 +519,13 @@
             max-width: 800px; /* Adjust as needed */
             padding: 1rem;
             order: 0;
-            background-color: transparent;
+            background-color: var(--body-bg-color);
             border-radius: 0;
             margin-bottom: 1rem;
         }
 
         body.day-mode .tab-content {
-            background-color: transparent;
+            background-color: var(--body-bg-color);
         }
 
         .tab-content.active {
