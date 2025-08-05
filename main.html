@@ -305,8 +305,9 @@
             width: 48px;
             height: 48px;
             border-radius: 50%;
-            border: 2px solid var(--text-color);
-            background-color: var(--button-bg-color);
+            /* Use CSS variables for dynamic theming */
+            border: 2px solid var(--glow-color-1); /* Use glow color for border */
+            background-color: var(--button-bg-color); /* Use button background color */
             transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out;
             display: flex;
             align-items: center;
@@ -316,7 +317,7 @@
         #day-night-toggle svg {
             width: 24px;
             height: 24px;
-            fill: var(--text-color);
+            fill: var(--glow-color-1); /* Use glow color for SVG fill */
             transition: fill 0.5s ease-in-out;
         }
         /* Sun icon and lines color in day mode */
@@ -386,6 +387,7 @@
             background-color: transparent;
             border-radius: 9999px;
             overflow: hidden;
+            /* Use glow-color-1 for box-shadow */
             box-shadow: 0 0 10px var(--glow-color-1), 
                         inset 0 1px 1px rgba(255, 255, 255, 0.05);
             border: 2px solid transparent;
@@ -402,7 +404,7 @@
         }
         .tab-button {
             position: relative;
-            color: var(--text-color);
+            color: var(--text-color); /* Use text-color for tab button text */
             padding: 0.6rem 1.2rem; /* Increased padding for broader tabs */
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -451,8 +453,8 @@
         .tab-button.active:after {
             height: 3px;
             background-image: none;
-            background-color: var(--glow-color-1);
-            box-shadow: 0 0 15px var(--glow-color-1);
+            background-color: var(--glow-color-1); /* Use glow color for active indicator */
+            box-shadow: 0 0 15px var(--glow-color-1); /* Use glow color for active indicator shadow */
         }
         .tab-button.active {
             animation: none;
@@ -639,8 +641,7 @@
         body.day-mode #about-content ul,
         body.day-mode #about-content li,
         body.day-mode #about-content strong,
-        body.day-mode #presets-content h2,
-        body.day-mode #presets-content .preset-group button {
+        body.day-mode #presets-content h2 { /* Added h2 for presets tab */
             color: var(--text-color); /* This will be black in day mode */
         }
 
