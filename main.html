@@ -232,9 +232,22 @@
             transition: all 0.5s ease-in-out;
         }
 
+        /* --- START OF CHANGES --- */
+
+        /* Day mode styles for color picker group */
         body.day-mode .color-picker-group {
-            background-color: var(--body-bg-color);
+            background-color: var(--body-bg-color); /* Use the day mode body background */
+            background-image: none; /* Remove the gradient background image */
+            color: var(--text-color); /* Ensure text color is correct for day mode */
+            border-color: var(--text-color); /* Adjust border color for day mode */
         }
+
+        /* Ensure text color within color-picker-group is black in day mode */
+        body.day-mode .color-picker-group span {
+            color: var(--text-color); /* This will be black in day mode */
+        }
+
+        /* --- END OF CHANGES --- */
 
         .color-picker {
             -webkit-appearance: none;
