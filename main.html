@@ -822,6 +822,18 @@
         </p>
     </footer>
     <script>
+        // Check if the user is coming from the index page.
+        const fromIndex = sessionStorage.getItem('fromIndex');
+        if (fromIndex !== 'true') {
+            // If the flag is not set, redirect to the landing page.
+            window.location.href = 'index.html';
+        } else {
+            // If the flag is set, clear it immediately so that a page refresh
+            // will cause a redirection back to index.html.
+            sessionStorage.removeItem('fromIndex');
+        }
+    </script>
+    <script>
         // --- Core Page Logic ---
         const colorBtn = document.getElementById('change-color-btn');
         const shareBtn = document.getElementById('share-btn');
