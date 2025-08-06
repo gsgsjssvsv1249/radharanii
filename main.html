@@ -140,13 +140,6 @@
         .tab-buttons {
             margin-top: 1rem; /* Mobile margin */
         }
-        .welcome-animation-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-        }
-
         .tab-content {
             padding: 1rem; /* Mobile padding */
         }
@@ -582,40 +575,32 @@
         }
 
         .preset-group button {
-            /* Make preset buttons match random/share button style */
-            border: 2px solid transparent;
-            background-image: linear-gradient(var(--button-bg-color), var(--button-bg-color)), var(--button-gradient);
-            background-origin: border-box;
-            background-clip: padding-box, border-box;
-            transition: transform 0.2s, box-shadow 0.2s, background-image 0.5s, color 0.5s;
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
+            /* Reset button styles to let the parent .preset-group handle the styling */
+            background: transparent;
+            border: none;
+            color: inherit; /* Inherit text color from parent */
+            padding: 0.6rem 1.2rem; /* Adjust padding as needed */
+            font-size: 0.8rem;
             font-weight: bold;
             cursor: pointer;
-            flex-grow: 1;
-            white-space: nowrap;
-            border-radius: 9999px;
-            margin: 0.2rem;
-            box-shadow: 0 0 10px var(--glow-color-1);
+            flex-grow: 1; /* Make button fill the group */
+            white-space: nowrap; /* Prevent text wrapping */
         }
 
         /* Ensure text color is correct in day mode for preset buttons */
         body.day-mode .preset-group button {
             color: #000;
-            background-image: linear-gradient(var(--body-bg-color), var(--body-bg-color)), var(--day-button-gradient);
         }
         body:not(.day-mode) .preset-group button {
             color: #ffffff;
         }
 
-        /* Apply same hover/active effects as random/share buttons */
-        .preset-group button:hover {
-            animation: button-pop 0.3s forwards;
-            box-shadow: 0 0 15px var(--glow-color-1), 0 0 25px var(--glow-color-2);
-            transform: scale(1.05);
-        }
+        /* Remove individual button hover/active effects as the parent group handles them */
+        .preset-group button:hover,
         .preset-group button:active {
-            transform: scale(0.95);
+            animation: none;
+            box-shadow: none;
+            transform: none;
         }
 
         /* NEW: Hide animation content when About tab is active */
@@ -714,7 +699,6 @@
             </video>
         </div>
         </div>
-        </div>
 
         <!-- Tab Content - Edit -->
         <div id="edit-content" class="tab-content">
@@ -733,10 +717,10 @@
                 </div>
             </div>
             <div class="flex flex-row space-x-4 button-group">
-                <button id="change-color-btn" class="color-button font-bold py-2 px-4 rounded-full shadow-lg text-sm bg-gradient-to-r from-pink-500 to-red-500">
+                <button id="change-color-btn" class="color-button font-bold py-2 px-4 rounded-full shadow-lg text-sm">
                     Random Color
                 </button>
-                <button id="share-btn" class="color-button font-bold py-2 px-4 rounded-full shadow-lg text-sm bg-gradient-to-r from-pink-500 to-red-500">
+                <button id="share-btn" class="color-button font-bold py-2 px-4 rounded-full shadow-lg text-sm">
                     Share
                 </button>
             </div>
