@@ -48,7 +48,7 @@
             overflow-x: hidden;
             text-align: center;
             transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
-            padding: 1rem;
+            padding: 1rem; /* Mobile padding */
             /* REMOVED: padding-bottom as footer is no longer fixed */
         }
         #threeCanvas {
@@ -130,45 +130,19 @@
             object-fit: cover;
         }
         /* Show animation below other tabs on mobile */
-        @media (max-width: 767px) {
-            #animation-content.always-visible {
-                display: flex;
-                order: -1;
-                margin-top: 1rem;
-                width: 100%;
-                padding: 0 1rem;
-            }
-            .tab-buttons {
-                margin-top: 1rem;
-            }
+        /* This block now applies to all screen sizes as desktop media queries are removed */
+        #animation-content {
+            display: flex;
+            order: -1;
+            margin-top: 1rem;
+            width: 100%;
+            padding: 0 1rem;
         }
-        @media (min-width: 768px) {
-            .heart-video {
-                width: 100%;
-                height: auto;
-                max-height: 90vh;
-                border-radius: 1rem;
-            }
-            body {
-                padding: 2rem; /* Larger padding for laptop */
-            }
-            .main-title {
-                font-size: 5rem; /* Larger font size for laptop title */
-            }
-            .tab-buttons {
-                margin-top: 3rem; /* Adjust margin for laptop */
-            }
-            .tab-content {
-                padding: 2rem; /* Adjust padding for laptop tab content */
-            }
-            /* Ensure animation content is positioned at top like mobile */
-            #animation-content {
-                display: flex;
-                order: -1;
-                margin-top: 1rem;
-                width: 100%;
-                padding: 0 1rem;
-            }
+        .tab-buttons {
+            margin-top: 1rem; /* Mobile margin */
+        }
+        .tab-content {
+            padding: 1rem; /* Mobile padding */
         }
         .svg-heart {
             width: 80px;
@@ -278,17 +252,10 @@
             background-origin: border-box;
             background-clip: padding-box, border-box;
             transition: transform 0.2s, box-shadow 0.2s, background-image 0.5s, color 0.5s;
-            font-size: 0.875rem;
-            padding: 0.5rem 1rem; /* Smaller padding for laptops */
+            font-size: 0.875rem; /* Mobile font size */
+            padding: 0.5rem 1rem; /* Mobile padding */
         }
         
-        @media (min-width: 768px) {
-            .button-group button,
-            .color-picker-btn {
-                font-size: 0.7rem; /* Smaller font size for laptops */
-                padding: 0.3rem 0.6rem; /* Even smaller padding for laptops */
-            }
-        }
         body.day-mode .button-group button {
             color: #000000;
             background-image: linear-gradient(var(--body-bg-color), var(--body-bg-color)), var(--day-button-gradient);
@@ -313,8 +280,8 @@
         }
         #day-night-toggle {
             position: fixed;
-            top: 2rem;
-            left: 2rem; /* Changed from right to left */
+            top: 1rem; /* Mobile top position */
+            left: 1rem; /* Mobile left position */
             z-index: 1000;
             cursor: pointer;
             width: 48px;
@@ -410,17 +377,17 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             position: fixed; /* Changed to fixed positioning */
-            top: 1rem; /* Position at top */
-            right: 1rem; /* Position at right */
+            top: 0.5rem; /* Mobile top position */
+            right: 0.5rem; /* Mobile right position */
             z-index: 999; /* Ensure it's above other content */
-            max-width: 400px; /* Increased width for broader tab bar */
+            max-width: 280px; /* Mobile max-width */
             width: auto; /* Allow width to adjust based on content */
-            padding: 0.25rem; /* Added padding for broader appearance */
+            padding: 0.2rem; /* Mobile padding */
         }
         .tab-button {
             position: relative;
             color: var(--text-color); /* Use text-color for tab button text */
-            padding: 0.6rem 1.2rem; /* Increased padding for broader tabs */
+            padding: 0.5rem 0.8rem; /* Mobile padding */
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: none;
@@ -432,7 +399,7 @@
             /* MODIFIED: text-shadow for tab buttons */
             text-shadow: 0 0 5px var(--glow-color-1); /* Default glow */
             animation: neon-pulse 2s infinite alternate;
-            font-size: 0.9rem;
+            font-size: 0.8rem; /* Mobile font size */
         }
         /* Day mode specific text-shadow for tab buttons */
         body.day-mode .tab-button {
@@ -559,39 +526,9 @@
             align-items: center;
         }
         
-        /* Responsive adjustments for tab bar */
-        @media (max-width: 767px) {
-            .tab-buttons {
-                max-width: 280px; /* Increased width on mobile */
-                top: 0.5rem; /* Adjust top position */
-                right: 0.5rem; /* Adjust right position */
-                padding: 0.2rem; /* Adjust padding */
-            }
-            
-            .tab-button {
-                font-size: 0.8rem; /* Slightly larger font on mobile */
-                padding: 0.5rem 0.8rem; /* Adjust padding on mobile */
-            }
-            
-            #day-night-toggle {
-                top: 1rem; /* Adjust top position for mobile */
-                left: 1rem; /* Adjust left position for mobile */
-            }
-        }
-        
-        @media (min-width: 768px) {
-            .tab-buttons {
-                max-width: 400px; /* Increased width on desktop */
-                top: 1rem; /* Adjust top position */
-                right: 1rem; /* Adjust right position */
-                padding: 0.25rem; /* Adjust padding */
-            }
-            
-            #day-night-toggle {
-                top: 2rem; /* Adjust top position for desktop */
-                left: 2rem; /* Adjust left position for desktop */
-            }
-        }
+        /* Responsive adjustments for tab bar - now these are the only media queries for positioning */
+        /* These styles are now the default for all screen sizes */
+        /* No specific @media (max-width: 767px) needed as these are the base styles */
 
         /* Styles for the preset buttons within the presets tab */
         .preset-options-container {
