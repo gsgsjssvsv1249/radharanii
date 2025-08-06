@@ -1174,30 +1174,8 @@
         // --- Tab Functionality ---
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
-                const targetTab = button.dataset.tab;
-                // Deactivate all tab buttons and hide all tab contents
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                tabContents.forEach(content => content.classList.remove('active'));
-                // Activate the clicked button and show its content
-                button.classList.add('active');
-                document.getElementById(`${targetTab}-content`).classList.add('active');
-
-                // Special handling for animation tab to ensure video plays
-                const video = document.querySelector('#animation-content .heart-video');
-                if (video) {
-                    if (targetTab === 'animation') {
-                        video.play();
-                    } else {
-                        video.pause(); // Pause video when not on animation tab
-                    }
-                }
-
-                // NEW: Add/remove 'about-tab-active' class to body
-                if (targetTab === 'about') {
-                    body.classList.add('about-tab-active');
-                } else {
-                    body.classList.remove('about-tab-active');
-                }
+                const targetSection = document.getElementById(`${button.dataset.tab}-content`);
+                targetSection.scrollIntoView({ behavior: 'smooth' });
             });
         });
 
