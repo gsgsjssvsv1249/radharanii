@@ -133,7 +133,6 @@
         /* This block now applies to all screen sizes as desktop media queries are removed */
         #animation-content {
             display: flex;
-            order: -1;
             margin-top: 1rem;
             width: 100%;
             padding: 0 1rem;
@@ -141,6 +140,13 @@
         .tab-buttons {
             margin-top: 1rem; /* Mobile margin */
         }
+        .welcome-animation-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
         .tab-content {
             padding: 1rem; /* Mobile padding */
         }
@@ -687,16 +693,19 @@
         <h1 class="main-title text-5xl sm:text-6xl font-extrabold mb-4 tracking-tight leading-tight">
             Sandeep's Heart
         </h1>
-        <p class="text-lg sm:text-xl text-gray-300 max-w-2xl">
-            Welcome to the main section of Sandeep's Heart.
-        </p>
-        
-        <!-- Animation Content - Moved out of tab-content -->
-        <div id="animation-content" class="w-full flex items-center justify-center">
+        <div class="welcome-content">
+            <p class="text-lg sm:text-xl text-gray-300 max-w-2xl">
+                Welcome to the main section of Sandeep's Heart.
+            </p>
+            
+            <!-- Animation Content -->
+            <div id="animation-content" class="w-full flex items-center justify-center">
             <video class="heart-video" autoplay loop muted playsinline>
                 <source src="https://raw.githubusercontent.com/gsgsjssvsv1249/radharanii/main/heart.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
+        </div>
+        </div>
         </div>
 
         <!-- Tab Content - Edit -->
